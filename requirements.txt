@@ -1,0 +1,7 @@
+aiohttp==3.6.2
+asyncpg==0.21.0 
+googletrans==2.4.0
+pyowm==2.10.0
+python-dateutil==2.7.5
+twitchio==1.1.0
+Unidecode==1.1.1

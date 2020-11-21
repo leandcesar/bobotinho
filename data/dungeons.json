@@ -1,0 +1,624 @@
+
+{
+    "eds": {
+        "1": {
+            "dungeon": "A dungeon está cheia de teias de aranha! 🕸 \"%ed 1\" para tentar atravessá-las ou \"%ed 2\" para pensar em outra alternativa ",
+            "1": {
+                "win": "Você passa facilmente pelas teias e encontra a saída!",
+                "lose": "Você fica preso nas teias e fica horas sem conseguir sair dali."
+            },
+            "2": {
+                "win": "Você joga uma bola de fogo nas teias, limpando a passagem e achando a saída!",
+                "lose": "Você acaba não pensando em nada e decide ir embora."
+            }
+        },
+        "2": {
+            "dungeon": "A dungeon está cheia de zumbis! 🧟 \"%ed 1\" para tentar eliminá-los ou \"%ed 2\" para se disfarçar de morto-vivo",
+            "1": {
+                "win": "Você consegue lidar com todos os zumbis e continuar até a saída!",
+                "lose": "Você é incapaz de lidar com tantos zumbis e recua, ferido."
+            },
+            "2": {
+                "win": "Você se disfarça muito bem, enganando os zumbis e encontrando a saída!",
+                "lose": "Os zumbis percebem seu péssimo disfarce e te perseguem, te obrigando a fugir."
+            }
+        },
+        "3": {
+            "dungeon": "A dungeon está infestada de aranhas! 🕷️ \"%ed 1\" para tentar atravessar ou \"%ed 2\" para conjurar uma magia",
+            "1": {
+                "win": "Você passa facilmente pelas aranhas e encontra a saída!",
+                "lose": "As aranhas te encurralam e você acaba sendo picado por elas."
+            },
+            "2": {
+                "win": "Você joga diversos projéteis nas aranhas, limpando o caminho!",
+                "lose": "Você falha em conjurar sua magia e foge para casa com medo."
+            }
+        },
+        "4": {
+            "dungeon": "A dungeon está infestada de ratos! 🐀 \"%ed 1\" para enfrentá-los ou \"%ed 2\" para pensar em outro plano",
+            "1": {
+                "win": "Você consegue derrotar todos os ratos, encontrando a saída!",
+                "lose": "Surge mais ratos que você consegue lidar e você foge com medo da leptospirose."
+            },
+            "2": {
+                "win": "Você arremessa pedaços de mortadela de sua bolsa, persuadindo os ratos, até encontrar a saída!",
+                "lose": "Você não pensa em nada e desiste da dungeon."
+            }
+        },
+        "5": {
+            "dungeon": "Ao entrar na dungeon, você encontra uma banana. 🍌 \"%ed 1\" para come-lá ou \"%ed 2\" para pisar nela ",
+            "1": {
+                "win": "Você come a banana e isso te enche de determinação!",
+                "lose": "Você come a banana e, tempo depois, sente uma dor de barriga insuportável."
+            },
+            "2": {
+                "win": "Você pisa na banana e desliza sobre ela, o que te dá um impulso de velocidade até a saída.",
+                "lose": "Você escorrega ao pisar na banana, batendo a cabeça no chão e ficando desacordado."
+            }
+        },
+        "6": {
+            "dungeon": "Ao entrar na dungeon, você encontra um pergaminho. 📜 \"%ed 1\" para ler ou \"%ed 2\" para ignorá-lo",
+            "1": {
+                "win": "Você lê o pergaminho que continha dicas para achar a saída!",
+                "lose": "O pergaminho dizia \"Morte iminente\" e, por medo, você desiste da dungeon."
+            },
+            "2": {
+                "win": "Você ignora o pergaminho e finaliza a dungeon naturalmente.",
+                "lose": "Você ignora o pergaminho e é amaldiçoado por uma criatura incrédula com sua ignorância."
+            }
+        },
+        "7": {
+            "dungeon": "Um ovo com pernas está tentando subir uma plataforma. 🥚 \"%ed 1\" para ajudá-lo ou \"%ed 2\" para empurrá-lo",
+            "1": {
+                "win": "Você consegue ajudar o ovo e, em troca, recebe uma benção!",
+                "lose": "Você acaba derrubando-o e o quebra. Imediatamente você é amaldiçoado."
+            },
+            "2": {
+                "win": "Você empurra o ovo e ele caí da plataforma. Você acha engraçado e continua a dungeon, feliz.",
+                "lose": "Você falha ao tentar empurrá-lo e caí da plataforma. O ovo ri de você."
+            }
+        },
+        "8": {
+            "dungeon": "Você encontra um cachorro! 🐕 \"%ed 1\" para fazer carinho ou \"%ed 2\" para latir para ele",
+            "1": {
+                "win": "Você consegue fazer carinho no cachorro e isso eleva seu espírito!",
+                "lose": "O cachorro morde sua mão muito forte, te obrigando a retornar para se medicar."
+            },
+            "2": {
+                "win": "Você late para o cachorro e ele late de volta. Isso enche você de coragem! ",
+                "lose": "O cachorro se assusta e começa a te perseguir incessantemente, até você ir embora."
+            }
+        },
+        "9": {
+            "dungeon": "Você encontra um druida bebendo refrigerante. 🥤 \"%ed 1\" para pedir um refrigerante ou \"%ed 2\" para pedir benção",
+            "1": {
+                "win": "Você se senta para tomar um refrigerante com ele e isso cura todos seus ferimentos!",
+                "lose": "O druida recusa seu pedido e cospe refrigerante em você."
+            },
+            "2": {
+                "win": "O druida te concede um abençoamento e isso ajuda a completar a dungeon!",
+                "lose": "O druida ri e não lhe concede nenhuma benção. Triste, você volta para casa."
+            }
+        },
+        "10": {
+            "dungeon": "Você encontra um gênio da lâmpada! 🧞 \"%ed 1\" para fazer um pedido ou \"%ed 2\" para libertá-lo da lâmpada",
+            "1": {
+                "win": "Você pede para o gênio levá-lo até o final da dungeon e o desejo é concedido!",
+                "lose": "Você pede muito dinheiro para o gênio. Assim, um milhão de moedas caí sobre você, te esmagando."
+            },
+            "2": {
+                "win": "Você liberta o gênio da lâmpada e, em troca de sua gentileza, ele te da muito ouro.",
+                "lose": "Você liberta o gênio da lâmpada e ele se rebela, te aprisionando na lâmpada."
+            }
+        },
+        "11": {
+            "dungeon": "Você encontra um guerreiro que insiste em te ajudar. 🛡️ \"%ed 1\" para confiar no guerreiro ou \"%ed 2\" para atacá-lo",
+            "1": {
+                "win": "O guerreiro propõe uma grande ajuda e, unidos, finalizam a dungeon!",
+                "lose": "O guerreiro te leva para caminhos desconhecidos e te abandona. Você fica perdido e sozinho."
+            },
+            "2": {
+                "win": "Com medo de ser traído, você ataca o guerreiro e o derrota, podendo atravessar a dungeon.",
+                "lose": "Você tenta um golpe surpresa, mas o guerreiro é mais forte que você pensava e te nocauteia."
+            }
+        },
+        "12": {
+            "dungeon": "Você encontra um homem tocando música clássica. 🍷 \"%ed 1\" para dialogar ou \"%ed 2\" para negociar",
+            "1": {
+                "win": "O homem acaba gostando de você e te passa boas estratégias para a dungeon.",
+                "lose": "O homem te acha insuportável e te fala coisas que abaixam seu ânimo."
+            },
+            "2": {
+                "win": "Você consegue itens raros em troca de poucas moedas!",
+                "lose": "O homem recusa todas as suas ofertas e você volta para casa, derrotado."
+            }
+        },
+        "13": {
+            "dungeon": "Você encontra um lobo segurando uma espada na boca! 🐺 \"%ed 1\" para domá-lo ou \"%ed 2\" para pegar a espada dele",
+            "1": {
+                "win": "Você consegue domar o lobo! Ele te acompanha e protege até o fim da dungeon. ",
+                "lose": "Você tenta domá-lo, mas falha! Triste, você tenta continuar sozinho."
+            },
+            "2": {
+                "win": "Você consegue pegar a tão rara espada do lobo e se torna fácil completar a dungeon!",
+                "lose": "Você segue o lobo aguardando a brecha para pegar sua espada, mas se perde no processo."
+            }
+        },
+        "14": {
+            "dungeon": "Você encontra uma bola de cristal mágica! 🔮 \"%ed 1\" para tocá-la ou \"%ed 2\" para coletá-la",
+            "1": {
+                "win": "Você toca a bola de cristal e é transportado para a saída da dungeon!",
+                "lose": "Você toca nela e é transportado de volta para o início da dungeon."
+            },
+            "2": {
+                "win": "Você pega a bola de cristal e isso aumenta sua coleção de artefatos!",
+                "lose": "A bola de cristal sente sua energia maléfica e te transporta para uma sala cheia de monstros."
+            }
+        },
+        "15": {
+            "dungeon": "Você encontra uma caixa! 📦 \"%ed 1\" para abrí-la ou \"%ed 2\" para ignorá-la ",
+            "1": {
+                "win": "Você encontra diversas riquezas dentro dela que te ajudam a completar a dungeon!",
+                "lose": "Existe outra caixa dentro da caixa. Você abre. Dentro de mais uma caixa, um papel escrito: \"Nada\"."
+            },
+            "2": {
+                "win": "Você ignora a caixa e continua sua jornada normalmente, até finalizá-la.",
+                "lose": "A caixa era um monstro disfarçado e ele te ataca desprevenido!"
+            }
+        },
+        "16": {
+            "dungeon": "Você encontra uma casa com muitas portas. 🏠 \"%ed 1\" para entrar na casa ou \"%ed 2\" para investigar atrás dela",
+            "1": {
+                "win": "Ao abrir uma das portas, você vê que era um atalho para a saída!",
+                "lose": "Você abre uma das portas e cai em um buraco que estava disfarçado no piso."
+            },
+            "2": {
+                "win": "No terreno atrás da casa, você encontra um baú cheio de ouro!",
+                "lose": "Você se depara com um jacaré atrás da casa e precisa fugir da dungeon rapidamente."
+            }
+        },
+        "17": {
+            "dungeon": "Você encontra uma estrela brilhante. ⭐ \"%ed 1\" para tocá-la ou \"%ed 2\" para socá-la",
+            "1": {
+                "win": "Você toca a estrela, absorvendo ela e tornando-se invencível por um curto tempo.",
+                "lose": "Você toca a estrela, tomando um choque atordoador e adormecendo."
+            },
+            "2": {
+                "win": "A estrela se pulveriza com seu soco e o pó encanta seus punhos, tornando-o mais forte.",
+                "lose": "Você percebe que a estrela é dura como pedra e acaba machucando as mãos ao socá-la."
+            }
+        },
+        "18": {
+            "dungeon": "Você encontra uma máquina de cookies! 🍪 \"%ed 1\" para chutá-la ou \"%ed 2\" para investiga-lá",
+            "1": {
+                "win": "Você decide chutá-la e isso libera um delicioso cookie!",
+                "lose": "Você soca a máquina e ela, ofendida, devolve o soco dado por você."
+            },
+            "2": {
+                "win": "Você investiga a máquina e encontra moedas perdidas dentro dela!",
+                "lose": "Você investiga a máquina por horas e apenas tem seu tempo desperdiçado!"
+            }
+        },
+        "19": {
+            "dungeon": "Você encontra uma mesa cheia de sanduíches. 🥪 \"%ed 1\" para comer um ou \"%ed 2\" para pegar todos",
+            "1": {
+                "win": "Você come um sanduíche e isso eleva sua motivação!",
+                "lose": "Você come um sanduíche e, tempo depois, sente uma dor de barriga insuportável."
+            },
+            "2": {
+                "win": "Você guarda todos os sanduíches, aumentando seus suprimentos reservas!",
+                "lose": "Ao esvaziar a mesa de sanduíches, uma armadilha é acionada e a saída fica bloqueada."
+            }
+        },
+        "20": {
+            "dungeon": "Você encontra uma televisão ligada. 📺 \"%ed 1\" para assistir ou \"%ed 2\" para desligá-la ",
+            "1": {
+                "win": "Você decide assistir a televisão e encontra programas que aumentam sua autoestima.",
+                "lose": "Uma menina sai da televisão e você foge da dungeon desesperado."
+            },
+            "2": {
+                "win": "Você desliga a televisão e segue sua jornada normalmente até completá-la.",
+                "lose": "Ao apertar o botão para desligá-la, você leva um choque que te deixa desacordado."
+            }
+        },
+        "21": {
+            "dungeon": "Você enxerga uma colônia enorme de abelhas! 🐝 \"%ed 1\" para roubar o mel ou \"%ed 2\" para fugir imediatamente",
+            "1": {
+                "win": "Você come o mel e ele te dá energia para finalizar a dungeon rapidamente!",
+                "lose": "Ao se aproximar da colmeia, as abelhas te atacam e te deixam inconsciente."
+            },
+            "2": {
+                "win": "O medo das abelhas te faz correr tão rápido que você chega do outro lado da dungeon!",
+                "lose": "Ao tentar fugir, as abelhas vão atrás de você. As abelhas te atacam e te deixam inconsciente."
+            }
+        },
+        "22": {
+            "dungeon": "Você esbarra em um homem com olhos vacilantes 👀 \"%ed 1\" para encará-lo sem piscar ou \"%ed 2\" para desviar o olhar",
+            "1": {
+                "win": "Ele pisca para você e te dá um par de botas novo que te deixa mais rápido!",
+                "lose": "Ao olhar no fundo dos olhos dele, você se torna extremamente azarado."
+            },
+            "2": {
+                "win": "O homem percebe seu medo e, com pena, te dá um par de botas que te deixa mais rápido!",
+                "lose": "Enquanto você não olha, ele se aproxima e rouba seus artefatos."
+            }
+        },
+        "23": {
+            "dungeon": "Você ouve dois magos conversando. 🧙🧙 \"%ed 1\" para esgueirar-se e ouví-los ou \"%ed 2\" para mostrar a eles sua força",
+            "1": {
+                "win": "Eles falam algo sobre poções e de repente você se torna invisível!",
+                "lose": "Eles dizem algumas palavras de encantamento e você fica perdidamente apaixonado."
+            },
+            "2": {
+                "win": "Eles ficam com medo dos seus músculos incríveis e te dão uma poção!",
+                "lose": "Eles riem da sua prepotência e te amaldiçoam."
+            }
+        },
+        "24": {
+            "dungeon": "Você encontra uma chave e vê duas portas. 🚪 \"%ed 1\" para abrir a da esquerda ou \"%ed 2\" para abrir a da direita",
+            "1": {
+                "win": "Você liberta um drúida bêbado e o ajuda a lembrar como se trancou ali!",
+                "lose": "Você solta uma criatura emplumada que tira suas roupas e desaparece."
+            },
+            "2": {
+                "win": "Você encontra a saída da dungeon!",
+                "lose": "Você se depara com uma armadilha mágica que te deixa tonto por horas."
+            }
+        },
+        "25": {
+            "dungeon": "Você encontra uma chave e um baú. 🔑 \"%ed 1\" para abrí-lo ou \"%ed 2\" para levar o baú sem abri-lo",
+            "1": {
+                "win": "Dentro havia um mapa com o caminho para o final da dungeon!",
+                "lose": "O baú era um monstro mímico! Você foge da dungeon para sobreviver."
+            },
+            "2": {
+                "win": "Você encontra um mago morto-vivo que só te deixa viver em troca do baú!",
+                "lose": "O baú te deixa com dor nas costas por ser pesado demais e você precisa descansar."
+            }
+        },
+        "26": {
+            "dungeon": "Sua tocha apaga e você cai em um buraco. 🕳 \"%ed 1\" para escalar ou \"%ed 2\" para voar",
+            "1": {
+                "win": "Você consegue escalar com facilidade usando a velocidade angular!",
+                "lose": "Após várias tentativas, você desiste e chora em posição fetal esperando alguém."
+            },
+            "2": {
+                "win": "Você se lembra dos treinamentos nos montes e realiza um voo incrível!",
+                "lose": "Você se concentra por horas até finalmente perceber que não sabe voar."
+            }
+        },
+        "27": {
+            "dungeon": "Você encontra um mapa com um \"X\" marcado. 🗺 \"%ed 1\" para seguir o mapa ou \"%ed 2\" para descartá-lo",
+            "1": {
+                "win": "O \"X\" te leva para a saída da dungeon!",
+                "lose": "Você anda por horas até perceber que está caminhando em círculos."
+            },
+            "2": {
+                "win": "Você amassa o mapa e o joga longe, percebendo que ele atinge um baú perdido com ouro!",
+                "lose": "Você segue seu caminho e para em um lugar sem saída. Talvez o mapa fosse útil..."
+            }
+        },
+        "28": {
+            "dungeon": "Você encontra um cavaleiro que te desafia! ⚔ \"%ed 1\" para aceitar ou \"%ed 2\" para recusar",
+            "1": {
+                "win": "Você derrota o cavaleiro, se esquivando de todos os ataques!",
+                "lose": "Ele te dá uma surra terrível e te deixa desacordado."
+            },
+            "2": {
+                "win": "Ele, por pena da sua covardia, te dá uma nova espada para combates futuros.",
+                "lose": "Você recusa o desafio e vai embora. Nada acontece."
+            }
+        },
+        "29": {
+            "dungeon": "Você encontra uma coruja falante. 🦉 \"%ed 1\" para ouví-la ou \"%ed 2\" para guardá-la na gaiola",
+            "1": {
+                "win": "A coruja velha e sábia lhe dá o incentivo que precisava para lutar pela dungeon!",
+                "lose": "Você cai em uma magia de ilusão da coruja e acorda horas depois."
+            },
+            "2": {
+                "win": "Agora você tem uma coruja para conversar durante o percurso e pedir conselhos!",
+                "lose": "Quando você se aproxima, a coruja se transforma em um mago que lhe dá uma surra."
+            }
+        },
+        "30": {
+            "dungeon": "Você entra em uma caverna cheia de morcegos. 🦇  \"%ed 1\" para avançar silenciosamente ou \"%ed 2\" para atacá-los ",
+            "1": {
+                "win": "Você esgueira-se para evitar alertá-los e consegue avançar!",
+                "lose": "Seu silêncio não dura muito, você logo tropeça e trazendo todos os morcegos pra cima de você."
+            },
+            "2": {
+                "win": "Você acaba com todos os morcegos sem dificuldade.",
+                "lose": "Você derrota todos e resolve fazer uma sopa com eles, mas ela não te faz muito bem..."
+            }
+        },
+        "31": {
+            "dungeon": "Você vê um rato gigante! 🐀 \"%ed 1\" para atacá-lo ou \"%ed 2\" para recuar e preparar uma armadilha",
+            "1": {
+                "win": "Em uma batalha épica você acaba com o rato e encontra luvas lendárias!",
+                "lose": "Após diversos ataques, você fica exausto e ele te acerta um golpe em cheio."
+            },
+            "2": {
+                "win": "Você elabora a armadilha perfeita com um saboroso queijo e ele é pego!",
+                "lose": "Após montar a armadilha, você percebe que era apenas a sombra de um rato normal..."
+            }
+        },
+        "32": {
+            "dungeon": "Você vê uma donzela sendo escoltada por vários cavaleiros. 😍 \"%ed 1\" para seduzí-la ou \"%ed 2\" para acenar",
+            "1": {
+                "win": "Ela te corresponde com um sorriso tímido que aumenta sua motivação!",
+                "lose": "Imediatamente todos guerreiros vão em sua direção e você se vê obrigado a fugir."
+            },
+            "2": {
+                "win": "Ela acha que você está pedindo esmola e te dá algumas moedas de ouro.",
+                "lose": "Um dos cavaleiros desce de seu cavalo e te dá uma surra."
+            }
+        },
+        "33": {
+            "dungeon": "Você vê um homem bonito e musculoso à frente. 💪 \"%ed 1\" para flertar ou \"%ed 2\" para pedir ajuda",
+            "1": {
+                "win": "Ele corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado.",
+                "lose": "Ele ri alto debochadamente e passa a te ignorar completamente."
+            },
+            "2": {
+                "win": "Ele aponta para a saída da dungeon fazendo uma pose que realça todos os músculos! ",
+                "lose": "Você pede ajuda, mas ele não te escuta. Quando você insiste, desperta do sonho."
+            }
+        },
+        "34": {
+            "dungeon": "Você vê uma linda mulher ruiva à frente. 😍 \"%ed 1\" para flertar ou \"%ed 2\" para pedir ajuda",
+            "1": {
+                "win": "Ela corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado.",
+                "lose": "Ela ri alto debochadamente e passa a te ignorar completamente."
+            },
+            "2": {
+                "win": "Ela compartilha uma das várias perólas de seu colar que te deixa incrivelmente hábil!",
+                "lose": "Você pede ajuda, mas ela não te escuta. Quando você insiste, desperta do sonho."
+            }
+        },
+        "35": {
+            "dungeon": "Há muitos sapos na dungeon! 🐸 \"%ed 1\" para beijá-los ou \"%ed 2\" para queimá-los",
+            "1": {
+                "win": "Você pega um dos sapos e o beija, ganhando força extra!",
+                "lose": "Você beija alguns sapos e começa a ficar confuso. Depois, se perde por horas em alucinações."
+            },
+            "2": {
+                "win": "Você incinera todos os sapos e vê que das cinzas deles consegue fazer alguns explosivos.",
+                "lose": "Você tenta queimá-los, mas eles são imunes. Eles se revoltam e pulam em você, te atordoando."
+            }
+        },
+        "36": {
+            "dungeon": "No meio da dungeon, você encontra um alienígena dançarino 👽 \"%ed 1\" para dançar junto ou \"%ed 2\" para desligar o som",
+            "1": {
+                "win": "Vocês se divertem dançando e ele te dá uma poção de vigor em forma de agradecimento.",
+                "lose": "Você desiste de completar a dungeon para dançar com ele."
+            },
+            "2": {
+                "win": "O alienígena te agradece e conta que estava há anos preso na maldição de não conseguir parar de dançar",
+                "lose": "Enfurecido, o alienígena atira lasers dos dedos e você foge desesperamente."
+            }
+        },
+        "37": {
+            "dungeon": "Você vê um botão na entrada da dungeon. 🔘 \"%ed 1\" para acioná-lo ou \"%ed 2\" para acioná-lo com a ponta do nariz",
+            "1": {
+                "win": "Uma cabine sobe do chão contendo uma espada brilhante.",
+                "lose": "Diversas bombas explodem na entrada da dungeon, bloqueando a passagem."
+            },
+            "2": {
+                "win": "A parede ao lado do botão rotaciona, revelando uma armadura brilhante e poderosa.",
+                "lose": "Diversas bombas explodem na entrada da dungeon, bloqueando a passagem. E seu nariz ficou sujo."
+            }
+        },
+        "38": {
+            "dungeon": "Um homem com um trompete aparece. 🎺 \"%ed 1\" para pedir para ele tocar ou \"%ed 2\" para ignorar",
+            "1": {
+                "win": "A música dele te inspira e você se sente mais determinado!",
+                "lose": "Ele toca mal e seus ouvidos começam a zunir. Isso te dá uma forte dor de cabeça."
+            },
+            "2": {
+                "win": "Você percebe como deu sorte quando escuta ao longe sons terríveis de trompete.",
+                "lose": "Ele te persegue e começa a tocar músicas extremamente mal."
+            }
+        },
+        "39": {
+            "dungeon": "Um anão montado em um besouro se aproxima. 🐞 \"%ed 1\" para conversar ou \"%ed 2\" para empurrá-lo e roubar o besouro",
+            "1": {
+                "win": "Vocês se tornam amigos e ele te entrega uma espécie de bússola para a dungeon.",
+                "lose": "Ele insiste que você veja a coleção de besouros dele, te atrasando. "
+            },
+            "2": {
+                "win": "Você derruba o anão do grande besouro e adquire uma montaria para percorrer a dungeon.",
+                "lose": "O besouro contra ataca para proteger seu dono e te deixa atordoado."
+            }
+        },
+        "40": {
+            "dungeon": "Há uma guilda lutando contra um dragão enorme! 🐉  \"%ed 1\" para ajudar ou \"%ed 2\" para se esconder",
+            "1": {
+                "win": "O dragão é derrotado quando você dá o golpe final, levando a glória!",
+                "lose": "O bater de asas do dragão é forte suficiente para arremesá-los longe. Você bate a cabeça e desmaia."
+            },
+            "2": {
+                "win": "Você se esconde e, após ver o dragão matando todos, você volta para roubá-los! ",
+                "lose": "Os membros da guilda derrotam o dragão e depois vão atrás de você, por não ter ajudado-os."
+            }
+        },
+        "41": {
+            "dungeon": "Um homem alegre está servindo tortas. 🥧 \"%ed 1\" para comer na hora ou \"%ed 2\" para guardar",
+            "1": {
+                "win": "Com a energia extra da torta, você corre mais rápido pela dungeon!",
+                "lose": "Quando você se aproxima para pegar a torta, ele a joga na sua cara."
+            },
+            "2": {
+                "win": "Você a guarda e, tempo depois, comê-la fez suas energias retornarem completamente!",
+                "lose": "Tempo depois, você vê que a torta que guardou sujou tudo em sua bolsa. Você perde tempo limpando as coisas."
+            }
+        },
+        "42": {
+            "dungeon": "Um animal está vindo em sua direção! \"%ed 1\" para aguardar ele ou \"%ed 2\" para correr dele",
+            "1": {
+                "win": "Um lindo unicórnio se aproxima e a magia de seu chifre lhe traz força extra. 🦄",
+                "lose": "Um pássaro te traz uma mensagem: \"você nunca terá sucesso\". Você senta e chora. 🐦"
+            },
+            "2": {
+                "win": "Você corre, mas um macaco com pernas minúsculas te alcança e joga um pó branco. Isso te deixa mais alerta. 🦍",
+                "lose": "Você corre, mas um pato sinistro te alcança e rouba suas roupas. Você é forçado retornar. 🦆"
+            }
+        },
+        "43": {
+            "dungeon": "A dungeon é assombrada por um fantasma! 👻 \"%ed 1\" para tentar confrontá-lo ou \"%ed 2\" para tentar evitá-lo",
+            "1": {
+                "win": "Você expurga o fantasma, liberando a passagem para a saída!",
+                "lose": "Você é derrotado pelo fantasma e acaba sendo amaldiçoado."
+            },
+            "2": {
+                "win": "Você passa de mansinho pelo fantasma até chegar na saída!",
+                "lose": "O fantasma nota sua presença e acaba te possuindo."
+            }
+        }
+    },
+    "classes": {
+        "1": {
+            "0": "Guerreiro",
+            "1": "Mercenário",
+            "2": "Cavaleiro",
+            "3": "Lord",
+            "4": "Grão Mestre",
+            "5": "Imperador da Espada",
+            "6": "Guardião Divino"
+        },
+        "2": {
+            "0": "Guerreiro",
+            "1": "Mercenário",
+            "2": "Cavaleiro",
+            "3": "Cavaleiro das Trevas",
+            "4": "Guerreiro Arcano",
+            "5": "Demônio da Espada",
+            "6": "Ascendente Imortal"
+        },
+        "3": {
+            "0": "Guerreira",
+            "1": "Mercenária",
+            "2": "Cavaleira",
+            "3": "Lord",
+            "4": "Grã Mestra",
+            "5": "Imperatriz da Espada",
+            "6": "Guardiã Divina"
+        },
+        "4": {
+            "0": "Guerreira",
+            "1": "Mercenária",
+            "2": "Cavaleira",
+            "3": "Cavaleira das Trevas",
+            "4": "Guerreira Arcana",
+            "5": "Demônia da Espada",
+            "6": "Ascendente Imortal"
+        },
+        "5": {
+            "0": "Arqueiro",
+            "1": "Atirador de Elite",
+            "2": "Sentinela",
+            "3": "Domador Bestial",
+            "4": "Caçador de Demônios",
+            "5": "Maestro dos Ventos",
+            "6": "Aurora dos Deuses"
+        },
+        "6": {
+            "0": "Arqueiro",
+            "1": "Atirador de Elite",
+            "2": "Sentinela",
+            "3": "Caçador",
+            "4": "Assassino Arcano",
+            "5": "Sombra Viva",
+            "6": "Crepúsculo dos Deuses"
+        },
+        "7": {
+            "0": "Arqueira",
+            "1": "Atiradora de Elite",
+            "2": "Sentinela",
+            "3": "Domadora Bestial",
+            "4": "Caçadora de Demônios",
+            "5": "Maestrina dos Ventos",
+            "6": "Aurora dos Deuses"
+        },
+        "8": {
+            "0": "Arqueira",
+            "1": "Atiradora de Elite",
+            "2": "Sentinela",
+            "3": "Caçadora",
+            "4": "Assassina Arcana",
+            "5": "Sombra Viva",
+            "6": "Crepúsculo dos Deuses"
+        },
+        "9": {
+            "0": "Mago",
+            "1": "Feiticeiro",
+            "2": "Mestre Elemental",
+            "3": "Alquimista",
+            "4": "Ladrão de Mentes",
+            "5": "Necromante",
+            "6": "Lich"
+        },
+        "10": {
+            "0": "Mago",
+            "1": "Feiticeiro",
+            "2": "Mestre Elemental",
+            "3": "Clérigo",
+            "4": "Arcebispo",
+            "5": "Conjurador dos Divinos",
+            "6": "Anjo"
+        },
+        "11": {
+            "0": "Maga",
+            "1": "Feiticeira",
+            "2": "Mestra Elemental",
+            "3": "Alquimista",
+            "4": "Ladra de Mentes",
+            "5": "Necromante",
+            "6": "Lich"
+        },
+        "12": {
+            "0": "Maga",
+            "1": "Feiticeira",
+            "2": "Mestra Elemental",
+            "3": "Clériga",
+            "4": "Arcebispa",
+            "5": "Conjuradora dos Divinos",
+            "6": "Anjo"
+        },
+        "13": {
+            "0": "Cartista",
+            "1": "Carteiro Mestre",
+            "2": "Carteiro Mágico",
+            "3": "Carteiro Elemental",
+            "4": "Carteiro Cósmico",
+            "5": "Carteiro Cósmico",
+            "6": "Carteiro Cósmico"
+        },
+        "14": {
+            "0": "Cartista",
+            "1": "Carteiro Mestre",
+            "2": "Carteiro Mágico",
+            "3": "Carteiro Infernal",
+            "4": "Omni-Carteiro",
+            "5": "Omni-Carteiro",
+            "6": "Omni-Carteiro"
+        },
+        "15": {
+            "0": "Rei dos Ladrões",
+            "1": "Rei do Norte",
+            "2": "Rei dos Anões",
+            "3": "Rei do Leste",
+            "4": "Rei dos Dragões",
+            "5": "Rei dos Espíritos",
+            "6": "Cavaleiro Branco"
+        },
+        "16": {
+            "0": "Rei dos Ladrões",
+            "1": "Rei do Norte",
+            "2": "Rei dos Anões",
+            "3": "Rei dos Mortos",
+            "4": "Rei dos Demônios",
+            "5": "Rei das Almas",
+            "6": "Cavaleiro Descorado"
+        }
+    }
+}
