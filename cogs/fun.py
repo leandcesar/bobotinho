@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
 
+"""
+bobotinho - Twitch bot for Brazilian offstream chat entertainment
+Copyright (C) 2020  Leandro César
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import random
 
 from ext.command import command
@@ -71,10 +89,8 @@ class Fun(commands.AutoCog):
                     f"@{ctx.author.name}, você não tem desafios para cancelar"
                 )
             return
-
         if not user:
             return
-
         user = convert.user(user)
         if user == self.bot.nick:
             ctx.response = f"@{ctx.author.name}, você não conseguiria me derrotar..."
@@ -88,7 +104,7 @@ class Fun(commands.AutoCog):
         elif any([v for v in self.fights.values() if ctx.author.name == v["user"]]):
             ctx.response = (
                 f"@{ctx.author.name}, você já está sendo desafiado por alguém! "
-                f'Digite "{ctx.prefix}accept" ou "{ctx.prefix}deny" em até 2 minutos'
+                f'Digite "{ctx.prefix}accept" ou "{ctx.prefix}deny"'
             )
         elif user in self.fights.keys():
             ctx.response = f"@{ctx.author.name}, @{user} já está desafiando alguém"

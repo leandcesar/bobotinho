@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
 
+"""
+bobotinho - Twitch bot for Brazilian offstream chat entertainment
+Copyright (C) 2020  Leandro César
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import aiohttp
 import asyncio
 
 
-class HTTPSession(aiohttp.ClientSession):
-    def __init__(self, loop=None):
-        super().__init__(loop=loop or asyncio.get_event_loop())
-
-    def __del__(self):
-        if not self.closed:
-            self.close()
-
-
-session = HTTPSession()
-
-
 async def query(url, method="get", res_method="json", *args, **kwargs):
-    async with getattr(session, method.lower())(url, *args, **kwargs) as res:
-        return await getattr(res, res_method)()
+    async with aiohttp.ClientSession() as session:
+        async with getattr(session, method.lower())(url, *args, **kwargs) as response:
+            return await getattr(response, res_method)()
 
 
 async def get(url, *args, **kwargs):

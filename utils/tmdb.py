@@ -1,8 +1,24 @@
 # -*- coding: utf-8 -*-
 
 """
-Adapted from: https://github.com/celiao/tmdbsimple/tree/fa59c35a8f39dba37872c03d00840b7befe691cf
+bobotinho - Twitch bot for Brazilian offstream chat entertainment
+Copyright (C) 2020  Leandro César
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+
+# Adapted from: https://github.com/celiao/tmdbsimple/tree/fa59c35a8f39dba37872c03d00840b7befe691cf
 
 import json
 import re
@@ -48,9 +64,8 @@ url_external_ids = {
 
 
 def _sort_by_similarity(results: list, query: str):
-    """
-        Sort the list of search results (of movies, tv shows
-        and persons) by similarity with the searched query.
+    """Sort the list of search results (of movies, tv shows 
+    and persons) by similarity with the searched query.
     """
     query = unidecode(query).lower()
 
@@ -84,14 +99,13 @@ def _sort_by_similarity(results: list, query: str):
 
 
 def _obj_to_str(obj: Union[list, dict], attr: str, **kwargs):
-    """
-        Converts a list of dicts or a dict to str based on a attr, e.g.:
-            Arguments:
-                obj = [{"a": 0, "b": True}, {"a": 1, "b": False}, {"a": 2, "b": True}]
-                attr = "a"
-                expression = {"key": "b", "value": True}
-            Returns:
-                "0, 2"
+    """Converts a list of dicts or a dict to str based on a attr. 
+    e.g.:
+        >>> obj = [{"a": 0, "b": True}, {"a": 1, "b": False}, {"a": 2, "b": True}]
+        >>> attr = "a"
+        >>> expression = {"key": "b", "value": True}
+        >>> _obj_to_str(obj, attr, expression)
+        "0, 2"
     """
     if not obj or not attr:
         return None
@@ -116,8 +130,7 @@ def _obj_to_str(obj: Union[list, dict], attr: str, **kwargs):
 
 
 def _id_to_hyperlink(external_ids: str, external_id: str):
-    """
-        Converts an external ID to hyperlinked str.
+    """Converts an external ID to hyperlinked str.
     """
     if not external_ids.get(external_id, None):
         return
@@ -213,12 +226,6 @@ class TMDB(object):
 
 
 class Movie(TMDB):
-    """
-        Not implemented (because I was not interested in using it):
-            account_states, alternative_titles, changes, 
-            release_dates, translations, reviews, latest.
-    """
-
     BASE_PATH = "movie"
     URLS = {
         "details": "/{id}",                         # supports language
@@ -299,11 +306,6 @@ class Movie(TMDB):
 
     
 class Collection(TMDB):
-    """
-        Not implemented (because I was not interested in using it):
-            translations.
-    """
-
     BASE_PATH = "collection"
     URLS = {
         "details": "/{id}",         # supports language
@@ -324,11 +326,6 @@ class Collection(TMDB):
 
 
 class Keyword(TMDB):
-    """
-        Not implemented (because I was not interested in using it):
-            translations.
-    """
-
     BASE_PATH = "keyword"
     URLS = {
         "details": "/{id}",
@@ -349,11 +346,6 @@ class Keyword(TMDB):
 
 
 class Person(TMDB):
-    """
-        Not implemented (because I was not interested in using it):
-            changes, translations, latest
-    """
-    
     BASE_PATH = "person"
     URLS = {
         "details": "/{id}",
@@ -404,7 +396,6 @@ class Person(TMDB):
 
 
 class Credits(TMDB):
-
     BASE_PATH = "credit"
     URLS = {
         "details": "/{credit_id}",  # supports language
@@ -420,7 +411,6 @@ class Credits(TMDB):
 
 
 class Discover(TMDB):
-
     BASE_PATH = "discover"
     URLS = {
         "movie": "/movie",
@@ -428,82 +418,17 @@ class Discover(TMDB):
     }
 
     async def movie(self, **kwargs):
-        """
-            See: https://developers.themoviedb.org/3/discover/movie-discover
-
-            Arguments:
-                language...................str
-                region.....................str
-                sort_by....................str
-                    Allowed Values:
-                        popularity.asc, popularity.desc, release_date.asc, 
-                        release_date.desc, revenue.asc, revenue.desc, 
-                        primary_release_date.asc, primary_release_date.desc, 
-                        original_title.asc, original_title.desc, vote_average.asc, 
-                        vote_average.desc, vote_count.asc, vote_count.desc
-                certification_country......str
-                certification..............str
-                certification.lte..........str
-                certification.gte..........str
-                include_adult..............bool
-                include_video..............bool
-                primary_release_year.......int
-                primary_release_date.gte...str
-                primary_release_date.lte...str
-                release_date.gte...........str
-                release_date.lte...........str
-                with_release_type..........int
-                year.......................int
-                vote_count.gte.............int
-                vote_count.lte.............int
-                vote_average.gte...........float
-                vote_average.lte...........float
-                with_cast..................str
-                with_crew..................str
-                with_people................str
-                with_companies.............str
-                with_genres................str
-                without_genres.............str
-                with_keywords..............str
-                without_keywords...........str
-                with_runtime.gte...........int
-                with_runtime.lte...........int
-                with_original_language.....str
+        """See: https://developers.themoviedb.org/3/discover/movie-discover
         """
         return await self._GET_and_set_attrs_to_values(self._get_path("movie"), **kwargs)
 
     async def tv(self, **kwargs):
-        """
-            See: https://developers.themoviedb.org/3/discover/tv-discover
-
-            Arguments:
-                language...................str
-                region.....................str
-                sort_by....................str
-                    Allowed Values:
-                        vote_average.desc, vote_average.asc, first_air_date.desc, 
-                        first_air_date.asc, popularity.desc, popularity.asc
-                air_date.gte...............str
-                air_date.lte...............str
-                first_air_date.gte.........str
-                first_air_date.lte.........str
-                first_air_date_year........str
-                timezone...................str
-                vote_average.gte...........float
-                vote_count.gte.............int
-                with_genres................str
-                with_runtime.gte...........int
-                with_runtime.lte...........int
-                with_original_language.....str
-                without_keywords...........str
-                with_companies.............str
-                with_keywords..............str
+        """See: https://developers.themoviedb.org/3/discover/tv-discover
         """
         return await self._GET_and_set_attrs_to_values(self._get_path("tv"), **kwargs)
 
 
 class Find(TMDB):
-
     BASE_PATH = "find"
     URLS = {
         "details": "/{id}",
@@ -514,14 +439,12 @@ class Find(TMDB):
         self.id = id
 
     async def details(self, **kwargs):
-        """
-            See: https://developers.themoviedb.org/3/find/find-by-id
+        """See: https://developers.themoviedb.org/3/find/find-by-id
         """
         return await self._GET_and_set_attrs_to_values(self._get_id_path("details"), **kwargs)
 
 
 class Search(TMDB):
-
     BASE_PATH = "search"
     URLS = {
         "company": "/company",
@@ -563,7 +486,6 @@ class Search(TMDB):
    
 
 class Trending(TMDB):
-
     BASE_PATH = "trending"
     URLS = {
         "details": "/{media_type}/{time_window}",
@@ -575,18 +497,12 @@ class Trending(TMDB):
         self.time_window = time_window
 
     async def details(self, **kwargs):
-        """
-            See: https://developers.themoviedb.org/3/trending/get-trending
+        """See: https://developers.themoviedb.org/3/trending/get-trending
         """
         return await self._GET_and_set_attrs_to_values(self._get_media_type_time_window_path("details"), **kwargs)
 
 
 class TV(TMDB):
-    """
-        Not implemented (because I was not interested in using it):
-            alternative_names.
-    """
-    
     BASE_PATH = "tv"
     URLS = {
         "details": "/{id}",                         # supports language
@@ -667,11 +583,6 @@ class TV(TMDB):
 
     
 class TV_Seasons(TMDB):
-    """
-        Not implemented (because I was not interested in using it):
-            account_states.
-    """
-
     BASE_PATH = "tv/{tv_id}/season/{season_number}"
     URLS = {
         "details": "",                      # supports language
@@ -708,11 +619,6 @@ class TV_Seasons(TMDB):
         
 
 class TV_Episodes(TMDB):
-    """
-        Not implemented (because I was not interested in using it):
-            account_states, rating.
-    """
-
     BASE_PATH = "tv/{tv_id}/season/{season_number}/episode/{episode_number}"
     URLS = {
         "details": "",                      # supports language
