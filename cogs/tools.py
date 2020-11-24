@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
 
+"""
+bobotinho - Twitch bot for Brazilian offstream chat entertainment
+Copyright (C) 2020  Leandro César
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import config
 import datetime
 import googletrans
@@ -7,7 +25,7 @@ import re
 
 from ext.command import command
 from twitchio.ext import commands
-from utils import asyncrq, convert
+from utils import asyncrq, convert, dicio
 
 URL_MATH = "https://api.mathjs.org/v4/?expr={operation}&precision=4"
 URL_CURRENCY = "https://v6.exchangerate-api.com/v6/{api_key}/latest/{base}"
@@ -26,6 +44,7 @@ class Tools(commands.AutoCog):
     def __init__(self, bot):
         self.bot = bot
         self.translator = googletrans.Translator()
+        self.dicio = dicio.Dicio()
 
     def _prepare(self, bot):
         pass
@@ -111,7 +130,10 @@ class Tools(commands.AutoCog):
             else:
                 ctx.response = f"@{ctx.author.name}, a sigla da moeda informada não foi encontrada"
 
-    @command(description="saiba o resultado de alguma expressão matemática", usage="digite o comando e uma expressão matemática para receber o resultado")
+    @command(
+        description="saiba o resultado de alguma expressão matemática", 
+        usage="digite o comando e uma expressão matemática para receber o resultado"
+    )
     async def math(self, ctx, *, operation: str):
         operation = (
             operation.lower()
@@ -157,20 +179,19 @@ class Tools(commands.AutoCog):
             self.bot.log.error(err)
             ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
         else:
-            ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
-
-        if not translation.text or translation.text == text:
-            src = "auto"
-            dest = "en" if dest == "pt" else "pt"
-            try:
-                translation = await self.bot.loop.run_in_executor(
-                    None, self.translator.translate, text, dest, src
-                )
-            except Exception as err:
-                self.bot.log.error(err)
-                ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
-            else:
+            if translation.text and translation.text != text:
                 ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
+            else:
+                src = "auto"
+                dest = "en" if dest == "pt" else "pt"
+                try:
+                    translation = await self.bot.loop.run_in_executor(
+                        None, self.translator.translate, text, dest, src
+                    )
+                    ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
+                except Exception as err:
+                    self.bot.log.error(err)
+                    ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
 
 
 def prepare(bot):

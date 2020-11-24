@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
 
+"""
+bobotinho - Twitch bot for Brazilian offstream chat entertainment
+Copyright (C) 2020  Leandro César
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import config
 import datetime
 import os
@@ -35,12 +53,11 @@ class Basics(commands.AutoCog):
             f"feito por @{owner} em {language} com {library} e {database}, "
             f"hospedado em {host} e usando {ram:.1f}MB de RAM"
         )
-
     @command(
         aliases=["commands"],
         description="veja a lista de comandos ou como utilizar um comando específico",
         cooldown=2,
-        usage="https://bobotinho.herokuapp.com/help",
+        usage="veja a lista de comandos aqui: https://bobotinho.herokuapp.com/help",
     )
     async def help(self, ctx, command: str):
         def get_command(command: str):
@@ -48,9 +65,7 @@ class Basics(commands.AutoCog):
             for c in self.bot.commands.values():
                 if command == c.name or (c.aliases and command in c.aliases):
                     return c
-        
         c = get_command(command)
-        
         if not c:
             return
         elif self.bot.channels.is_disabled(ctx.channel.name, c.name):
@@ -67,12 +82,24 @@ class Basics(commands.AutoCog):
                 f"{c.description} - {c.cooldown}s cooldown"
             )
 
+    @command(description="receba o link para adicionar o bot no seu chat", cooldown=30)
+    async def invite(self, ctx):
+        ctx.response = f"@{ctx.author.name}, me adicione no seu chat: https://bobotinho.herokuapp.com/invite"
+
     @command(aliases=["pong"], description="verifique se o bot está online", cooldown=30)
     async def ping(self, ctx):
         if ctx.command.invoked_by == "pong":
             ctx.response = f"@{ctx.author.name}, ping 🏓"
         else:
             ctx.response = f"@{ctx.author.name}, pong 🏓"
+
+    @command(
+        aliases=["discord", "github", "twitter"],
+        description="receba o link do site do bot para mais informações", 
+        cooldown=30
+    )
+    async def site(self, ctx):
+        ctx.response = f"@{ctx.author.name}, mais informações no meu site: https://bobotinho.herokuapp.com/"
 
     @command(
         description="faça uma sugestão de recurso para o bot",

@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
 
+"""
+bobotinho - Twitch bot for Brazilian offstream chat entertainment
+Copyright (C) 2020  Leandro César
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import random
 import re
 
@@ -141,8 +159,9 @@ class UserInfo(commands.AutoCog):
         return "você" if name == ctx.author.name else f"@{name}"
 
     @staticmethod
-    async def _color_infos(color):
-        return await asyncrq.get("https://api.alexflipnote.dev/color/" + color[1:])
+    async def _color_name(color):
+        req = await asyncrq.get("https://www.thecolorapi.com/id?hex=" + color[1:])
+        return req["name"]["value"]
 
     @command(
         aliases=["accage", "age"],
@@ -195,8 +214,7 @@ class UserInfo(commands.AutoCog):
 
         if user == ctx.author.name:
             color = ctx.author.colour
-            infos = await self._color_infos(color)
-            name = infos["name"].title()
+            name = await self._color_name(color)
             ctx.response = f"@{ctx.author.name}, sua cor é {color}, {name}"
             saved_color = await self.bot.db.select1(
                 "users", what="saved_color", where={"id": ctx.author.id}
@@ -208,17 +226,9 @@ class UserInfo(commands.AutoCog):
         elif user == "random":
             color = f"#{random.randint(0, 0xFFFFFF):06X}"
             ctx.response = f"@{ctx.author.name}, aqui está uma cor aleatória: {color}"
-        elif user == "similar":
-            infos = await self._color_infos(ctx.author.colour)
-            shades = ", #".join([color.upper() for color in infos["shade"]][1:3])
-            tints = ", #".join([color.upper() for color in infos["tint"]][1:3])
-            ctx.response = (
-                f"@{ctx.author.name}, algumas cores similares a sua são: #{shades}, #{tints}"
-            )
         elif re.match(r"#(?:[0-9A-Fa-f]{6})$", user):
             color = user
-            infos = await self._color_infos(color)
-            name = infos["name"].title()
+            name = await self._color_name(color)
             ctx.response = f"@{ctx.author.name}, {color.upper()}, {name}"
         else:
             color = await self.bot.db.select1(
@@ -234,8 +244,7 @@ class UserInfo(commands.AutoCog):
             elif color == "#A6F8AA":
                 ctx.response = f"@{ctx.author.name}, verde."
             else:
-                infos = await self._color_infos(color)
-                name = infos["name"].title()
+                name = await self._color_name(color)
                 ctx.response = (
                     f"@{ctx.author.name}, a cor de @{user} é {color}, {name}"
                 )
