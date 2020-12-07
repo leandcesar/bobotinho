@@ -34,6 +34,14 @@ async def _get_response(route: str):
     else:
         if response == "404 Page Not Found":
             return None
+        elif response == "A username has to be specified.":
+            return None
+        elif response == "A channel name has to be specified.":
+            return None
+        elif response == "Both username and channel name must be specified.":
+            return None
+        elif response == 'No user with the name "" found.':
+            return None
         return response
 
 
@@ -206,13 +214,28 @@ class UserInfo(commands.AutoCog):
             ctx.response = f"@{ctx.author.name}, {user} criou a conta em {creation}"
 
     @command(description="saiba o código hexadecimal da cor de algum usuário")
-    async def color(self, ctx, user: str = None):
+    async def color(self, ctx, user: str = None, color: str = None):
         if not user:
             user = ctx.author.name
 
         user = convert.user(user)
 
-        if user == ctx.author.name:
+        if user == "save":
+            if not color:
+                color = ctx.author.colour
+            if not re.match(r"#(?:[0-9A-Fa-f]{6})$", color):
+                ctx.response = (
+                    f"@{ctx.author.name}, {color} não é um código hexadecimal de cor válido"
+                )
+            else:
+                await self.bot.db.update(
+                    "users", values={"saved_color": color.upper()}, where={"id": ctx.author.id}
+                )
+                ctx.response = (
+                    f"@{ctx.author.name}, você salvou a cor {color.upper()} "
+                    f"e pode visualizá-la usando {ctx.prefix}color"
+                )
+        elif user == ctx.author.name:
             color = ctx.author.colour
             name = await self._color_name(color)
             ctx.response = f"@{ctx.author.name}, sua cor é {color}, {name}"
@@ -339,23 +362,6 @@ class UserInfo(commands.AutoCog):
             ctx.response = f"@{ctx.author.name}, {followed}"
         else:
             ctx.response = f"@{ctx.author.name}, {user} seguiu {channel} em {followed}"
-
-    @command(description="salve a sua cor atual ou algum código hexadecimal")
-    async def savecolor(self, ctx, color: str = None):
-        if not color:
-            color = ctx.author.colour
-        if not re.match(r"#(?:[0-9A-Fa-f]{6})$", color):
-            ctx.response = (
-                f"@{ctx.author.name}, {color} não é um código hexadecimal de cor válido"
-            )
-        else:
-            await self.bot.db.update(
-                "users", values={"saved_color": color.upper()}, where={"id": ctx.author.id}
-            )
-            ctx.response = (
-                f"@{ctx.author.name}, você salvou a cor {color.upper()} "
-                f"e pode visualizá-la usando {ctx.prefix}color"
-            )
 
 
 def prepare(bot):

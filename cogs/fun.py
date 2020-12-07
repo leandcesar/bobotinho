@@ -43,7 +43,7 @@ class Fun(commands.AutoCog):
         self.fights = {
             k: v
             for k, v in self.fights.items()
-            if convert.cooldown(v["timestamp"], delay=120)
+            if convert.cooldown(v["timestamp"], duration=120)
         }
         alias = ctx.command.invoked_by
         if alias == "accept":
@@ -134,6 +134,17 @@ class Fun(commands.AutoCog):
             ctx.response = f"@{ctx.author.name} tentou abraçar ele mesmo..."
         else:
             ctx.response = f"@{ctx.author.name} abraçou @{user} 🤗"
+            
+    @command(
+        name="4head",
+        aliases=["hahaa"],
+        description="receba uma piada, charada ou trocadilho",
+        cooldown=20,
+    )
+    async def joke(self, ctx):
+        with open("data//jokes.txt", "r", encoding="utf-8") as file:
+            joke = random.choice(file.readlines())
+        ctx.response = f"@{ctx.author.name}: {joke} 4Head"
 
     @command(
         description="dê um beijinho em alguém do chat",
@@ -150,6 +161,16 @@ class Fun(commands.AutoCog):
         else:
             emoji = random.choice("😚😗😙😚😳😏")
             ctx.response = f"@{ctx.author.name} deu um beijinho em @{user} {emoji}💋"
+        
+    @command(
+        aliases=["sadcat", "rsc"],
+        description="receba a foto de um gatinho triste",
+        cooldown=20,
+    )
+    async def randomsadcat(self, ctx):
+        with open("data//sadcats.txt", "r", encoding="utf-8") as file:
+            sadcat = "https://i.imgur.com/" + random.choice(file.readlines())
+        ctx.response = f"@{ctx.author.name}, {sadcat} 😿"
 
     @command(
         description="coloque alguém do chat na cama para dormir",

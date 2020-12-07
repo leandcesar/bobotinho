@@ -108,18 +108,7 @@ class Fun(commands.AutoCog):
         ctx.response = f"@{ctx.author.name}, {quote} 🎱"
 
     @command(
-        name="4head",
-        aliases=["hahaa"],
-        description="receba uma piada, charada ou trocadilho",
-        cooldown=20,
-    )
-    async def joke(self, ctx):
-        with open("data//jokes.txt", "r", encoding="utf-8") as file:
-            joke = random.choice(file.readlines())
-        ctx.response = f"@{ctx.author.name}: {joke} 4Head"
-
-    @command(
-        aliases=["ship"],
+        aliases=None,
         description="veja quanto de amor existe entre você e alguém ou algo",
         cooldown=10,
         usage="digite o comando e o nome de alguém ou algo para ver quanto há de amor",
@@ -139,16 +128,6 @@ class Fun(commands.AutoCog):
     async def pick(self, ctx, *, message: str):
         picked = random.choice(message.split())
         ctx.response = f"@{ctx.author.name}, {picked}"
-
-    @command(
-        aliases=["sadcat", "rsc"],
-        description="receba a foto de um gatinho triste",
-        cooldown=20,
-    )
-    async def randomsadcat(self, ctx):
-        with open("data//sadcats.txt", "r", encoding="utf-8") as file:
-            sadcat = "https://i.imgur.com/" + random.choice(file.readlines())
-        ctx.response = f"@{ctx.author.name}, {sadcat} 😿"
 
     @command(
         description="role um dado e veja o resultado",

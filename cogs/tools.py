@@ -21,7 +21,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import config
 import datetime
 import googletrans
+import json
+import pyowm
 import re
+import string
 
 from ext.command import command
 from twitchio.ext import commands
@@ -30,6 +33,24 @@ from utils import asyncrq, convert, dicio
 URL_MATH = "https://api.mathjs.org/v4/?expr={operation}&precision=4"
 URL_CURRENCY = "https://v6.exchangerate-api.com/v6/{api_key}/latest/{base}"
 URL_CRYPTO = "https://rest.coinapi.io/v1/exchangerate/{base}/{target}"
+
+countries = json.load(open("data//countries.json", "r", encoding="utf-8"))
+emojis = {
+    "aguaceiros": "⛈",
+    "céu limpo": "🌞",
+    "céu pouco nublado": "🌤",
+    "chuva forte": "🌧️",
+    "chuva fraca": "🌦",
+    "chuva muito forte": "⛈",
+    "chuvisco": "☔",
+    "fumo": "🌫",
+    "névoa": "🌫",
+    "nevoeiro": "🌫",
+    "nublado": "☁️",
+    "nuvens dispersas": "⛅",
+    "nuvens quebradas": "🌥",
+    "trovoada": "⛈",
+}
 
 
 def is_float(value: str):
@@ -45,6 +66,7 @@ class Tools(commands.AutoCog):
         self.bot = bot
         self.translator = googletrans.Translator()
         self.dicio = dicio.Dicio()
+        self.owm = pyowm.OWM(config.Vars.apikey_owm, language="pt")
 
     def _prepare(self, bot):
         pass
@@ -152,7 +174,21 @@ class Tools(commands.AutoCog):
         )
         ctx.response = f"@{ctx.author.name}, {result}"
 
-    @command(description="saiba a tradução de alguma mensagem", usage="digite o comando e um texto para ser traduzido")
+    async def _translate(self, text, src="auto", dest="pt"):
+        try:
+            translation = await self.bot.loop.run_in_executor(
+                None, self.translator.translate, text, dest, src
+            )
+        except Exception as err:
+            self.bot.log.error(err)
+            return None
+        else:
+            return translation.text
+
+    @command(
+        description="saiba a tradução de alguma mensagem", 
+        usage="digite o comando e um texto para ser traduzido"
+    )
     async def translate(self, ctx, langs: str, *, text: str = None):            
         src = "auto"
         dest = "pt"
@@ -170,28 +206,45 @@ class Tools(commands.AutoCog):
                     text = langs + " " + text
             else:
                 text = langs + " " + text
-                    
-        try:
-            translation = await self.bot.loop.run_in_executor(
-                None, self.translator.translate, text, dest, src
-            )
-        except Exception as err:
-            self.bot.log.error(err)
-            ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
+
+        translation = await self._translate(text, src, dest)
+        if translation and translation == text:
+            ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
         else:
-            if translation.text and translation.text != text:
+            src = "auto"
+            dest = "en" if dest == "pt" else "pt"
+            translation = await self._translate(text, src, dest)
+            if translation and translation == text:
                 ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
             else:
-                src = "auto"
-                dest = "en" if dest == "pt" else "pt"
-                try:
-                    translation = await self.bot.loop.run_in_executor(
-                        None, self.translator.translate, text, dest, src
-                    )
-                    ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
-                except Exception as err:
-                    self.bot.log.error(err)
-                    ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
+                ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
+
+    @command(description="saiba o clima atual de alguma cidade", usage="digite o comando e o nome de um local para saber o clima")
+    async def weather(self, ctx, *, location: str):
+        location = location.translate(str.maketrans("", "", string.punctuation))
+        if " " in location and location.rsplit(maxsplit=1)[-1].lower() in (tuple(countries)):
+            location, country = location.rsplit(maxsplit=1)
+            location = location + ", " + country.upper()
+
+        try:
+            observation = await self.bot.loop.run_in_executor(
+                None, self.owm.weather_at_place, location
+            )
+        except:
+            ctx.response = f"@{ctx.author.name}, não há nenhuma previsão para esse local"
+        else:
+            city = observation.get_location().get_name()
+            country = observation.get_location().get_country()
+            weather = observation.get_weather()
+            status = weather.get_detailed_status()
+            temp = weather.get_temperature("celsius")["temp"]
+            wind = weather.get_wind()["speed"]
+            humidiy = weather.get_humidity()
+            emoji = emojis.get(status, "☁️")
+            ctx.response = (
+                f"@{ctx.author.name}, em {city} ({country}): {emoji} {status}, "
+                f"{temp}°C, ventos a {wind}m/s e {humidiy}% de umidade"
+            )
 
 
 def prepare(bot):
