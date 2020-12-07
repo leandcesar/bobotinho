@@ -82,8 +82,11 @@ class Admin(commands.AutoCog):
     @command(level="admin", description="despause o bot", cooldown=10)
     @commands.check(checks.is_admin)
     async def start(self, ctx):
-        await self._change_status(ctx, True)
-        ctx.response = f"@{ctx.author.name} me ligou ☕"
+        if self.bot.channels.is_online(ctx.channel.name):
+            ctx.response = f"@{ctx.author.name}, já estou ligado ☕"
+        else:
+            await self._change_status(ctx, True)
+            ctx.response = f"@{ctx.author.name} me ligou ☕"            
 
     @command(level="admin", description="pause o bot", cooldown=10)
     @commands.check(checks.is_admin)

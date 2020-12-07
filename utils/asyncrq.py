@@ -20,32 +20,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import aiohttp
 
-from aiohttp import ClientError
-from http import HTTPStatus
-
-
-async def check_response(response, res_method, status, body):
-    """Verifica se a resposta foi obtida com sucesso."""
-    if HTTPStatus.OK <= status <= HTTPStatus.IM_USED:
-        return await getattr(response, res_method)()
-    raise ClientError(f"{status}: {body}")
-
 
 async def query(url, method="get", res_method="json", *args, **kwargs):
-    """Abre uma sessão e executa o método para obter uma resposta."""
     async with aiohttp.ClientSession() as session:
-        try:
-            async with getattr(session, method)(url, *args, **kwargs) as response:
-                check_response(response, res_method, response.status, await response.text())
-        except ClientError as e:
-            raise ClientError(f"{e.__class__.__name__}: {e}")
+        async with getattr(session, method.lower())(url, *args, **kwargs) as response:
+            return await getattr(response, res_method)()
 
 
 async def get(url, *args, **kwargs):
-    """Solicita recursos do servidor."""
     return await query(url, "get", *args, **kwargs)
 
 
 async def post(url, *args, **kwargs):
-    """Envia dados para processamento ao servidor."""
     return await query(url, "post", *args, **kwargs)

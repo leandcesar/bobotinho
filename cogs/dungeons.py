@@ -39,7 +39,7 @@ class Dungeons(commands.AutoCog):
     def _prepare(self, bot):
         pass
 
-    async def _choose_class(self, ctx, choice: str):
+    async def _choose_class(self, ctx, choice: str = ""):
         choice = unidecode(choice).lower()
         for k, v in self.classes.items():
             if choice == v.get("0").lower():
@@ -60,7 +60,7 @@ class Dungeons(commands.AutoCog):
             f'Digite "%ed" e: guerreiro(a), arqueiro(a) ou mago(a)'
         )
 
-    async def _choose_subclass(self, ctx, choice: str):
+    async def _choose_subclass(self, ctx, choice: str = ""):
         choice = unidecode(choice).lower()
         class_ = await self.bot.db.select1(
             "dungeons", what="class_", where={"name": ctx.author.name}
@@ -177,8 +177,8 @@ class Dungeons(commands.AutoCog):
         )
 
     @command(
-        aliases=["ed", "ed1", "ed2", "fasted", "fed"],
-        description="entre na dungeon e adquira experiência",
+        aliases=["ed", "ed1", "ed2"],
+        description="entre na dungeon, faça sua escolha e adquira experiência",
         cooldown=1,
     )
     async def enterdungeon(self, ctx, *, choice: str = ""):
@@ -201,23 +201,44 @@ class Dungeons(commands.AutoCog):
                 dungeon_id = await self.bot.db.select1(
                     "dungeons", what="ed", where={"name": ctx.author.name}
                 )
-                if ctx.command.invoked_by in ("fasted", "fed"):
-                    dungeon_id = str(random.randint(1, len(self.dungeons)))
-                    choice = random.randint(1, 2)
-                    dungeon, eds = self.dungeons[dungeon_id]["dungeon"].split('"%ed 1"')
-                    dungeon += (
-                        eds.split('ou "%ed 2"')[choice - 1]
-                        .replace("para", "Você decide", 1)
-                        .rstrip()
-                        + ". "
-                    )
-                    dungeon += await self._result_dungeon(ctx, dungeon_id, str(choice))
-                elif not dungeon_id:
+                if not dungeon_id:
                     dungeon = await self._get_dungeon(ctx)
                 elif choice in ("1", "2"):
                     dungeon = await self._result_dungeon(ctx, str(dungeon_id), choice)
                 else:
                     dungeon = await self._get_dungeon(ctx, str(dungeon_id))
+                ctx.response = f"@{ctx.author.name}: {dungeon}"
+
+    @command(
+        aliases=["fed"],
+        description="entre na dungeon e adquira experiência sem precisar tomar uma escolha",
+        cooldown=1,
+    )
+    async def fasted(self, ctx):
+        if not await self.bot.db.exists("dungeons", where={"name": ctx.author.name}):
+            ctx.response = await self._choose_class(ctx)
+        elif (
+            await self.bot.db.select1("dungeons", what="class_", where={"name": ctx.author.name}) < 0
+        ):
+            ctx.response = await self._choose_subclass(ctx)
+        else:
+            timestamp = await self.bot.db.select1(
+                "dungeons", what="timestamp", where={"name": ctx.author.name}
+            )
+            cooldown = convert.cooldown(timestamp, 10800)
+            if cooldown:
+                ctx.response = f"@{ctx.author.name}, aguarde {cooldown} para entrar em outra dungeon ⌛"
+            else:
+                dungeon_id = str(random.randint(1, len(self.dungeons)))
+                choice = random.randint(1, 2)
+                dungeon, eds = self.dungeons[dungeon_id]["dungeon"].split('"%ed 1"')
+                dungeon += (
+                    eds.split('ou "%ed 2"')[choice - 1]
+                    .replace("para", "Você decide", 1)
+                    .rstrip()
+                    + ". "
+                )
+                dungeon += await self._result_dungeon(ctx, dungeon_id, str(choice))
                 ctx.response = f"@{ctx.author.name}: {dungeon}"
 
     @command(

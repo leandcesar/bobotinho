@@ -30,7 +30,7 @@ quotes = dict(
     afk=("🏃⌨", "ficou afk", "está afk", "voltou", "continuou afk"),
     art=("🎨", "foi desenhar", "está desenhando", "desenhou", "continuou desenhando"),
     brb=("🏃⌨", "volta logo", "volta logo", "voltou", "volta logo"),
-    code=("💻", "foi programar", "está programando", "programou", "volta logo"),
+    code=("💻", "foi programar", "está programando", "programou", "continuou programando"),
     food=("🍽", "foi comer", "está comendo", "comeu", "continuou comendo"),
     game=("🎮", "foi jogar", "está jogando", "parou de jogar", "voltou a jogar"),
     gn=("😪💤", "foi dormir", "está dormindo", "acordou", "continuou dormindo"),
@@ -117,7 +117,7 @@ class Afk(commands.AutoCog):
             elif not row["afk"]:
                 ctx.response = f"@{ctx.author.name}, @{user} não está afk"
             else:
-                timesince = convert.timesince(row["timestamp"], ctx.message.timestamp)
+                timesince = convert.timesince(row["timestamp"], now=ctx.message.timestamp)
                 message = row["message"].replace(f'{ctx.prefix}{row["afk"]}', "", 1)
                 if not message:
                     message = default_message(row["afk"])
@@ -151,7 +151,7 @@ class Afk(commands.AutoCog):
                     "(o usuário precisa ter usado algum comando)"
                 )
             else:
-                timesince = convert.timesince(row["timestamp"], ctx.message.timestamp)
+                timesince = convert.timesince(row["timestamp"], now=ctx.message.timestamp)
                 if not row["message"] and not row["channel"]:
                     ctx.response = f"@{ctx.author.name}, @{user} foi visto pela última vez há {timesince}"
                 elif not row["channel"]:

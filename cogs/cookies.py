@@ -71,7 +71,7 @@ class Cookies(commands.AutoCog):
                 },
             )
             ctx.response = f"@{ctx.author.name}: {self._get_cookie()} 🥠"
-        elif amount and amount.isdigit():
+        elif amount and amount.isdigit() and int(amount) > 0:
             amount = int(amount)
             gifts = await self.bot.db.select1(
                 "cookies", what="gifts", where={"name": ctx.author.name}
@@ -135,7 +135,7 @@ class Cookies(commands.AutoCog):
         elif not user:
             ctx.response = (
                 f"@{ctx.author.name}, parece que o casamento não deu nada certo... "
-                f'caso tenha certeza, digite "{ctx.prefix}divorce" e o nome da pessoa com quem está casad'
+                f'caso tenha certeza, digite "{ctx.prefix}divorce" e o nome da pessoa com quem se casou'
             )
         else:
             user = convert.user(user)
@@ -148,10 +148,22 @@ class Cookies(commands.AutoCog):
                     "case-se com alguém que realmente te ame, e não qualquer pessoa por aí"
                 )
                 await self.bot.db.update(
-                    "users", values={"married": None, "marriage": None}, where={"name": user},
+                    "users", 
+                    values={
+                        "divorces": "divorces+1", 
+                        "married": None, 
+                        "marriage": None
+                    }, 
+                    where={"name": user},
                 )
                 await self.bot.db.update(
-                    "users", values={"married": None, "marriage": None}, where={"name": ctx.author.name},
+                    "users", 
+                    values={
+                        "divorces": "divorces+1", 
+                        "married": None, 
+                        "marriage": None
+                    }, 
+                    where={"name": ctx.author.name},
                 )
             else:
                 ctx.response = (
@@ -240,7 +252,7 @@ class Cookies(commands.AutoCog):
         self.marriages = {
             k: v
             for k, v in self.marriages.items()
-            if convert.cooldown(v["timestamp"], delay=180)
+            if convert.cooldown(v["timestamp"], duration=180)
         }
         alias = ctx.command.invoked_by
         if alias == "yes":
@@ -281,7 +293,9 @@ class Cookies(commands.AutoCog):
         if not user:
             return
         user = convert.user(user)
-        if user == self.bot.nick:
+        if user == "kkalfoy":
+            ctx.response = f"@{ctx.author.name}, sai."
+        elif user == self.bot.nick:
             ctx.response = f"@{ctx.author.name}, não fui programado para fazer parte de um relacionamento"
         elif user == ctx.author.name:
             ctx.response = f"@{ctx.author.name} tentou se casar com ele mesmo... FeelsBadMan"

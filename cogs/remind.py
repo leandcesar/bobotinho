@@ -67,7 +67,6 @@ class Remind(commands.AutoCog):
     @command(
         aliases=["remindme"],
         description="deixe um lembrete para algum usuário",
-        cooldown=10,
         usage="digite o comando, o nome de alguém e uma mensagem para deixar um lembrete",
     )
     async def remind(self, ctx, user: str, *, message: str = ""):
@@ -114,7 +113,7 @@ class Remind(commands.AutoCog):
                 timer = relativedelta(**match_dict)
                 try:
                     timestamp = convert.date(timer)
-                    timesince = convert.timesince(timestamp, future_target=True)
+                    timesince = convert.timesince(timestamp, future=True)
                 except OverflowError:
                     ctx.response = f"@{ctx.author.name}, isso ultrapassa o tempo máximo para lembretes cronometrados"
                 except Exception as err:
@@ -159,7 +158,6 @@ class Remind(commands.AutoCog):
                 except Exception as err:
                     raise err
                 else:
-                    print(timestamp, now)
                     if timestamp + datetime.timedelta(hours=3) < now:
                         ctx.response = f"@{ctx.author.name}, eu ainda não inventei a máquina do tempo"
                     elif timestamp + datetime.timedelta(hours=3) < now + datetime.timedelta(seconds=60):
@@ -217,7 +215,7 @@ async def timed_reminder(bot):
                 delta = row["to_timestamp"] - now
                 await asyncio.sleep(delta.total_seconds(), loop=bot.loop)
 
-            timesince = convert.timesince(row["timestamp"], future_target=False)
+            timesince = convert.timesince(row["timestamp"], future=False)
             response = f'@{row["to_name"]}, lembrete cronometrado de {user}{message} ({timesince})'
             
             await bot.db.delete("reminds", where={"id": row["id"]})
