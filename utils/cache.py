@@ -1,24 +1,15 @@
 # -*- coding: utf-8 -*-
 
 """
-bobotinho - Twitch bot for Brazilian offstream chat entertainment
-Copyright (C) 2020  Leandro César
+https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/utils/cache.py
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+R. Danny - A discord bot for servers that I like.
+Copyright (C) 2017-2020  Rapptz
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
-
-# From: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/utils/cache.py
 
 import asyncio
 import enum
@@ -26,6 +17,7 @@ import inspect
 import time
 
 from functools import wraps
+from lru import LRU
 
 
 def _wrap_and_store_coroutine(cache, key, coro):
@@ -50,6 +42,7 @@ class ExpiringCache(dict):
         super().__init__()
 
     def __verify_cache_integrity(self):
+        # Have to do this in two steps...
         current_time = time.monotonic()
         to_remove = [
             k for (k, (v, t)) in self.items() if current_time > (t + self.__ttl)
@@ -70,13 +63,17 @@ class ExpiringCache(dict):
 
 
 class Strategy(enum.Enum):
-    raw = 1
-    timed = 2
+    lru = 1
+    raw = 2
+    timed = 3
 
 
-def cache(maxsize=128, strategy=Strategy.timed, ignore_kwargs=False):
+def cache(maxsize=128, strategy=Strategy.lru, ignore_kwargs=False):
     def decorator(func):
-        if strategy is Strategy.raw:
+        if strategy is Strategy.lru:
+            _internal_cache = LRU(maxsize)
+            _stats = _internal_cache.get_stats
+        elif strategy is Strategy.raw:
             _internal_cache = {}
             _stats = lambda: (0, 0)
         elif strategy is Strategy.timed:
@@ -84,6 +81,8 @@ def cache(maxsize=128, strategy=Strategy.timed, ignore_kwargs=False):
             _stats = lambda: (0, 0)
 
         def _make_key(args, kwargs):
+            # this is a bit of a cluster fuck
+            # we do care what 'self' parameter is when we __repr__ it
             def _true_repr(o):
                 if o.__class__.__repr__ is object.__repr__:
                     return f"<{o.__class__.__module__}.{o.__class__.__name__}>"
@@ -93,6 +92,10 @@ def cache(maxsize=128, strategy=Strategy.timed, ignore_kwargs=False):
             key.extend(_true_repr(o) for o in args)
             if not ignore_kwargs:
                 for k, v in kwargs.items():
+                    # note: this only really works for this use case in particular
+                    # I want to pass asyncpg.Connection objects to the parameters
+                    # however, they use default __repr__ and I do not care what
+                    # connection is passed in, so I needed a bypass.
                     if k == "connection":
                         continue
 
@@ -105,7 +108,7 @@ def cache(maxsize=128, strategy=Strategy.timed, ignore_kwargs=False):
         def wrapper(*args, **kwargs):
             key = _make_key(args, kwargs)
             try:
-                value = _internal_cache[key][0]
+                value = _internal_cache[key]
             except KeyError:
                 value = func(*args, **kwargs)
 

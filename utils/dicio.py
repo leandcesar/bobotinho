@@ -18,7 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-# Adapted from: https://github.com/felipemfp/dicio/blob/d0d5bafbb437d2150d590a45a118ccf75c4bb311/dicio/dicio.py
+# Adapted from: https://github.com/felipemfp/dicio
 
 import html
 import re

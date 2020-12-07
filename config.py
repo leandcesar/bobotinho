@@ -22,6 +22,12 @@ import os
 
 
 class Vars:
+    """Variáveis de ambiente.
+    
+    A configuração específica do ambiente é armazenada em variáveis ​​de ambiente (não 
+    no código-fonte). Isso permite que a configuração de cada ambiente seja modificada 
+    isoladamente e evita que credenciais seguras sejam armazenadas no controle de versão. 
+    """
     apikey_coinapi = os.environ.get("APIKEY_COINAPI")
     apikey_exchangerate = os.environ.get("APIKEY_EXCHANGERATE")
     # apikey_tmdb = os.environ.get("APIKEY_TMDB")

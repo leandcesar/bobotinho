@@ -21,84 +21,127 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import re
 import traceback as tb
 
-from functools import wraps
+from datetime import datetime
 from typing import Union
-from twitchio.dataclasses import Context, Message
+from twitchio.dataclasses import Message
 from utils import time
 
 
-def case_insensitive(prefix: str = "%"):
-    def decorator(func):
-        @wraps(func)
-        async def inner(bot, message):
-            if message.content.startswith(prefix) and len(message.content) > 1:
-                content = message.content.replace("󠀀", "")  # removes invisible character
-                if content[1] == " ":
-                    content = content.replace(" ", "", 1)
-                try:
-                    command, residue = content.split(maxsplit=1)
-                    content = command.lower() + " " + residue
-                except:
-                    content = content.lower()
-                message.content = content
+def case_insensitive(message: Message, prefix: str = "%") -> Message:
+    """Converte o comando de uma mensagem para minúsculo, se houver.
 
-            return await func(bot, message)
-
-        return inner
-
-    return decorator
+    Argumentos:
+    message -- mensagem <class 'twitchio.dataclasses.Message'>
+    prefix -- prefixo do bot (default %)
+    """
+    if message.content.startswith(prefix) and len(message.content) > 1:
+        content = message.content.replace("󠀀", "")  # remove caractere invisível
+        if content[1] == " ":
+            content = content[0] + content[2:]
+        try:
+            index = content.index(" ")
+            message.content = content[:index].lower() + content[index:]
+        except:
+            message.content = content.lower()
+    return message
 
 
-def command(target: str):
-    command = re.match(r"%?([0-9A-Za-z]+|%)$", target)
-    if not command:
+def command(target: str, prefix: str = "%") -> str:
+    """Converte o nome do comando, se válido, para minúsculo e remove o prefixo do início.
+
+    Argumentos:
+    target -- nome do comando
+    prefix -- prefixo do bot (default %)
+    """
+    if target[0] == prefix and len(target) > 1:
+        target = target[1:]
+    if not target.isalnum() and target != "%":
         return ""
-    return command.group(1).lower()
+    return target.lower()
 
 
-def cooldown(target, delay, now=None):
-    target = time.parse_date(target)
-    now = time.parse_date(now) if now else time.datetime.datetime.utcnow()
-    if target > now:
-        # what...?
-        return None
-    delay = time.parse_delta(delay)
-    delta = now - target
-    if delta > delay:
-        return False
-    return time.date_format(delay - delta)
+def user(target: str) -> str:
+    """Converte o nome de usuário para minúsculo e remove '@' do início e ',' do fim.
+
+    Argumentos:
+    target -- nome do usuário
+    """
+    if target[0] == "@":
+        target = target[1:]
+    if target[-1] == ",":
+        target = target[:-1]
+    return target.lower()
 
 
-def date(target):
-    return time.parse_date(target)
+def number(target: Union[int, float]) -> str:
+    """Atribui vírgula como separador decimal e ponto como agrupador de milhares para um número.
 
-
-def number(target: Union[int, float]):
+    Argumentos:
+    target -- número inteiro ou decimal
+    """
     if float(target) > 1e15:
-        raise ValueError(f"Expected `float(target)` <= 1e15, not `{target}`")
+        raise ValueError(f"Expected value less than 1e15, but {target} was given")
     elif isinstance(target, int):
         return f"{target:,d}".replace(",", ".")
     elif isinstance(target, float):
         return f"{target:,.2f}"[::-1].replace(",", ".").replace(".", ",", 1)[::-1]
 
 
-def timesince(target, now=None, future_target: bool = False):
+def date(target) -> datetime:
+    """Converte a entrada para <class 'datetime.datetime'>."""
+    return time.parse_date(target)
+
+
+def cooldown(target, duration, now=None) -> Union[str, bool]:
+    """Calcula o tempo restante para um cooldown acabar. Se tiver acabado, retorna False.
+
+    Argumentos:
+    target -- data e/ou hora alvo
+    cooldown -- duração do cooldown
+    now -- data e/ou hora; se None, utiliza a data e hora atuais (default None)
+    """
+    return timesince(target, now=now, cooldown=duration)
+
+
+def timesince(target, **kwargs) -> Union[str, bool]:
+    """Calcula a diferença entre uma data e/ou hora com a data e hora atuais.
+
+    Argumentos:
+    target -- data e/ou hora alvo
+
+    Opcionais:
+    cooldown -- duração do cooldown, caso deseje-se calcular o tempo restante para 
+            liberar um comando
+    future -- indica se espera-se que 'target' esteja no futuro com relação 
+            a 'now' (default False)
+    now -- data e/ou hora base; se None, utiliza a data e hora atuais (default None)
+    """
+    cooldown = kwargs.pop("cooldown", None)
+    future = kwargs.pop("future", False)
+    now = kwargs.pop("now", None)
+
     target = time.parse_date(target)
     now = time.parse_date(now) if now else time.datetime.datetime.utcnow()
-    delta, future = (target - now, True) if target > now else (now - target, False)
-    if future_target != future:
+    
+    if (target > now) != future:
         return False
+    
+    delta = target - now if future else now - target
+
+    if cooldown:
+        cooldown = time.parse_delta(cooldown)
+        if delta > cooldown:
+            # cooldown terminou
+            return False
+        return time.date_format(cooldown - delta)    
     return time.date_format(delta)
 
 
-def traceback(err):
+def traceback(err: Exception) -> str:
+    """Converte uma exceção um relatório de rastreamento das chamadas de função feitas.
+
+    Argumentos:
+    err -- exceção gerada no código
+    """
     format_tb = "".join(tb.format_tb(err.__traceback__))
     return f"{format_tb}{type(err).__name__}: {err}"
-
-
-def user(target: str):
-    if target.startswith("@"):
-        target = target[1:]
-    if target.endswith(","):
-        target = target[:-1]
-    return target.lower()

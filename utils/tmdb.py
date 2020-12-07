@@ -18,7 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-# Adapted from: https://github.com/celiao/tmdbsimple/tree/fa59c35a8f39dba37872c03d00840b7befe691cf
+# Adapted from: https://github.com/celiao/tmdbsimple
 
 import json
 import re
