@@ -93,6 +93,7 @@ class Bobotinho(commands.Bot):
     def add_all_checks(self):
         self.add_check(self.channels.is_enabled)
         self.add_check(self.channels.is_not_banword)
+        self.add_check(checks.is_not_banned)
         self.add_check(command.cooldown)
 
     async def event_ready(self):

@@ -60,3 +60,9 @@ def is_allowed(ctx: Context) -> bool:
 def is_link(message: str) -> bool:
     """Verifica se existe um link na mensagem."""
     return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", message) != None
+
+
+def is_not_banned(ctx: Context) -> bool:
+    """Verifica se não é uma conta banida no bot."""
+    return not (ctx.author.id in banned)
+    
