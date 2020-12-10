@@ -20,7 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import config
 import datetime
-import googletrans
+import google_trans_new
 import json
 import pyowm
 import re
@@ -64,7 +64,7 @@ def is_float(value: str):
 class Tools(commands.AutoCog):
     def __init__(self, bot):
         self.bot = bot
-        self.translator = googletrans.Translator()
+        self.translator = google_trans_new.google_translator()
         self.dicio = dicio.Dicio()
         self.owm = pyowm.OWM(config.Vars.apikey_owm, language="pt")
 
@@ -174,7 +174,18 @@ class Tools(commands.AutoCog):
         )
         ctx.response = f"@{ctx.author.name}, {result}"
 
-    async def _translate(self, text, src="auto", dest="pt"):
+    async def _detect(self, text):
+        try:
+            detect = await self.bot.loop.run_in_executor(
+                None, self.translator.detect, text
+            )
+        except Exception as err:
+            self.bot.log.error(err)
+            return None
+        else:
+            return detect[0]
+
+    async def _translate(self, text, src, dest):
         try:
             translation = await self.bot.loop.run_in_executor(
                 None, self.translator.translate, text, dest, src
@@ -183,41 +194,38 @@ class Tools(commands.AutoCog):
             self.bot.log.error(err)
             return None
         else:
-            return translation.text
+            return translation
 
     @command(
         description="saiba a tradução de alguma mensagem", 
         usage="digite o comando e um texto para ser traduzido"
     )
-    async def translate(self, ctx, langs: str, *, text: str = None):            
-        src = "auto"
-        dest = "pt"
+    async def translate(self, ctx, langs: str, *, text: str = None):
+        src = dest = None
+        
         if not text:
             text = langs
         else:
             match = re.match(r"(\w{2})?->(\w{2})?", langs)
             if match:
                 _src, _dest = match.groups()
-                if _src and _src in googletrans.LANGUAGES:
+                if _src and _src in google_trans_new.constant.LANGUAGES.keys():
                     src = _src
-                if _dest and _dest in googletrans.LANGUAGES:
+                if _dest and _dest in google_trans_new.constant.LANGUAGES.keys():
                     dest = _dest
-                if not _src and not _dest:
-                    text = langs + " " + text
             else:
                 text = langs + " " + text
+        
+        if not src:
+            src = await self._detect(text)
+        if not dest:
+            dest = "pt" if src != "pt" else "en"  
 
         translation = await self._translate(text, src, dest)
-        if translation and translation == text:
-            ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
+        if translation and translation != text:
+            ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation}"
         else:
-            src = "auto"
-            dest = "en" if dest == "pt" else "pt"
-            translation = await self._translate(text, src, dest)
-            if translation and translation == text:
-                ctx.response = f"@{ctx.author.name}, {src}->{dest}: {translation.text}"
-            else:
-                ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
+            ctx.response = f"@{ctx.author.name}, não foi possível traduzir isso"
 
     @command(description="saiba o clima atual de alguma cidade", usage="digite o comando e o nome de um local para saber o clima")
     async def weather(self, ctx, *, location: str):
