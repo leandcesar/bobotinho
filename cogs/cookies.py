@@ -31,6 +31,20 @@ class Cookies(commands.AutoCog):
     def __init__(self, bot):
         self.bot = bot
         self.marriages = dict()
+        self.pets = {              
+            "peixe": [10, 2, "🐟"],
+            "pássaro": [20, 4, "🐦"],
+            "hamster": [30, 6, "🐹"], 
+            "coelho": [40, 8, "🐰"],
+            "cachorro": [50, 10, "🐶"], 
+            "gato": [50, 10, "🐱"],
+            "cobra": [70, 14, "🐍"],
+            "lobo": [85, 17, "🐺"], 
+            "panda": [100, 20, "🐼"],
+            "leão": [150, 30, "🦁"], 
+            "unicórnio": [200, 50, "🦄"], 
+            "dragão": [999, 100, "🐲"],
+        }
 
     def _prepare(self, bot):
         pass
@@ -340,7 +354,64 @@ class Cookies(commands.AutoCog):
                 f"@{user}, você aceita se casar com @{ctx.author.name}? 💐💍"
                 f'Digite "{ctx.prefix}yes" ou "{ctx.prefix}no"'
             )
-    
+
+    @command(
+        description="troque seus cookies por um pet e tenha um novo companheiro",
+        cooldown=2,
+    )
+    async def pet(self, ctx, action: str = None, option: str = None):
+        if action:
+            action = action.lower()
+        if option:
+            option = option.lower()
+        if action == "list":
+            pets = ", ".join([f"{k} ({v[0]})" for k, v in self.pets.items()])
+            ctx.response = f'@{ctx.author.name}, adquira com "%pet buy" e: {pets}'
+        elif action == "buy" and not option in self.pets.keys():
+            ctx.response = f"@{ctx.author.name}, escolha um pet que esteja disponível na lista (%pet list)"
+        elif action == "buy":
+            pet = self.pets[option]
+            price = pet[0]
+            emoji = pet[2]
+            if await self.bot.db.select1("cookies", what="gifts", where={"name": ctx.author.name}) < price:
+                ctx.response = f"@{ctx.author.name}, você precisa de {price} cookies estocados para adquirir um {option} {emoji}"
+            else:
+                await self.bot.db.update(
+                    "cookies", values={"gifts": f"gifts-{price}"}, where={"name": ctx.author.name},
+                )
+                await self.bot.db.update(
+                    "users", values={"pet": option, "petname": None}, where={"name": ctx.author.name},
+                )
+                ctx.response = (
+                    f"@{ctx.author.name}, você adquiriu um {option} {emoji}! "
+                    "Escolha um nome com %pet name e o nome que desejar"
+                )
+        elif action == "name" and not option:
+            ctx.response = f"@{ctx.author.name}, escolha um nome com %pet name e o nome que desejar"
+        elif action == "name" and len(option) > 20:
+            ctx.response = f"@{ctx.author.name}, esse nome é muito comprido para seu pet"
+        elif action == "name":
+            await self.bot.db.update(
+                "users", values={"petname": option.title()}, where={"name": ctx.author.name},
+            )
+            ctx.response = f"@{ctx.author.name}, agora seu pet se chama {option.title()}"
+        else:
+            if not action:
+                action = ctx.author.name
+            user = convert.user(action)
+            pet = await self.bot.db.select("users", what=["pet", "petname"], where={"name": user})
+            user = "você" if user == ctx.author.name else f"@{user}"
+            if pet["pet"]:
+                emoji = self.pets[pet["pet"]][2]
+                if pet["petname"]:
+                    ctx.response = f'@{ctx.author.name}, {user} possui um {pet["pet"]} chamado {pet["petname"]} {emoji}'
+                else:
+                    ctx.response = f'@{ctx.author.name}, {user} possui um {pet["pet"]} {emoji}'
+            elif user == "você":
+                ctx.response = f"@{ctx.author.name}, adquira um pet em troca de cookies (%pet list)"
+            else:
+                ctx.response = f"@{ctx.author.name}, {user} não possui um pet"
+
     @command(description="veja quais são os maiores comedores ou doadores de cookies", cooldown=15)
     async def top(self, ctx, orderby: str = "count"):
         if orderby.lower() in ("gift", "gifts", "give", "gives", "giver", "givers"):
