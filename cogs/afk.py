@@ -33,9 +33,9 @@ quotes = dict(
     code=("💻", "foi programar", "está programando", "programou", "continuou programando"),
     food=("🍽", "foi comer", "está comendo", "comeu", "continuou comendo"),
     game=("🎮", "foi jogar", "está jogando", "parou de jogar", "voltou a jogar"),
-    gn=("😪💤", "foi dormir", "está dormindo", "acordou", "continuou dormindo"),
+    gn=("💤", "foi dormir", "está dormindo", "acordou", "continuou dormindo"),
     work=("💼", "foi trabalhar", "está trabalhando", "trabalhou", "continuou trabalhando"),
-    shower=("☺🚿", "foi pro banho", "está no banho", "tomou banho", "continuou seu banho"),
+    shower=("🚿", "foi pro banho", "está no banho", "tomou banho", "continuou seu banho"),
     study=("📚", "foi estudar", "está estudando", "estudou", "continuou estudando"),
 )
 
@@ -217,11 +217,7 @@ async def returned(bot, message, send: bool = True):
     returned_afk[message.author.id] = {"message": _message, "timestamp": row["timestamp"]}
     
     if send and not bot.channels.is_banword(message.channel.name, response):
-        await message.channel.send(response)
-        bot.log.info(
-            f"#{message.channel.name} {message.author.name}: {message.content} > {response}"
-        )
-        return True
+        return await message.channel.send(response)
 
 
 def prepare(bot):

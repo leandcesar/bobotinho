@@ -208,18 +208,16 @@ async def timed_reminder(bot):
             and bot.channels.is_online(row["channel"])
             and not bot.channels.is_disabled(row["channel"], "remind")
         ):
-            user = "você mesmo" if row["name"] == row["to_name"] else row["name"]
-            message = f': {row["message"]}' if row["message"] else ""
-
+            user = "você" if row["name"] == row["to_name"] else f'@{row["name"]}'
             if now <= row["to_timestamp"]:
                 delta = row["to_timestamp"] - now
                 await asyncio.sleep(delta.total_seconds(), loop=bot.loop)
-
             timesince = convert.timesince(row["timestamp"], future=False)
-            response = f'@{row["to_name"]}, lembrete cronometrado de {user}{message} ({timesince})'
-            
+            if row["message"]:
+                response = f'@{row["to_name"]}, {user} deixou um lembrete cronometrado: {row["message"]} ({timesince})'
+            else:
+                response = f'@{row["to_name"]}, {user} deixou um lembrete cronometrado ({timesince})'
             await bot.db.delete("reminds", where={"id": row["id"]})
-
             if not bot.channels.is_banword(row["channel"], response):
                 try:
                     await bot.get_channel(row["channel"]).send(response)

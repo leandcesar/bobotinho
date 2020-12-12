@@ -31,27 +31,32 @@ class Admin(commands.AutoCog):
         pass
 
     async def _change_disabled(self, ctx, command: str):
-        command = convert.command(command)
+        def get_command(command: str):
+            command = convert.command(command)
+            for c in self.bot.commands.values():
+                if command == c.name or (c.aliases and command in c.aliases):
+                    return c
+        
+        c = get_command(command)
+        if not c:
+            return f"@{ctx.author.name}, esse comando não existe"
+        
         disable = ctx.command.name == "disable"
         action = "desativado" if disable else "ativado"
         operation = "+" if disable else "-"
 
-        if not command in [c.name for c in self.bot.commands.values()]:
-            return f"@{ctx.author.name}, esse comando não existe"
-        elif disable and self.bot.commands[command].level in ("admin", "owner"):
-            return (
-                f"@{ctx.author.name}, {ctx.prefix}{command} não pode ser {action}"
-            )
-        elif disable == self.bot.channels.is_disabled(ctx.channel.name, command):
-            return f"@{ctx.author.name}, {ctx.prefix}{command} já está {action}"
+        if disable and self.bot.commands[c.name].level in ("admin", "owner"):
+            return f"@{ctx.author.name}, {ctx.prefix}{c.name} não pode ser {action}"
+        elif disable == self.bot.channels.is_disabled(ctx.channel.name, c.name):
+            return f"@{ctx.author.name}, {ctx.prefix}{c.name} já está {action}"
         else:
-            self.bot.channels[ctx.channel.name].disabled = operation + command
+            self.bot.channels[ctx.channel.name].disabled = operation + c.name
             await self.bot.db.update(
                 "channels",
                 values={"disabled": self.bot.channels[ctx.channel.name].disabled},
                 where={"name": ctx.channel.name},
             )
-            return f"@{ctx.author.name}, {ctx.prefix}{command} foi {action}"
+            return f"@{ctx.author.name}, {ctx.prefix}{c.name} foi {action}"
 
     async def _change_status(self, ctx, value: bool):
         self.bot.channels[ctx.channel.name].status = value
