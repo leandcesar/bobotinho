@@ -1,6 +1,6 @@
 aiohttp
 asyncpg
-googletrans
+google_trans_new
 lru_dict
 psutil
 pyowm
