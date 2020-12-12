@@ -145,6 +145,20 @@ class Fun(commands.AutoCog):
         with open("data//jokes.txt", "r", encoding="utf-8") as file:
             joke = random.choice(file.readlines())
         ctx.response = f"@{ctx.author.name}: {joke} 4Head"
+            
+    @command(
+        aliases=["jankenpon", "jokempo"],
+        description="tente vencer o pedra, papel e tesoura",
+        usage="digite o comando e ✊, ✋ ou ✌",
+    )
+    async def jokenpo(self, ctx, choice):
+        emoji = random.choice("✊✋✌")
+        if choice == emoji:
+            ctx.response = f"@{ctx.author.name}, {choice}x{emoji} e nós empatamos..."
+        elif (choice, emoji) in [("✊","✋"), ("✋","✌"), ("✌","✊")]:
+            ctx.response = f"@{ctx.author.name}, {choice}x{emoji} e eu consegui te prever facilmente"
+        else:
+            ctx.response = f"@{ctx.author.name}, {choice}x{emoji} e você deu sorte dessa vez"
 
     @command(
         description="dê um beijinho em alguém do chat",
