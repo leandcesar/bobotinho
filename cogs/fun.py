@@ -45,8 +45,8 @@ class Fun(commands.AutoCog):
             for k, v in self.fights.items()
             if convert.cooldown(v["timestamp"], duration=120)
         }
-        alias = ctx.command.invoked_by
-        if alias == "accept":
+        invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
+        if invocation == "accept":
             for k, v in self.fights.items():
                 if ctx.author.name == v["user"]:
                     winner, loser = random.choice([(k, v["user"]), (v["user"], k)])
@@ -71,7 +71,7 @@ class Fun(commands.AutoCog):
                     return
             ctx.response = f"@{ctx.author.name}, você não tem desafios para aceitar"
             return
-        elif alias == "deny":
+        elif invocation == "deny":
             for k, v in self.fights.items():
                 if ctx.author.name == v["user"]:
                     del self.fights[k]
@@ -81,7 +81,7 @@ class Fun(commands.AutoCog):
                     return
             ctx.response = f"@{ctx.author.name}, você não tem desafios para recusar"
             return
-        elif alias == "cancel":
+        elif invocation == "cancel":
             if self.fights.pop(ctx.author.name, None):
                 ctx.response = f"@{ctx.author.name} cancelou o desafio"
             else:
@@ -157,7 +157,7 @@ class Fun(commands.AutoCog):
             ctx.response = f"@{ctx.author.name}, {choice}x{emoji} e nós empatamos..."
         elif (choice, emoji) in [("✊","✋"), ("✋","✌"), ("✌","✊")]:
             ctx.response = f"@{ctx.author.name}, {choice}x{emoji} e eu consegui te prever facilmente"
-        else:
+        elif (emoji, choice) in [("✊","✋"), ("✋","✌"), ("✌","✊")]:
             ctx.response = f"@{ctx.author.name}, {choice}x{emoji} e você deu sorte dessa vez"
 
     @command(

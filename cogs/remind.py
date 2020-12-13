@@ -70,7 +70,8 @@ class Remind(commands.AutoCog):
         usage="digite o comando, o nome de alguém e uma mensagem para deixar um lembrete",
     )
     async def remind(self, ctx, user: str, *, message: str = ""):
-        if ctx.command.invoked_by == "remindme":
+        invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
+        if invocation == "remindme":
             if user:
                 message = user + " " + message
             user = ctx.author.name

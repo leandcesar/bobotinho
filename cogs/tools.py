@@ -77,8 +77,9 @@ class Tools(commands.AutoCog):
         usage="digite o comando, a sigla da criptomoeda (ex: BTC) e a quantidade (opcional) para saber a conversão em reais"
     )
     async def crypto(self, ctx, code: str = None, amount: str = None):
-        if ctx.command.invoked_by != ctx.command.name:
-            code = dict(bitcoin="BTC", ethereum="ETH").get(ctx.command.invoked_by)
+        invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
+        if invocation != ctx.command.name:
+            code = dict(bitcoin="BTC", ethereum="ETH").get(invocation)
             if not code or not is_float(code):
                 amount = 1.00
             else:
@@ -116,12 +117,13 @@ class Tools(commands.AutoCog):
         usage="digite o comando, a sigla da moeda (ex: USD) e a quantidade (opcional) para saber a conversão em reais"
     )
     async def currency(self, ctx, code: str = None, amount: str = None):
-        if ctx.command.invoked_by != ctx.command.name:
+        invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
+        if invocation != ctx.command.name:
             if not code or not is_float(code):
                 amount = 1.00
             else:
                 amount = float(code.replace(",", "."))
-            code = dict(dolar="USD", euro="EUR", libra="GBP").get(ctx.command.invoked_by)
+            code = dict(dolar="USD", euro="EUR", libra="GBP").get(invocation)
         elif not code or (is_float(code) and not amount):
             return
         elif not is_float(code) and not amount:

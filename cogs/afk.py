@@ -38,6 +38,7 @@ quotes = dict(
     shower=("🚿", "foi pro banho", "está no banho", "tomou banho", "continuou seu banho"),
     study=("📚", "foi estudar", "está estudando", "estudou", "continuou estudando"),
 )
+returned_afk = dict()
 
 
 def aliases():
@@ -81,8 +82,9 @@ class Afk(commands.AutoCog):
         cooldown=15,
     )
     async def afk(self, ctx, *, message: str = None):
+        invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         if not message:
-            message = default_message(ctx.command.invoked_by)
+            message = default_message(invocation)
         if len(message) > 300:
             ctx.response = f"@{ctx.author.name}, essa mensagem é muito comprida"
         elif not checks.is_allowed(ctx) and checks.is_link(message):
@@ -90,11 +92,11 @@ class Afk(commands.AutoCog):
         else:
             await self.bot.db.update(
                 "users",
-                values={"afk": ctx.command.invoked_by},
+                values={"afk": invocation},
                 where={"id": ctx.author.id},
             )
             ctx.response = (
-                f"@{ctx.author.name} {quote_afk(ctx.command.invoked_by)}: {message}"
+                f"@{ctx.author.name} {quote_afk(invocation)}: {message}"
             )
 
     @command(
@@ -169,55 +171,51 @@ class Afk(commands.AutoCog):
     )
     async def rafk(self, ctx):
         global returned_afk
+        returned_afk = {
+            k: v 
+            for k, v in returned_afk.items() 
+            if v["timestamp"] + datetime.timedelta(seconds=180) > ctx.message.timestamp
+        }
         returned = returned_afk.pop(ctx.author.id, None)
         if not returned:
             return
+        invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         await self.bot.db.update(
             "users",
             values={
-                "afk": ctx.command.invoked_by[1:], 
+                "afk": invocation[1:], 
                 "timestamp": returned["timestamp"],
-                "message": ctx.command.invoked_by + " " + returned["message"], 
+                "message": invocation + " " + returned["message"], 
                 },
             where={"id": ctx.author.id},
         )
-        ctx.response = (
-            f'@{ctx.author.name} {quote_rafk(ctx.command.invoked_by[1:])}: {returned["message"]}'
-        )
-
-
-returned_afk = dict()
+        ctx.response = f'@{ctx.author.name} {quote_rafk(invocation[1:])}: {returned["message"]}'
 
 
 async def returned(bot, message, send: bool = True):
     if bot.channels.is_disabled(message.channel.name, "afk"):
         return
-
     row = await bot.db.select("users", where={"id": message.author.id})
     if not row or not row["afk"]:
         return
+    else:
+        await bot.db.update("users", values={"afk": None}, where={"id": message.author.id})
 
-    timesince = convert.timesince(row["timestamp"])
     if not checks.is_allowed(message) and checks.is_link(row["message"]):
         _message = "(a mensagem continha um link e o usuário não é inscrito, vip ou moderador)"
     elif " " in row["message"]:
         _message = row["message"].partition(" ")[2]
     else:
         _message = default_message(row["afk"])
-    response = f'@{message.author.name} {quote_returned(row["afk"])}: {_message} ({timesince})'
-    
-    await bot.db.update("users", values={"afk": None}, where={"id": message.author.id})
 
-    global returned_afk
-    returned_afk = {
-        k: v 
-        for k, v in returned_afk.items() 
-        if v["timestamp"] + datetime.timedelta(seconds=180) > message.timestamp
-    }
+    global returned_afk    
     returned_afk[message.author.id] = {"message": _message, "timestamp": row["timestamp"]}
-    
-    if send and not bot.channels.is_banword(message.channel.name, response):
-        return await message.channel.send(response)
+
+    if send:
+        timesince = convert.timesince(row["timestamp"])
+        response = f'@{message.author.name} {quote_returned(row["afk"])}: {_message} ({timesince})'
+        if not bot.channels.is_banword(message.channel.name, response):
+            return await message.channel.send(response)
 
 
 def prepare(bot):

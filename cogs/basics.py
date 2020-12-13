@@ -88,7 +88,7 @@ class Basics(commands.AutoCog):
 
     @command(aliases=["pong"], description="verifique se o bot está online", cooldown=30)
     async def ping(self, ctx):
-        if ctx.command.invoked_by == "pong":
+        if ctx.content.partition(" ")[0][len(ctx.prefix):] == "pong":
             ctx.response = f"@{ctx.author.name}, ping 🏓"
         else:
             ctx.response = f"@{ctx.author.name}, pong 🏓"

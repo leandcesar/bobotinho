@@ -196,8 +196,9 @@ class Dungeons(commands.AutoCog):
             if cooldown:
                 ctx.response = f"@{ctx.author.name}, aguarde {cooldown} para entrar em outra dungeon ⌛"
             else:
-                if ctx.command.invoked_by in ("ed1", "ed2"):
-                    choice = ctx.command.invoked_by[-1]
+                invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
+                if invocation in ("ed1", "ed2"):
+                    choice = invocation[-1]
                 dungeon_id = await self.bot.db.select1(
                     "dungeons", what="ed", where={"name": ctx.author.name}
                 )
