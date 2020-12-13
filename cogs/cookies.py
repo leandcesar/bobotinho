@@ -19,8 +19,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import asyncio
-import random
 import datetime
+import inspect
+import random
 
 from ext.command import command
 from twitchio.ext import commands
@@ -31,20 +32,65 @@ class Cookies(commands.AutoCog):
     def __init__(self, bot):
         self.bot = bot
         self.marriages = dict()
-        self.pets = {              
-            "peixe": [10, 2, "🐟"],
-            "pássaro": [20, 4, "🐦"],
-            "hamster": [30, 6, "🐹"], 
-            "coelho": [40, 8, "🐰"],
-            "cachorro": [50, 10, "🐶"], 
-            "gato": [50, 10, "🐱"],
-            "cobra": [70, 14, "🐍"],
-            "lobo": [85, 17, "🐺"], 
-            "panda": [100, 20, "🐼"],
-            "leão": [150, 30, "🦁"], 
-            "unicórnio": [200, 50, "🦄"], 
-            "dragão": [999, 100, "🐲"],
-        }
+        pets = dict(
+            random.sample(list({
+                "abelha": [10, "🐝"],
+                "borboleta": [10, "🦋"],
+                "caracol": [10, "🐌"],
+                "formiga": [10, "🐜"],
+                "joaninha": [10, "🐞"],
+                "lagarta": [10, "🐛"],
+                "peixe": [10, "🐟"],
+                "caranguejo": [20, "🦀"],
+                "pássaro": [20, "🐦"],
+                "pintinho": [20, "🐥"],
+                "rato": [20, "🐭"],
+                "escorpião": [30, "🦂"],
+                "galinha": [30, "🐔"],
+                "hamster": [30, "🐹"],
+                "morcego": [30, "🦇"],
+                "coelho": [40, "🐰"],
+                "esquilo": [40, "🐿"],
+                "porco-espinho": [40, "🦔 "],
+                "sapo": [40, "🐸"],
+                "carneiro": [50, "🐏"],
+                "bode": [50, "🐐"],
+                "ovelha": [50, "🐑"],
+                "polvo": [50, "🐙"],
+                "gato": [50, "🐱"],
+                "cachorro": [50, "🐶"],
+                "porco": [50, "🐷"],
+                "boi": [60, "🐂"],
+                "búfalo": [60, "🐃"],
+                "camelo": [60, "🐫"],
+                "javali": [60, "🐗"],
+                "tartaruga": [60, "🐢"],
+                "vaca": [60, "🐮"],
+                "veado": [60, "🦌"],
+                "coala": [70, "🐨"],
+                "cobra": [70, "🐍"],
+                "cavalo": [70, "🐴"],
+                "girafa": [70, "🦒"],
+                "macaco": [70, "🐵"],
+                "pinguim": [70, "🐧"],
+                "baleia": [85, "🐋"],
+                "elefante": [85, "🐘"],
+                "golfinho": [85, "🐬"],
+                "crocodilo": [85, "🐊"],
+                "lobo": [85, "🐺"],
+                "leopardo": [100, "🐆"],
+                "tigre": [100, "🐯"],
+                "urso": [100, "🐻"],
+                "panda": [100, "🐼"],
+                "leão": [100, "🦁"],
+                "unicórnio": [200, "🦄"],
+                "dinossauro": [200, "🦕"],
+                "t-rex": [200, "🦖"],
+                "robô": [999, "🤖"],
+                "dragão": [999, "🐲"],
+            }.items()), 7)
+        )
+        self.pets = dict(sorted(pets.items(), key=lambda item: item[1]))
 
     def _prepare(self, bot):
         pass
@@ -87,9 +133,7 @@ class Cookies(commands.AutoCog):
             ctx.response = f"@{ctx.author.name}: {self._get_cookie()} 🥠"
         elif amount and amount.isdigit() and int(amount) > 0:
             amount = int(amount)
-            gifts = await self.bot.db.select1(
-                "cookies", what="gifts", where={"name": ctx.author.name}
-            )
+            gifts = await self.bot.db.select1("cookies", what="gifts", where={"name": ctx.author.name})
             if amount > gifts:
                 ctx.response = f"@{ctx.author.name}, você não tem todos esses cookies para comer"
             else:
@@ -99,32 +143,22 @@ class Cookies(commands.AutoCog):
                     where={"name": ctx.author.name},
                 )
                 ctx.response = f"@{ctx.author.name}, você comeu {amount} cookies de uma só vez 🥠"
-        elif await self.bot.db.select1(
-            "cookies", what="gifts", where={"name": ctx.author.name}
-        ):
+        elif await self.bot.db.select1("cookies", what="gifts", where={"name": ctx.author.name}):
             await self.bot.db.update(
                 "cookies",
                 values={"count": "count+1", "gifts": "gifts-1"},
                 where={"name": ctx.author.name},
             )
-            if ctx.author.name == "kkalfoy":
-                ctx.response = f"@{ctx.author.name}: orem para que não caiam em tentação. 🙏"
-            else:
-                ctx.response = f"@{ctx.author.name}: {self._get_cookie()} 🥠"
+            ctx.response = f"@{ctx.author.name}: {self._get_cookie()} 🥠"
         elif await self.bot.db.select1("cookies", what="daily", where={"name": ctx.author.name}):
             await self.bot.db.update(
                 "cookies",
                 values={"count": "count+1", "daily": False},
                 where={"name": ctx.author.name},
             )
-            if ctx.author.name == "kkalfoy":
-                ctx.response = f"@{ctx.author.name}: orem para que não caiam em tentação. 🙏"
-            else:
-                ctx.response = f"@{ctx.author.name}: {self._get_cookie()} 🥠"
+            ctx.response = f"@{ctx.author.name}: {self._get_cookie()} 🥠"
         else:
-            ctx.response = (
-                f"@{ctx.author.name}, você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛"
-            )
+            ctx.response = f"@{ctx.author.name}, você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛"
                 
     @command(aliases=["cc"], description="veja quantos cookies algum usuário já comeu")
     async def cookiecount(self, ctx, user: str = None):
@@ -143,9 +177,7 @@ class Cookies(commands.AutoCog):
     @command(description="divorcie-se da pessoa com quem você é casada")
     async def divorce(self, ctx, user: str = None):
         if not await self.bot.db.select1("users", what="married", where={"name": ctx.author.name}):
-            ctx.response = (
-                f"@{ctx.author.name}, você só pode usar esse comando se estiver casado"
-            )
+            ctx.response = (f"@{ctx.author.name}, você só pode usar esse comando se estiver casado")
         elif not user:
             ctx.response = (
                 f"@{ctx.author.name}, parece que o casamento não deu nada certo... "
@@ -153,9 +185,7 @@ class Cookies(commands.AutoCog):
             )
         else:
             user = convert.user(user)
-            married = await self.bot.db.select1(
-                "users", what="married", where={"name": user}
-            )
+            married = await self.bot.db.select1("users", what="married", where={"name": user})
             if int(married) == ctx.author.id:
                 ctx.response = (
                     f"@{ctx.author.name}, então, é isso... da próxima vez, " 
@@ -216,9 +246,7 @@ class Cookies(commands.AutoCog):
                 where={"name": ctx.author.name},
             )
             await self._set_gift(user)
-            ctx.response = (
-                f"@{ctx.author.name} presenteou @{user} com um cookie 🎁"
-            )
+            ctx.response = f"@{ctx.author.name} presenteou @{user} com um cookie 🎁"
         else:
             ctx.response = f"@{ctx.author.name}, você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛"
 
@@ -240,23 +268,15 @@ class Cookies(commands.AutoCog):
                     f"(o usuário precisa ter usado algum comando)"
                 )
                 return
-        marry = await self.bot.db.select(
-            "users", what=["married", "marriage"], where={"name": user}
-        )
+        marry = await self.bot.db.select("users", what=["married", "marriage"], where={"name": user})
         user = "você" if user == ctx.author.name else f"@{user}"
         if not marry["married"]:
-            ctx.response = (
-                f"@{ctx.author.name}, {user} não se casou com ninguém"
-            )
+            ctx.response = f"@{ctx.author.name}, {user} não se casou com ninguém"
         else:
-            married = await self.bot.db.select1(
-                "users", what="name", where={"id": marry["married"]}
-            )
+            married = await self.bot.db.select1("users", what="name", where={"id": marry["married"]})
             married = "você" if married == ctx.author.name else f"@{married}"
             marriage = convert.timesince(marry["marriage"])
-            ctx.response = (
-                f"@{ctx.author.name}, {user} se casou com {married} há {marriage}"
-            )
+            ctx.response = f"@{ctx.author.name}, {user} se casou com {married} há {marriage}"
     
     @command(
         aliases=["yes", "no"],
@@ -268,8 +288,8 @@ class Cookies(commands.AutoCog):
             for k, v in self.marriages.items()
             if convert.cooldown(v["timestamp"], duration=180)
         }
-        alias = ctx.command.invoked_by
-        if alias == "yes":
+        invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
+        if invocation == "yes":
             for k, v in self.marriages.items():
                 if ctx.author.name == v["user"]:
                     if await self.bot.db.select1("cookies", what="gifts", where={"name": k}) < 100:
@@ -294,7 +314,7 @@ class Cookies(commands.AutoCog):
                     return
             ctx.response = f"@{ctx.author.name}, não há nenhum pedido de casamento para você"
             return
-        elif alias == "no":
+        elif invocation == "no":
             for k, v in self.marriages.items():
                 if ctx.author.name == v["user"]:
                     ctx.response = (
@@ -355,26 +375,35 @@ class Cookies(commands.AutoCog):
                 f'Digite "{ctx.prefix}yes" ou "{ctx.prefix}no"'
             )
 
-    @command(
-        description="troque seus cookies por um pet e tenha um novo companheiro",
-        cooldown=2,
-    )
-    async def pet(self, ctx, action: str = None, option: str = None):
-        if action:
-            action = action.lower()
-        if option:
-            option = option.lower()
-        if action == "list":
-            pets = ", ".join([f"{k} ({v[0]})" for k, v in self.pets.items()])
-            ctx.response = f'@{ctx.author.name}, adquira com "%pet buy" e: {pets}'
-        elif action == "buy" and not option in self.pets.keys():
-            ctx.response = f"@{ctx.author.name}, escolha um pet que esteja disponível na lista (%pet list)"
-        elif action == "buy":
-            pet = self.pets[option]
+    async def _pet(self, ctx, user: str = None):
+        if not user:
+            user = ctx.author.name
+        else:
+            user = convert.user(user)
+        pet = await self.bot.db.select("users", what=["pet", "petname"], where={"name": user})
+        user = "você" if user == ctx.author.name else f"@{user}"
+        if pet and pet["pet"]:
+            emoji = self.pets[pet["pet"]][2]
+            if pet["petname"]:
+                return f'@{ctx.author.name}, {user} possui um {pet["pet"]} chamado {pet["petname"]} {emoji}'
+            else:
+                return f'@{ctx.author.name}, {user} possui um {pet["pet"]} {emoji}'
+        elif user == "você":
+            return f"@{ctx.author.name}, adquira um pet em troca de cookies ({ctx.prefix}pet list)"
+        else:
+            return f"@{ctx.author.name}, {user} não possui um pet"
+
+    def _list(self, ctx, *_):
+        pets = ", ".join([f"{k} ({v[0]})" for k, v in self.pets.items()])
+        return f'@{ctx.author.name}, adquira com "{ctx.prefix}pet buy" e: {pets}'
+
+    async def _buy(self, ctx, option: str = None):
+        if option and option.lower() in self.pets.keys():
+            pet = self.pets[option.lower()]
             price = pet[0]
-            emoji = pet[2]
+            emoji = pet[1]
             if await self.bot.db.select1("cookies", what="gifts", where={"name": ctx.author.name}) < price:
-                ctx.response = f"@{ctx.author.name}, você precisa de {price} cookies estocados para adquirir um {option} {emoji}"
+                return f"@{ctx.author.name}, você precisa de {price} cookies estocados para adquirir um {option} {emoji}"
             else:
                 await self.bot.db.update(
                     "cookies", values={"gifts": f"gifts-{price}"}, where={"name": ctx.author.name},
@@ -382,45 +411,53 @@ class Cookies(commands.AutoCog):
                 await self.bot.db.update(
                     "users", values={"pet": option, "petname": None}, where={"name": ctx.author.name},
                 )
-                ctx.response = (
+                return (
                     f"@{ctx.author.name}, você adquiriu um {option} {emoji}! "
-                    "Escolha um nome com %pet name e o nome que desejar"
+                    f"Escolha um nome com {ctx.prefix}pet name e o nome que desejar"
                 )
-        elif action == "name" and not option:
-            ctx.response = f"@{ctx.author.name}, escolha um nome com %pet name e o nome que desejar"
-        elif action == "name" and len(option) > 20:
-            ctx.response = f"@{ctx.author.name}, esse nome é muito comprido para seu pet"
-        elif action == "name":
-            await self.bot.db.update(
-                "users", values={"petname": option.title()}, where={"name": ctx.author.name},
-            )
-            ctx.response = f"@{ctx.author.name}, agora seu pet se chama {option.title()}"
         else:
-            if not action:
-                action = ctx.author.name
-            user = convert.user(action)
-            pet = await self.bot.db.select("users", what=["pet", "petname"], where={"name": user})
-            user = "você" if user == ctx.author.name else f"@{user}"
-            if pet["pet"]:
-                emoji = self.pets[pet["pet"]][2]
-                if pet["petname"]:
-                    ctx.response = f'@{ctx.author.name}, {user} possui um {pet["pet"]} chamado {pet["petname"]} {emoji}'
-                else:
-                    ctx.response = f'@{ctx.author.name}, {user} possui um {pet["pet"]} {emoji}'
-            elif user == "você":
-                ctx.response = f"@{ctx.author.name}, adquira um pet em troca de cookies (%pet list)"
+            return f'digite "{ctx.prefix}pet buy" e algum pet disponível na lista ({ctx.prefix}pet list)'
+
+    async def _name(self, ctx, name: str = None):
+        if not name:
+            return f'digite "{ctx.prefix}pet name" e o nome que desejar para seu pet'
+        elif len(name) > 20:
+            return f"@{ctx.author.name}, esse nome é muito comprido para seu pet"
+        elif not await self.bot.db.select1("users", what="pet", where={"name": ctx.author.name}):
+            return f"@{ctx.author.name}, adquira um pet em troca de cookies ({ctx.prefix}pet list)"
+        else:
+            await self.bot.db.update(
+                "users", values={"petname": name.title()}, where={"name": ctx.author.name},
+            )
+            return f"@{ctx.author.name}, agora seu pet se chama {name.title()}"
+        
+    async def _pat(self, ctx, *_):
+        pet = await self.bot.db.select("users", what=["pet", "petname"], where={"name": ctx.author.name})
+        if pet and pet["pet"]:
+            emoji = self.pets[pet["pet"]][2]
+            if pet["petname"]:
+                return f'@{ctx.author.name}, você fez carinho em {pet["petname"]} {emoji}'
             else:
-                ctx.response = f"@{ctx.author.name}, {user} não possui um pet"
+                return f'@{ctx.author.name}, você fez carinho no seu {pet["pet"]} {emoji}'
+        else:
+            return f"@{ctx.author.name}, adquira um pet em troca de cookies ({ctx.prefix}pet list)"
+
+    @command(description="adquira um pet em troca de cookies e tenha um companheiro")
+    async def pet(self, ctx, action: str = None, arg: str = None):
+        if not action:
+            action = "pet"
+        func = getattr(self, "_" + action)
+        if inspect.iscoroutinefunction(func):
+            ctx.response = await func(ctx, arg)
+        else:
+            ctx.response = func(ctx, arg)
 
     @command(description="veja quais são os maiores comedores ou doadores de cookies", cooldown=15)
     async def top(self, ctx, orderby: str = "count"):
         if orderby.lower() in ("gift", "gifts", "give", "gives", "giver", "givers"):
-            orderby = "you_gifted"
-            title = "givers"
+            orderby, title = "you_gifted", "givers"
         else:
-            orderby = "count"
-            title = "cookiers"
-
+            orderby, title = "count", "cookiers"
         top = await self.bot.db.select_all(
             "cookies", what=["name", orderby], order_by=f"{orderby} desc", limit=5
         )
