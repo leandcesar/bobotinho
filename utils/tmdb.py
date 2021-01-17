@@ -188,9 +188,7 @@ class TMDB(object):
         return "{base_uri}/{path}".format(base_uri=self.base_uri, path=path)
 
     def _get_params(self, params):
-        if not config.Vars.apikey_tmdb:
-            raise APIKeyError
-        api_dict = {"api_key": config.Vars.apikey_tmdb}
+        api_dict = {"api_key": config.vars.api.tmdb}
         if params:
             params.update(api_dict)
             for key, value in params.items():

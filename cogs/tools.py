@@ -66,7 +66,7 @@ class Tools(commands.AutoCog):
         self.bot = bot
         self.translator = google_trans_new.google_translator()
         self.dicio = dicio.Dicio()
-        self.owm = pyowm.OWM(config.Vars.apikey_owm, language="pt")
+        self.owm = pyowm.OWM(config.vars.api.owm, language="pt")
 
     def _prepare(self, bot):
         pass
@@ -96,7 +96,7 @@ class Tools(commands.AutoCog):
         base = code.upper()
         target = "BRL"
         url = URL_CRYPTO.format(base=base, target=target)
-        headers = {'X-CoinAPI-Key': config.Vars.apikey_coinapi}
+        headers = {'X-CoinAPI-Key': config.vars.api.coinapi}
         try:
             response = await asyncrq.get(url, headers=headers)
             conversion = response["rate"]
@@ -135,7 +135,7 @@ class Tools(commands.AutoCog):
         
         target = code.upper()
         base = "BRL"
-        url = URL_CURRENCY.format(api_key=config.Vars.apikey_exchangerate, base=base)
+        url = URL_CURRENCY.format(api_key=config.vars.api.exchangerate, base=base)
         try:
             response = await asyncrq.get(url)
             conversion_rates = response["conversion_rates"]

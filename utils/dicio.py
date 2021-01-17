@@ -39,35 +39,38 @@ TAG_PHRASE_DELIMITER = ('<div class="frase"', "</div>")
 
 class Utils(object):
     @staticmethod
-    def remove_tags(html):
-        return re.sub("<[^>]*>", " ", html).strip()
-
-    @staticmethod
-    def text_between(text, before, after, force_html=False):
+    def text_between(text: str, before: str, after: str) -> str:
+        """Retorna o texto entre duas palavras."""
         start = text.find(before)
-        if start > -1:
+        if start != -1:
             start += len(before)
-        if force_html:
-            if before[-1] != ">":
-                start = text.find(">", start) + 1
+        if before[-1] != ">":
+            start = text.find(">", start) + 1
         end = text.find(after, start)
-        if force_html:
-            if after[0] != "<":
-                end = text.find("<", start)
+        if after[0] != "<":
+            end = text.find("<", start)
         if -1 < start < end:
             return text[start:end]
         return text.strip().lower()
 
     @staticmethod
-    def remove_spaces(text):
-        return re.sub("[\t\n\r ]+", " ", text).strip()
-
-    @staticmethod
-    def remove_accents(text):
+    def remove_accents(text: str) -> str:
+        """Remove acentos."""
         return unidecode(text)
 
     @staticmethod
-    def split_html_tag(text, tag):
+    def remove_spaces(text: str) -> str:
+        """Substitui múltiplos espaços, tabulações e outros."""
+        return re.sub("[\t\n\r ]+", " ", text).strip()
+
+    @staticmethod
+    def remove_tags(html: str) -> str:
+        """Remove tags html."""
+        return re.sub("<[^>]*>", " ", html).strip()
+
+    @staticmethod
+    def split_html_tag(text: str, tag: str) -> list:
+        """Divide o texto nas tags html."""
         return list(filter(None, re.split("<[^>]*{0}[^>]*>".format(tag), text)))
 
 
@@ -81,84 +84,85 @@ class Word(object):
         self.extra = extra
         self.examples = examples
 
-    def __repr__(self):
-        return "{!r}".format(self.word)
-
-    def __str__(self):
-        return self.word
-
 
 class Dicio:
-    async def _request(self, word):
-        if len(word.split()) > 1:
-            return None
-        _word = Utils.remove_accents(word).strip().lower()
+    async def _request(self, word: str) -> str:
+        """[Interno] Obtém a página html da palavra."""
         try:
-            response = await asyncrq.get(BASE_URL.format(_word), res_method="text")
+            word = Utils.remove_accents(word).strip().lower()
+            response = await asyncrq.get(BASE_URL.format(word), res_method="text")
             return html.unescape(response)
         except:
             return None
 
-    def _scrape_meaning(self, page):
-        html = Utils.text_between(page, *TAG_MEANING, force_html=True)
-        etymology = Utils.text_between(html, *TAG_ETYMOLOGY, force_html=True)
-        etymology = Utils.remove_spaces(Utils.remove_tags(etymology))
+    def _scrape_meaning(self, page: str) -> (str, str):
+        """[Interno] Obtém o significado e etimologia da palavra."""
+        html = Utils.text_between(page, *TAG_MEANING)
+        etymology = Utils.text_between(html, *TAG_ETYMOLOGY)
+        etymology = Utils.remove_tags(etymology)
+        etymology = Utils.remove_spaces(etymology)
         meanings = Utils.split_html_tag(html, "br")
         meanings = [Utils.remove_spaces(Utils.remove_tags(x)) for x in meanings]
-        meaning = "; ".join([x for x in meanings if x != etymology])
-        return meaning, etymology
+        meanings = "; ".join([x for x in meanings if x != etymology])
+        return (meanings, etymology)
 
-    def _first_synonym(self, html):
-        synonym = Utils.text_between(html, *TAG_SYNONYMS_DELIMITER, force_html=True)
+    def _first_synonym(self, html: str) -> (Word, str):
+        """[Interno] Obtém o primeiro sinônimo da palavra."""
+        synonym = Utils.text_between(html, *TAG_SYNONYMS_DELIMITER)
         synonym = Utils.remove_spaces(synonym)
-        _html = html.replace(TAG_SYNONYMS_DELIMITER[0], "", 1)
-        _html = _html.replace(TAG_SYNONYMS_DELIMITER[1], "", 1)
-        return Word(synonym), _html
+        html = html.replace(TAG_SYNONYMS_DELIMITER[0], "", 1)
+        html = html.replace(TAG_SYNONYMS_DELIMITER[1], "", 1)
+        return (Word(synonym), html)
 
-    def _scrape_synonyms(self, page):
+    def _scrape_synonyms(self, page: str) -> str:
+        """[Interno] Obtém os sinônimos da palavra."""
         synonyms = []
-        if page.find(TAG_SYNONYMS[0]) > -1:
-            html = Utils.text_between(page, *TAG_SYNONYMS, force_html=True)
-            while html.find(TAG_SYNONYMS_DELIMITER[0]) > -1:
+        if page.find(TAG_SYNONYMS[0]) != -1:
+            html = Utils.text_between(page, *TAG_SYNONYMS)
+            while html.find(TAG_SYNONYMS_DELIMITER[0]) != -1:
                 synonym, html = self._first_synonym(html)
                 synonyms.append(synonym)
         return synonyms
 
-    def _scrape_examples(self, page):
+    def _scrape_examples(self, page: str) -> str:
+        """[Interno] Obtém os exemplos da palavra."""
         examples = []
-        html = page
-        index = html.find(TAG_PHRASE_DELIMITER[0])
-        while index > -1:
-            example_html = Utils.text_between(html, *TAG_PHRASE_DELIMITER, force_html=True)
+        index = page.find(TAG_PHRASE_DELIMITER[0])
+        while index != -1:
+            example_html = Utils.text_between(page, *TAG_PHRASE_DELIMITER)
             examples += [Utils.remove_spaces(Utils.remove_tags(example_html))]
-            html = html[index + len(TAG_PHRASE_DELIMITER[0]) :]
-            index = html.find(TAG_PHRASE_DELIMITER[0])
+            page = page[index + len(TAG_PHRASE_DELIMITER[0]) :]
+            index = page.find(TAG_PHRASE_DELIMITER[0])
         return examples
 
-    def _scrape_extra(self, page):
+    def _scrape_extra(self, page: str) -> dict:
+        """[Interno] Obtém informações extras da palavra."""
         dict_extra = {}
-        try:
-            if page.find(TAG_EXTRA[0]) > -1:
-                html = Utils.text_between(page, *TAG_EXTRA, force_html=True)
+        if page.find(TAG_EXTRA[0]) != -1:
+            try:
+                html = Utils.text_between(page, *TAG_EXTRA)
                 extra_rows = Utils.split_html_tag(Utils.remove_spaces(html), TAG_EXTRA_SEP)
                 for row in extra_rows:
-                    _row = Utils.remove_tags(row)
-                    key, value = map(Utils.remove_spaces, _row.split(":"))
+                    key, value = Utils.remove_spaces(Utils.remove_tags(row)).split(":")
                     dict_extra[key] = value
-        except:
-            pass
+            except:
+                pass
         return dict_extra
 
-    async def exists(self, word):
+    async def exists(self, word: str) -> bool:
+        """Verifica se a palavra existe."""
+        word = word.lower()
         page = await self._request(word)
-        title = Utils.text_between(page, "<h1", "</h1>", force_html=True)
+        title = Utils.text_between(page, "<h1", "</h1>")
         return unidecode(title) == unidecode(word)
     
-    async def search(self, word):
+    async def search(self, word: str) -> Word:
+        """Retorna um objeto Word da palavra."""
+        word = word.lower()
         page = await self._request(word)
         meaning, etymology = self._scrape_meaning(page)
         return Word(
-            Utils.text_between(page, "<h1", "</h1>", force_html=True),
+            Utils.text_between(page, "<h1", "</h1>"),
             meaning=meaning,
             etymology=etymology,
             synonyms=self._scrape_synonyms(page),
@@ -166,11 +170,16 @@ class Dicio:
             extra=self._scrape_extra(page),
         )
 
-    async def meaning(self, word):
+    async def meaning(self, word: str) -> str:
+        """Retorna o significado da palavra."""
+        word = word.lower()
         page = await self._request(word)
         meaning, _ = self._scrape_meaning(page)
         return meaning
 
-    async def synonyms(self, word):
+    async def synonyms(self, word: str) -> str:
+        """Retorna o sinônimo da palavra."""
+        word = word.lower()
         page = await self._request(word)
-        return self._scrape_synonyms(page)
+        synonyms = self._scrape_synonyms(page)
+        return synonyms

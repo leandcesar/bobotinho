@@ -24,6 +24,7 @@ import logging
 import os
 
 from cogs import afk, remind
+from concurrent.futures._base import TimeoutError
 from ext import command, channels, postgresql
 from twitchio.ext import commands
 from utils import checks, convert
@@ -39,13 +40,30 @@ class Bobotinho(commands.Bot):
         """Estabelece comunicação do Bot com a Twitch (IRC)."""
         self.log = logging.getLogger()
         super().__init__(
-            irc_token=config.Vars.tmi_token,
-            client_id=config.Vars.client_id,
-            client_secret=config.Vars.client_secret,
-            prefix=config.Vars.prefix,
-            nick=config.Vars.bot_nick,
-            initial_channels=[config.Vars.bot_nick],
+            irc_token=config.vars.client.token,
+            client_id=config.vars.client.id,
+            client_secret=config.vars.client.secret,
+            prefix=config.vars.bot.prefix,
+            nick=config.vars.bot.nick,
+            initial_channels=[config.vars.bot.nick],
         )
+
+    async def _handle_checks(self, ctx, no_global_checks=False):
+        """Reescreve o método `_handle_checks` para aceitar múltiplas verificações."""
+        if no_global_checks:
+            checks = ctx.command._checks
+        else:
+            checks = self._checks + ctx.command._checks
+        if not checks:
+            return True
+        for predicate in checks:
+            if inspect.iscoroutinefunction(predicate):
+                result = await predicate(ctx)
+            else:
+                result = predicate(ctx)
+            if not result:
+                return predicate
+        return True
 
     async def event_error(self, err, data=None):
         """Evento chamado quando ocorre um erro durante o processamento de dados."""
@@ -69,10 +87,15 @@ class Bobotinho(commands.Bot):
         """Método para se juntar à todos os canais do banco de dados."""
         all_channels = await self.db.select_all("channels") # obtém canais e informações
         self.channels = channels.Channels(all_channels) # faz as conversões necessárias
-        for i in range(0, len(list(self.channels)), 99):
-            # junta-se a cada 99 canais devido a limitação da Twitch
-            await self.join_channels(list(self.channels)[i:i+99])
-
+        LIMIT = 100
+        for i in range(0, len(list(self.channels)), LIMIT):
+            # junta-se a cada 100 canais devido a limitação da Twitch
+            try:
+                await self.join_channels(list(self.channels)[i:i+LIMIT])
+            except TimeoutError as err:
+                _, channel, _ = str(err).split('"')
+                del self.channels[channel]
+                
     def load_all_modules(self, path: str = "cogs"):
         """Método que carrega todos os módulos contidos na pasta 'cogs'."""
         for module in [filename[:-3] for filename in os.listdir(path) if filename.endswith(".py")]:
@@ -83,23 +106,6 @@ class Bobotinho(commands.Bot):
             except Exception as err:
                 self.log.error(convert.traceback(err))
 
-    async def _handle_checks(self, ctx, no_global_checks=False):
-        """Reescreve o método `_handle_checks` para aceitar múltiplas verificações."""
-        if no_global_checks:
-            checks = ctx.command._checks
-        else:
-            checks = self._checks + ctx.command._checks
-        if not checks:
-            return True
-        for predicate in checks:
-            if inspect.iscoroutinefunction(predicate):
-                result = await predicate(ctx)
-            else:
-                result = predicate(ctx)
-            if not result:
-                return predicate
-        return True
-
     def add_all_checks(self):
         """Método que adiciona todas as verificações globais."""
         self.add_check(self.channels.is_enabled) # se o bot está ativado no canal
@@ -108,7 +114,7 @@ class Bobotinho(commands.Bot):
 
     async def event_ready(self):
         """Evento chamado quando o Bot estiver conectado e pronto."""
-        self.db = await postgresql.PostgreSQL.init(config.Vars.database, loop=self.loop)
+        self.db = await postgresql.PostgreSQL.init(config.vars.database, loop=self.loop)
         await self.join_all_channels()
         self.load_all_modules()
         self.add_all_checks()
@@ -143,20 +149,8 @@ class Bobotinho(commands.Bot):
         else:
             await ctx.send(ctx.response)
 
-    async def event_webhook(self, data):
-        """Evento que é disparado quando uma mensagem de uma assinatura de Webhook é recebida."""
-        pass
-
     async def event_raw_pubsub(self, data):
         """Evento que dispara quando um evento de assinatura PubSub é recebido."""
-        pass
-
-    async def event_mode(self, channel, user, status):
-        """Evento chamado quando um MODE é recebido do Twitch."""
-        pass
-
-    async def event_userstate(self, user):
-        """Evento chamado quando um USERSTATE é recebido do Twitch."""
         pass
 
     async def event_raw_usernotice(self, channel, tags: dict):
@@ -167,12 +161,24 @@ class Bobotinho(commands.Bot):
         """Evento chamado quando uma assinatura USERNOTICE ou evento de nova assinatura é recebido do Twitch."""
         pass
 
-    async def event_part(self, user):
-        """Evento chamado quando um PART é recebido do Twitch."""
+    async def event_mode(self, channel, user, status):
+        """Evento chamado quando um MODE é recebido do Twitch."""
+        pass
+
+    async def event_userstate(self, user):
+        """Evento chamado quando um USERSTATE é recebido do Twitch."""
+        pass
+
+    async def event_webhook(self, data):
+        """Evento que é disparado quando uma mensagem de uma assinatura de Webhook é recebida."""
         pass
 
     async def event_join(self, user):
         """Evento chamado quando um JOIN é recebido do Twitch."""
+        pass
+
+    async def event_part(self, user):
+        """Evento chamado quando um PART é recebido do Twitch."""
         pass
 
     async def event_message(self, message):
@@ -181,11 +187,15 @@ class Bobotinho(commands.Bot):
             # se o bot estiver desativado no canal, apenas remove o status de afk
             await afk.returned(self, message, send=False)
         elif (
-            message.author.name == self.nick # se o usuário for o próprio bot
-            or await afk.returned(self, message) # se o usuário estava afk
-            or await remind.reminder(self, message) # se o usuário tiver um lembrete
-            or await self.channels[message.channel.name].pyramid.update(message) # se for pirâmide
+            message.author.name == self.nick
+            or await afk.returned(self, message) 
+            or await remind.reminder(self, message) 
+            or await self.channels[message.channel.name].pyramid.update(message)
         ):
+            # se o usuário for o próprio bot,
+            # se o usuário estava afk,
+            # se o usuário tiver um lembrete,
+            # ou se for pirâmide
             pass
         else:
             # se for um comando, o executa

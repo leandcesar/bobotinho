@@ -36,11 +36,11 @@ class Basics(commands.AutoCog):
     def _prepare(self, bot):
         pass
 
-    @command(aliases=["bot"], description="veja as principais informações sobre o bot", cooldown=30)
+    @command(aliases=["bot"], description="veja as principais informações sobre o bot")
     async def botinfo(self, ctx):
         channels = len(self.bot.channels)
         commands = len(self.bot.commands)
-        owner = config.Vars.owner_nick
+        owner = config.vars.owner.nick
         language = "Python"
         library = "TwitchIO"
         database = "PostgreSQL"
@@ -82,11 +82,11 @@ class Basics(commands.AutoCog):
                 f"{c.description} - {c.cooldown}s cooldown"
             )
 
-    @command(description="receba o link para adicionar o bot no seu chat", cooldown=30)
+    @command(description="receba o link para adicionar o bot no seu chat")
     async def invite(self, ctx):
         ctx.response = f"@{ctx.author.name}, me adicione no seu chat: https://bobotinho.herokuapp.com/invite"
 
-    @command(aliases=["pong"], description="verifique se o bot está online", cooldown=30)
+    @command(aliases=["pong"], description="verifique se o bot está online")
     async def ping(self, ctx):
         if ctx.content.partition(" ")[0][len(ctx.prefix):] == "pong":
             ctx.response = f"@{ctx.author.name}, ping 🏓"
@@ -95,15 +95,21 @@ class Basics(commands.AutoCog):
 
     @command(
         aliases=["discord", "github", "twitter"],
-        description="receba o link do site do bot para mais informações", 
-        cooldown=30
+        description="receba o link do site do bot para mais informações",
     )
     async def site(self, ctx):
         ctx.response = f"@{ctx.author.name}, mais informações no meu site: https://bobotinho.herokuapp.com/"
+        
+    @command(
+        aliases=["pn"],
+        description="receba o link das notas de atualização do bot e fique por dentro das novidades",
+    )
+    async def patchnotes(self, ctx):
+        ctx.response = f"@{ctx.author.name}, notas de atualização: https://bobotinho.herokuapp.com/patch-notes"
 
     @command(
         description="faça uma sugestão de recurso para o bot",
-        cooldown=15,
+        cooldown=10,
         usage="digite o comando e uma sugestão de recurso ou modificação para o bot",
     )
     async def suggest(self, ctx, *, suggestion: str):
@@ -118,7 +124,7 @@ class Basics(commands.AutoCog):
         )
         ctx.response = f"@{ctx.author.name}, sua sugestão foi anotada"
 
-    @command(description="verifique há quanto tempo o bot está online", cooldown=30)
+    @command(description="verifique há quanto tempo o bot está online")
     async def uptime(self, ctx):
         uptime = convert.timesince(self.boot)
         ctx.response = f"@{ctx.author.name}, {uptime} desde a última inicialização"

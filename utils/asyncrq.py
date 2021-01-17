@@ -21,15 +21,33 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import aiohttp
 
 
-async def query(url, method="get", res_method="json", *args, **kwargs):
+async def fetch(url, method="get", res_method="json", *args, **kwargs):
+    """Executa uma requisição.
+    
+    Argumentos:
+    url -- endereço HTTP
+    method -- método de requisição HTTP
+    res_method -- tipo de resposta
+    """
     async with aiohttp.ClientSession() as session:
         async with getattr(session, method.lower())(url, *args, **kwargs) as response:
-            return await getattr(response, res_method)()
+            if response.status == 200:
+                return await getattr(response, res_method)()
 
 
 async def get(url, *args, **kwargs):
-    return await query(url, "get", *args, **kwargs)
+    """Executa um GET (compressão sintática para o método GET).
+    
+    Argumentos:
+    url -- endereço HTTP
+    """
+    return await fetch(url, "get", *args, **kwargs)
 
 
 async def post(url, *args, **kwargs):
-    return await query(url, "post", *args, **kwargs)
+    """Executa um POST (compressão sintática para o método POST).
+    
+    Argumentos:
+    url -- endereço HTTP
+    """
+    return await fetch(url, "post", *args, **kwargs)

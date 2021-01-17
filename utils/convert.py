@@ -88,7 +88,11 @@ def number(target: Union[int, float]) -> str:
 
 
 def date(target) -> datetime:
-    """Converte a entrada para <class 'datetime.datetime'>."""
+    """Converte a entrada para <class 'datetime.datetime'>.
+    
+    Argumentos:
+    target -- data, hora, data e hora, ou número que represente tempo
+    """
     return time.parse_date(target)
 
 

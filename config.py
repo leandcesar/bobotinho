@@ -21,27 +21,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import os
 
 
-class Vars:
-    """Variáveis de ambiente.
+class vars:
+    """Variáveis de ambiente."""
+    class api:
+        coinapi = os.environ.get("APIKEY_COINAPI")
+        exchangerate = os.environ.get("APIKEY_EXCHANGERATE")
+        # tmdb = os.environ.get("APIKEY_TMDB")
+        owm = os.environ.get("APIKEY_OWM")
+        
+    class bot:
+        id = int(os.environ.get("BOT_ID"))
+        nick = os.environ.get("BOT_NICK")
+        prefix = os.environ.get("PREFIX")
     
-    A configuração específica do ambiente é armazenada em variáveis ​​de ambiente (não 
-    no código-fonte). Isso permite que a configuração de cada ambiente seja modificada 
-    isoladamente e evita que credenciais seguras sejam armazenadas no controle de versão. 
-    """
-    apikey_coinapi = os.environ.get("APIKEY_COINAPI")
-    apikey_exchangerate = os.environ.get("APIKEY_EXCHANGERATE")
-    # apikey_tmdb = os.environ.get("APIKEY_TMDB")
-    apikey_owm = os.environ.get("APIKEY_OWM")
+    class owner:
+        id = int(os.environ.get("OWNER_ID"))
+        nick = os.environ.get("OWNER_NICK")
     
-    bot_id = int(os.environ.get("BOT_ID"))
-    bot_nick = os.environ.get("BOT_NICK")
-    owner_id = int(os.environ.get("OWNER_ID"))
-    owner_nick = os.environ.get("OWNER_NICK")
-    
-    client_id = os.environ.get("CLIENT_ID")
-    client_secret = os.environ.get("CLIENT_SECRET")
-    prefix = os.environ.get("PREFIX")
-    tmi_token = os.environ.get("TMI_TOKEN")
+    class client:
+        id = os.environ.get("CLIENT_ID")
+        secret = os.environ.get("CLIENT_SECRET")
+        token = os.environ.get("TMI_TOKEN")
 
     database = os.environ.get("DATABASE_URL")
     

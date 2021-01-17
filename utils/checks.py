@@ -29,7 +29,12 @@ with open("data//banned.txt", "r", encoding="utf-8") as file:
 
 def is_owner(ctx: Context) -> bool:
     """Verifica se o usuário é o dono do bot."""
-    return ctx.author.id == config.Vars.owner_id
+    return ctx.author.id == config.vars.owner.id
+
+
+def is_streamer(ctx: Context) -> bool:
+    """Verifica se o usuário é o streamer."""
+    return ctx.author.name == ctx.channel.name
 
 
 def is_mod(ctx: Context) -> bool:
@@ -49,12 +54,12 @@ def is_sub(ctx: Context) -> bool:
 
 def is_admin(ctx: Context) -> bool:
     """Verifica se o usuário é o dono do bot ou um moderador."""
-    return is_mod(ctx) or is_owner(ctx)
+    return is_mod(ctx) or is_streamer(ctx) or is_owner(ctx)
 
 
 def is_allowed(ctx: Context) -> bool:
     """Verifica se o usuário tem algum cargo."""
-    return is_sub(ctx) or is_vip(ctx) or is_mod(ctx) or is_owner(ctx)
+    return is_sub(ctx) or is_vip(ctx) or is_admin(ctx)
 
 
 def is_link(message: str) -> bool:
