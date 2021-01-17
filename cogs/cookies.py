@@ -32,65 +32,78 @@ class Cookies(commands.AutoCog):
     def __init__(self, bot):
         self.bot = bot
         self.marriages = dict()
-        pets = dict(
-            random.sample(list({
-                "abelha": [10, "🐝"],
-                "borboleta": [10, "🦋"],
-                "caracol": [10, "🐌"],
-                "formiga": [10, "🐜"],
-                "joaninha": [10, "🐞"],
-                "lagarta": [10, "🐛"],
-                "peixe": [10, "🐟"],
-                "caranguejo": [20, "🦀"],
-                "pássaro": [20, "🐦"],
-                "pintinho": [20, "🐥"],
-                "rato": [20, "🐭"],
-                "escorpião": [30, "🦂"],
-                "galinha": [30, "🐔"],
-                "hamster": [30, "🐹"],
-                "morcego": [30, "🦇"],
-                "coelho": [40, "🐰"],
-                "esquilo": [40, "🐿"],
-                "porco-espinho": [40, "🦔 "],
-                "sapo": [40, "🐸"],
-                "carneiro": [50, "🐏"],
-                "bode": [50, "🐐"],
-                "ovelha": [50, "🐑"],
-                "polvo": [50, "🐙"],
-                "gato": [50, "🐱"],
-                "cachorro": [50, "🐶"],
-                "porco": [50, "🐷"],
-                "boi": [60, "🐂"],
-                "búfalo": [60, "🐃"],
-                "camelo": [60, "🐫"],
-                "javali": [60, "🐗"],
-                "tartaruga": [60, "🐢"],
-                "vaca": [60, "🐮"],
-                "veado": [60, "🦌"],
-                "coala": [70, "🐨"],
-                "cobra": [70, "🐍"],
-                "cavalo": [70, "🐴"],
-                "girafa": [70, "🦒"],
-                "macaco": [70, "🐵"],
-                "pinguim": [70, "🐧"],
-                "baleia": [85, "🐋"],
-                "elefante": [85, "🐘"],
-                "golfinho": [85, "🐬"],
-                "crocodilo": [85, "🐊"],
-                "lobo": [85, "🐺"],
-                "leopardo": [100, "🐆"],
-                "tigre": [100, "🐯"],
-                "urso": [100, "🐻"],
-                "panda": [100, "🐼"],
-                "leão": [100, "🦁"],
-                "unicórnio": [200, "🦄"],
-                "dinossauro": [200, "🦕"],
-                "t-rex": [200, "🦖"],
-                "robô": [999, "🤖"],
-                "dragão": [999, "🐲"],
-            }.items()), 7)
-        )
-        self.pets = dict(sorted(pets.items(), key=lambda item: item[1]))
+        self.pets = {
+            "abelha": [10, "🐝"],
+            "borboleta": [10, "🦋"],
+            "camarão": [10, "🦐"],
+            "caracol": [10, "🐌"],
+            "formiga": [10, "🐜"],
+            "grilo": [10, "🦗"],
+            "joaninha": [10, "🐞"],
+            "lagarta": [10, "🐛"],
+            "peixe": [10, "🐟"],
+            "caranguejo": [20, "🦀"],
+            "lagarto": [20, "🦎"],
+            "pássaro": [20, "🐦"],
+            "pintinho": [20, "🐥"],
+            "rato": [20, "🐭"],
+            "aranha": [30, "🕷"],
+            "escorpião": [30, "🦂"],
+            "galinha": [30, "🐔"],
+            "hamster": [30, "🐹"],
+            "lula": [30, "🦑"],
+            "morcego": [30, "🦇"],
+            "sapo": [30, "🐸"],
+            "bode": [40, "🐐"],
+            "carneiro": [40, "🐏"],
+            "coelho": [40, "🐰"],
+            "esquilo": [40, "🐿"],
+            "ovelha": [40, "🐑"],
+            "polvo": [40, "🐙"],
+            "porco-espinho": [40, "🦔"],
+            "pato": [50, "🦆"],
+            "gato": [50, "🐱"],
+            "cachorro": [50, "🐶"],
+            "porco": [50, "🐷"],
+            "boi": [50, "🐂"],
+            "búfalo": [50, "🐃"],
+            "camelo": [50, "🐫"],
+            "javali": [50, "🐗"],
+            "vaca": [50, "🐮"],
+            "veado": [50, "🦌"],
+            "tartaruga": [60, "🐢"],
+            "cavalo": [60, "🐴"],
+            "coruja": [60, "🦉"],
+            "girafa": [60, "🦒"],
+            "pinguim": [60, "🐧"],
+            "zebra": [60, "🦓"],
+            "coala": [70, "🐨"],
+            "cobra": [70, "🐍"],
+            "macaco": [70, "🐵"],
+            "raposa": [70, "🦊"],
+            "águia": [85, "🦅"],
+            "baleia": [85, "🐋"],
+            "elefante": [85, "🐘"],
+            "golfinho": [85, "🐬"],
+            "crocodilo": [85, "🐊"],
+            "lobo": [85, "🐺"],
+            "leopardo": [85, "🐆"],
+            "gorila": [100, "🦍"],
+            "leão": [100, "🦁"],
+            "panda": [100, "🐼"],
+            "rinoceronte": [100, "🦏"],
+            "tigre": [100, "🐯"],
+            "tubarão": [100, "🦈"],
+            "urso": [100, "🐻"],
+            "unicórnio": [200, "🦄"],
+            "dinossauro": [200, "🦕"],
+            "t-rex": [200, "🦖"],
+            "alien": [999, "👽"],
+            "dragão": [999, "🐲"],
+            "robô": [999, "🤖"]
+        }
+        petlist = dict(random.sample(list(self.pets.items()), 8))
+        self.petlist = dict(sorted(petlist.items(), key=lambda item: item[1]))
 
     def _prepare(self, bot):
         pass
@@ -186,7 +199,7 @@ class Cookies(commands.AutoCog):
         else:
             user = convert.user(user)
             married = await self.bot.db.select1("users", what="married", where={"name": user})
-            if int(married) == ctx.author.id:
+            if married and int(married) == ctx.author.id:
                 ctx.response = (
                     f"@{ctx.author.name}, então, é isso... da próxima vez, " 
                     "case-se com alguém que realmente te ame, e não qualquer pessoa por aí"
@@ -271,7 +284,7 @@ class Cookies(commands.AutoCog):
         marry = await self.bot.db.select("users", what=["married", "marriage"], where={"name": user})
         user = "você" if user == ctx.author.name else f"@{user}"
         if not marry["married"]:
-            ctx.response = f"@{ctx.author.name}, {user} não se casou com ninguém"
+            ctx.response = f"@{ctx.author.name}, {user} não está casado com ninguém"
         else:
             married = await self.bot.db.select1("users", what="name", where={"id": marry["married"]})
             married = "você" if married == ctx.author.name else f"@{married}"
@@ -374,85 +387,149 @@ class Cookies(commands.AutoCog):
                 f"@{user}, você aceita se casar com @{ctx.author.name}? 💐💍"
                 f'Digite "{ctx.prefix}yes" ou "{ctx.prefix}no"'
             )
-
+    
     async def _pet(self, ctx, user: str = None):
-        if not user:
-            user = ctx.author.name
-        else:
-            user = convert.user(user)
-        pet = await self.bot.db.select("users", what=["pet", "petname"], where={"name": user})
+        user = convert.user(user) if user else ctx.author.name
+        pets = await self.bot.db.select("users", what=["pets", "petnames"], where={"name": user})
         user = "você" if user == ctx.author.name else f"@{user}"
-        if pet and pet["pet"]:
-            emoji = self.pets[pet["pet"]][2]
-            if pet["petname"]:
-                return f'@{ctx.author.name}, {user} possui um {pet["pet"]} chamado {pet["petname"]} {emoji}'
-            else:
-                return f'@{ctx.author.name}, {user} possui um {pet["pet"]} {emoji}'
+        if pets and pets["pets"]:
+            all_pets = " ".join([
+                f"{name or pet} {self.pets[pet][1]}" 
+                for pet, name in zip(pets["pets"], pets["petnames"])
+            ])
+            return f'@{ctx.author.name}, {user} possui {all_pets}'
         elif user == "você":
             return f"@{ctx.author.name}, adquira um pet em troca de cookies ({ctx.prefix}pet list)"
         else:
             return f"@{ctx.author.name}, {user} não possui um pet"
 
     def _list(self, ctx, *_):
-        pets = ", ".join([f"{k} ({v[0]})" for k, v in self.pets.items()])
+        pets = ", ".join([f"{k} ({v[0]})" for k, v in self.petlist.items()])
         return f'@{ctx.author.name}, adquira com "{ctx.prefix}pet buy" e: {pets}'
+        
 
     async def _buy(self, ctx, option: str = None):
-        if option and option.lower() in self.pets.keys():
-            pet = self.pets[option.lower()]
-            price = pet[0]
-            emoji = pet[1]
-            if await self.bot.db.select1("cookies", what="gifts", where={"name": ctx.author.name}) < price:
-                return f"@{ctx.author.name}, você precisa de {price} cookies estocados para adquirir um {option} {emoji}"
-            else:
-                await self.bot.db.update(
-                    "cookies", values={"gifts": f"gifts-{price}"}, where={"name": ctx.author.name},
-                )
-                await self.bot.db.update(
-                    "users", values={"pet": option, "petname": None}, where={"name": ctx.author.name},
-                )
-                return (
-                    f"@{ctx.author.name}, você adquiriu um {option} {emoji}! "
-                    f"Escolha um nome com {ctx.prefix}pet name e o nome que desejar"
-                )
-        else:
-            return f'digite "{ctx.prefix}pet buy" e algum pet disponível na lista ({ctx.prefix}pet list)'
+        if not (option and option.lower() in self.petlist.keys()):
+            return f'@{ctx.author.name}, digite "{ctx.prefix}pet buy" e algum pet disponível na lista ({ctx.prefix}pet list)'
+        option = option.lower()
+        price = self.pets[option][0]
+        emoji = self.pets[option][1]
+        gifts = await self.bot.db.select1("cookies", what="gifts", where={"name": ctx.author.name})
+        if not gifts:
+            return f"@{ctx.author.name}, você precisa de {price} cookies estocados para adquirir um {option} {emoji}"
+        if gifts < price:
+            return f"@{ctx.author.name}, você precisa de {price} cookies estocados para adquirir um {option} {emoji}"
+        pets = await self.bot.db.select("users", what=["pets", "petnames"], where={"name": ctx.author.name})
+        if len(pets["pets"]) >= 3:
+            return f"@{ctx.author.name}, você já possui a quantidade máxima de pets"
+        await self.bot.db.update("cookies", values={"gifts": f"gifts-{price}"}, where={"name": ctx.author.name})
+        pets["pets"].append(option)
+        pets["petnames"].append(None)
+        await self.bot.db.update(
+            "users", 
+            values={"pets": pets["pets"], "petnames": pets["petnames"]},
+            where={"name": ctx.author.name},
+        )
+        petlist = dict(random.sample(list(self.pets.items()), 8))
+        self.petlist = dict(sorted(petlist.items(), key=lambda item: item[1]))
+        return (
+            f"@{ctx.author.name}, você adquiriu um {option} {emoji}! "
+            f'Escolha um nome com "{ctx.prefix}pet name" e o nome que desejar'
+        )
 
     async def _name(self, ctx, name: str = None):
         if not name:
-            return f'digite "{ctx.prefix}pet name" e o nome que desejar para seu pet'
-        elif len(name) > 20:
-            return f"@{ctx.author.name}, esse nome é muito comprido para seu pet"
-        elif not await self.bot.db.select1("users", what="pet", where={"name": ctx.author.name}):
+            return f'@{ctx.author.name}, digite "{ctx.prefix}pet name" e o nome que desejar para seu pet'
+        pets = await self.bot.db.select("users", what=["pets", "petnames"], where={"name": ctx.author.name})
+        if not pets or not pets["pets"]:
             return f"@{ctx.author.name}, adquira um pet em troca de cookies ({ctx.prefix}pet list)"
-        else:
-            await self.bot.db.update(
-                "users", values={"petname": name.title()}, where={"name": ctx.author.name},
-            )
-            return f"@{ctx.author.name}, agora seu pet se chama {name.title()}"
-        
-    async def _pat(self, ctx, *_):
-        pet = await self.bot.db.select("users", what=["pet", "petname"], where={"name": ctx.author.name})
-        if pet and pet["pet"]:
-            emoji = self.pets[pet["pet"]][2]
-            if pet["petname"]:
-                return f'@{ctx.author.name}, você fez carinho em {pet["petname"]} {emoji}'
+        elif len(pets["pets"]) == 1:
+            if len(name) > 20:
+                return f"@{ctx.author.name}, esse nome é muito comprido para seu pet"
+            elif not all(char.isalpha() or char.isspace() for char in name):
+                return f"@{ctx.author.name}, esse nome não é válido (apenas letras e espaço)"
             else:
-                return f'@{ctx.author.name}, você fez carinho no seu {pet["pet"]} {emoji}'
+                await self.bot.db.update(
+                    "users", values={"petnames": [name.title()]}, where={"name": ctx.author.name},
+                )
+                return f"@{ctx.author.name}, agora seu pet se chama {name.title()}"
+        else:
+            try:
+                pet, name = name.split(" ", 1)
+                pet = pet.lower()
+                if len(name) > 20:
+                    return f"@{ctx.author.name}, esse nome é muito comprido para seu pet"
+                elif not all(char.isalpha() or char.isspace() for char in name):
+                    return f"@{ctx.author.name}, esse nome não é válido (apenas letras e espaço)"
+                else:
+                    pets["pets"].reverse()
+                    pets["petnames"].reverse()
+                    try:
+                        i = pets["pets"].index(pet)
+                    except ValueError:
+                        i = pets["petnames"].index(pet.title())
+                    pets["petnames"][i] = name.title()
+                    pets["petnames"].reverse()
+                    await self.bot.db.update(
+                        "users", values={"petnames": pets["petnames"]}, where={"name": ctx.author.name},
+                    )
+                    return f'@{ctx.author.name}, agora seu {pets["pets"][i]} se chama {name.title()}'
+            except:
+                return f'@{ctx.author.name}, você tem mais de um pet, então use "{ctx.prefix}pet name", a espécie e o nome'
+
+
+    async def _pat(self, ctx, *_):
+        pets = await self.bot.db.select("users", what=["pets", "petnames"], where={"name": ctx.author.name})
+        if pets and pets["pets"]:
+            all_pets = " ".join([
+                f"{name or pet} {self.pets[pet][1]}" 
+                for pet, name in zip(pets["pets"], pets["petnames"])
+            ])
+            return f'@{ctx.author.name}, você fez carinho em {all_pets}'
         else:
             return f"@{ctx.author.name}, adquira um pet em troca de cookies ({ctx.prefix}pet list)"
 
-    @command(description="adquira um pet em troca de cookies e tenha um companheiro")
-    async def pet(self, ctx, action: str = None, arg: str = None):
+    async def _sell(self, ctx, option: str = None):
+        if not option:
+            return f'@{ctx.author.name}, devolva um pet em troca de parte da quantidade de cookies com "{ctx.prefix}pet sell" e o nome/espécie'
+        pets = await self.bot.db.select("users", what=["pets", "petnames"], where={"name": ctx.author.name})
+        if not pets or not pets["pets"]:
+            return f"@{ctx.author.name}, você não tem nenhum pet, adquira um em troca de cookies ({ctx.prefix}pet list)"
+        if option in pets["pets"] or option.title() in pets["petnames"]:
+            try:
+                i = pets["pets"].index(option)
+            except ValueError:
+                i = pets["petnames"].index(option.title())
+            pet_sell = pets["pets"].pop(i)
+            _ = pets["petnames"].pop(i)
+            price = round(self.pets[pet_sell][0] * 0.7)
+            emoji = self.pets[pet_sell][1]
+            await self.bot.db.update("cookies", values={"gifts": f"gifts+{price}"}, where={"name": ctx.author.name})
+            await self.bot.db.update(
+                "users", 
+                values={"pets": pets["pets"], "petnames": pets["petnames"]}, 
+                where={"name": ctx.author.name}
+            )
+            return f'@{ctx.author.name}, você devolveu seu {pet_sell} em troca de {price} cookies {emoji}'
+        else:
+            return f'@{ctx.author.name}, devolva um pet em troca de parte da quantidade de cookies com "{ctx.prefix}pet sell" e o nome/espécie'
+
+    @command(
+        description="troque seus cookies por um pet (subcomandos: list, buy, name, pat, sell)",
+        cooldown=2,
+    )
+    async def pet(self, ctx, action: str = None, *, arg: str = None):
         if not action:
             action = "pet"
-        func = getattr(self, "_" + action)
+        elif not action in ("list", "buy", "name", "pat", "sell"):
+            action, arg = "pet", action
+        func = getattr(self, "_" + action.lower())
         if inspect.iscoroutinefunction(func):
             ctx.response = await func(ctx, arg)
         else:
             ctx.response = func(ctx, arg)
 
-    @command(description="veja quais são os maiores comedores ou doadores de cookies", cooldown=15)
+    @command(description="veja quais são os maiores comedores ou doadores de cookies")
     async def top(self, ctx, orderby: str = "count"):
         if orderby.lower() in ("gift", "gifts", "give", "gives", "giver", "givers"):
             orderby, title = "you_gifted", "givers"
@@ -474,9 +551,9 @@ class Cookies(commands.AutoCog):
         a, b, c = random.choices("🍇🍊🍋🍒🍉🍐", k=3)
         if a == b == c:
             await self.bot.db.update(
-                "cookies", values={"gifts": "gifts+7"}, where={"name": ctx.author.name},
+                "cookies", values={"gifts": "gifts+10"}, where={"name": ctx.author.name},
             )
-            return f"@{ctx.author.name} [{a}{b}{c}] você deu sorte, recuperou o cookie que apostou e ganhou mais 7 cookies! PogChamp"
+            return f"@{ctx.author.name} [{a}{b}{c}] você deu sorte, recuperou o cookie que apostou e ganhou mais 10 cookies!"
         elif a == b or a == c or b == c:
             await self.bot.db.update(
                 "cookies", values={"gifts": "gifts+2"}, where={"name": ctx.author.name},
@@ -491,7 +568,7 @@ class Cookies(commands.AutoCog):
             return f"@{ctx.author.name} [{a}{b}{c}] você deu azar e perdeu o cookie que apostou..."
 
     @command(
-        aliases=["slot", "sm"],
+        aliases=["sm"],
         description="aposte um cookie para ter a chance de ganhar outros... ou perdê-lo",
     )
     async def slotmachine(self, ctx):
@@ -505,9 +582,7 @@ class Cookies(commands.AutoCog):
         else:
             ctx.response = await self._slotmachine(ctx)
 
-    @command(
-        description="estoque o seu cookie diário caso não queira comê-lo",
-    )
+    @command(description="estoque o seu cookie diário caso não queira comê-lo")
     async def stock(self, ctx):
         if not await self.bot.db.exists("cookies", where={"name": ctx.author.name}):
             await self.bot.db.insert("cookies", values={"name": ctx.author.name})
