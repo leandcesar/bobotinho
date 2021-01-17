@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import random
+import string
 
 from ext.command import command
 from twitchio.ext import commands
@@ -66,7 +67,7 @@ class Fun(commands.AutoCog):
                         )
                     )
                     ctx.response = (
-                        f"{quote.format(winner=winner, loser=loser)}! PogChamp GG"
+                        f"{quote.format(winner=winner, loser=loser)}! GG"
                     )
                     return
             ctx.response = f"@{ctx.author.name}, você não tem desafios para aceitar"
@@ -123,7 +124,6 @@ class Fun(commands.AutoCog):
 
     @command(
         description="dê um abraço em alguém do chat",
-        cooldown=10,
         usage="digite o comando e o nome de alguém para abracá-lo",
     )
     async def hug(self, ctx, user: str):
@@ -147,7 +147,7 @@ class Fun(commands.AutoCog):
         ctx.response = f"@{ctx.author.name}: {joke} 4Head"
             
     @command(
-        aliases=["jankenpon", "jokempo"],
+        aliases=["jokempo"],
         description="tente vencer o pedra, papel e tesoura",
         usage="digite o comando e ✊, ✋ ou ✌",
     )
@@ -162,7 +162,6 @@ class Fun(commands.AutoCog):
 
     @command(
         description="dê um beijinho em alguém do chat",
-        cooldown=10,
         usage="digite o comando e o nome de alguém para beijá-lo",
     )
     async def kiss(self, ctx, user: str):
@@ -172,23 +171,52 @@ class Fun(commands.AutoCog):
             ctx.response = f"@{ctx.author.name}, {emoji} 💋"
         elif user == ctx.author.name:
             ctx.response = f"@{ctx.author.name} tentou beijar ele mesmo..."
+        elif user == "kkalfoy" and ctx.author.name != "discretinho":
+            ctx.response = f"@{ctx.author.name}, não."
+        elif user == "discretinho" and ctx.author.name != "kkalfoy":
+            ctx.response = f"@{ctx.author.name}, não."
         else:
             emoji = random.choice("😚😗😙😚😳😏")
             ctx.response = f"@{ctx.author.name} deu um beijinho em @{user} {emoji}💋"
-        
+    
+    @staticmethod
+    def _split(string: str, init: bool):
+        lenght = len(string)
+        if lenght <= 2:
+            return string
+        elif init:
+            try:
+                consonants = [i for i in range(lenght) if not string[i] in "aeiou"]
+                pos = min(consonants, key=lambda x: abs(x-lenght//2))
+                return string[:pos+1]
+            except:
+                return string[:lenght//2+1]
+        else:
+            try:
+                vowels = [i for i in range(lenght) if string[i] in "aeiou"]
+                pos = min(vowels, key=lambda x: abs(x-lenght/2))
+                return string[pos:]
+            except:
+                return string[lenght//2:]
+
     @command(
-        aliases=["sadcat", "rsc"],
-        description="receba a foto de um gatinho triste",
-        cooldown=20,
+        description="faça um ship entre o nome de duas pessoas",
+        usage="digite o comando e o nome de duas pessoas para shipá-los",
     )
-    async def randomsadcat(self, ctx):
-        with open("data//sadcats.txt", "r", encoding="utf-8") as file:
-            sadcat = "https://i.imgur.com/" + random.choice(file.readlines())
-        ctx.response = f"@{ctx.author.name}, {sadcat} 😿"
+    async def ship(self, ctx, user1: str, user2: str = None):
+        user1 = convert.user(user1)
+        if user2:
+            user2 = convert.user(user2)
+        else:
+            user1, user2 = ctx.author.name, user1
+        if user1 == user2:
+            ctx.response = f"@{ctx.author.name}, uma pessoa não pode ser shipada com ela mesma..."
+        else:
+            ship = self._split(user1, True) + self._split(user2, False)
+            ctx.response = f"@{ctx.author.name}, {user1} & {user2}: {ship} 😍"
 
     @command(
         description="coloque alguém do chat na cama para dormir",
-        cooldown=10,
         usage="digite o comando e o nome de alguém para colocá-lo na cama",
     )
     async def tuck(self, ctx, user: str):

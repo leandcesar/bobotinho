@@ -54,7 +54,7 @@ class Fun(commands.AutoCog):
         ctx.response = f"@{ctx.author.name}, {choice}"
 
     @command(
-        aliases=["coin", "cf"],
+        aliases=["cf"],
         description="jogue uma moeda e veja se deu cara ou coroa",
         cooldown=15,
     )
@@ -65,15 +65,16 @@ class Fun(commands.AutoCog):
         elif percentage < 3000:
             ctx.response = f"@{ctx.author.name} jogou uma moeda e ela caiu em coroa"
         else:
-            ctx.response = f"@{ctx.author.name} jogou uma moeda e ela caiu no meio, em pé! PogChamp"
+            ctx.response = f"@{ctx.author.name} jogou uma moeda e ela caiu no meio, em pé!"
 
     @command(
-        aliases=["8ball", "magicball"],
+        name="8ball",
+        aliases=["magicball"],
         description="tenha sua pergunta respondida com uma previsão do 8-ball",
         cooldown=10,
         usage="digite o comando e uma pergunta para saber a resposta prevista",
     )
-    async def eightball(self, ctx, *, question: str):
+    async def magicball(self, ctx, *, question: str):
         quote = random.choice((
             "ao meu ver, sim",
             "com certeza",
@@ -128,6 +129,16 @@ class Fun(commands.AutoCog):
     async def pick(self, ctx, *, message: str):
         picked = random.choice(message.split())
         ctx.response = f"@{ctx.author.name}, {picked}"
+        
+    @command(
+        aliases=["rsc"],
+        description="receba a foto de um gatinho triste",
+        cooldown=20,
+    )
+    async def randomsadcat(self, ctx):
+        with open("data//sadcats.txt", "r", encoding="utf-8") as file:
+            sadcat = "https://i.imgur.com/" + random.choice(file.readlines())
+        ctx.response = f"@{ctx.author.name}, {sadcat} 😿"
 
     @command(
         description="role um dado e veja o resultado",
