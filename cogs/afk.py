@@ -79,7 +79,6 @@ class Afk(commands.AutoCog):
     @command(
         aliases=aliases(),
         description="informe que você está se ausentando do chat",
-        cooldown=15,
     )
     async def afk(self, ctx, *, message: str = None):
         invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
@@ -128,7 +127,6 @@ class Afk(commands.AutoCog):
     @command(
         aliases=["ls"],
         description="saiba a última vez que alguém foi visto",
-        cooldown=10,
         usage="digite o comando e o nome de alguém para saber quando foi visto pela última vez",
     )
     async def lastseen(self, ctx, user: str):
@@ -166,7 +164,6 @@ class Afk(commands.AutoCog):
     @command(
         aliases=raliases(),
         description="retome seu status de ausência do chat",
-        cooldown=15,
         usage="digite o comando em até 3 minutos após ter retornado do seu afk para retomá-lo",
     )
     async def rafk(self, ctx):
@@ -174,7 +171,7 @@ class Afk(commands.AutoCog):
         returned_afk = {
             k: v 
             for k, v in returned_afk.items() 
-            if v["timestamp"] + datetime.timedelta(seconds=180) > ctx.message.timestamp
+            if ctx.message.timestamp - v["timestamp"] < datetime.timedelta(seconds=180)
         }
         returned = returned_afk.pop(ctx.author.id, None)
         if not returned:
@@ -194,28 +191,30 @@ class Afk(commands.AutoCog):
 
 async def returned(bot, message, send: bool = True):
     if bot.channels.is_disabled(message.channel.name, "afk"):
-        return
-    row = await bot.db.select("users", where={"id": message.author.id})
+        return 
+    row = await bot.db.select(
+        "users", 
+        what=["message", "timestamp", "afk"], 
+        where={"id": message.author.id}
+    )
     if not row or not row["afk"]:
         return
-    else:
-        await bot.db.update("users", values={"afk": None}, where={"id": message.author.id})
-
+    await bot.db.update("users", values={"afk": None}, where={"id": message.author.id})
     if not checks.is_allowed(message) and checks.is_link(row["message"]):
         _message = "(a mensagem continha um link e o usuário não é inscrito, vip ou moderador)"
     elif " " in row["message"]:
         _message = row["message"].partition(" ")[2]
     else:
         _message = default_message(row["afk"])
-
-    global returned_afk    
+    global returned_afk
     returned_afk[message.author.id] = {"message": _message, "timestamp": row["timestamp"]}
 
     if send:
         timesince = convert.timesince(row["timestamp"])
         response = f'@{message.author.name} {quote_returned(row["afk"])}: {_message} ({timesince})'
         if not bot.channels.is_banword(message.channel.name, response):
-            return await message.channel.send(response)
+            await message.channel.send(response)
+            return True
 
 
 def prepare(bot):

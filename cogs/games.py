@@ -164,7 +164,7 @@ class Games(commands.AutoCog):
     @command(
         aliases=["lw"],
         description='jogo de palavras: quem enviar a palavra mais comprida com determida sílaba vence', 
-        cooldown=5,
+        cooldown=20,
         level="admin",
     )
     @commands.check(checks.is_admin)
@@ -206,7 +206,7 @@ class Games(commands.AutoCog):
     @command(
         aliases=["mw"],
         description='jogo de palavras: quem enviar mais palavras com determida sílaba vence', 
-        cooldown=5,
+        cooldown=20,
         level="admin",
     )
     @commands.check(checks.is_admin)
@@ -248,7 +248,7 @@ class Games(commands.AutoCog):
     @command(
         aliases=["hm"],
         description="jogo da forca: enviem letras para tentar descobrir qual é a palavra aleatória", 
-        cooldown=2,
+        cooldown=20,
         level="admin",
     )
     @commands.check(checks.is_admin)

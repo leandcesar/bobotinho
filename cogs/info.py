@@ -172,7 +172,7 @@ class UserInfo(commands.AutoCog):
         return req["name"]["value"]
 
     @command(
-        aliases=["accage", "age"],
+        aliases=["age"],
         description="saiba há quanto tempo algum usuário criou sua conta",
     )
     async def accountage(self, ctx, user: str = None):
@@ -194,24 +194,6 @@ class UserInfo(commands.AutoCog):
             ctx.response = f"@{ctx.author.name}, hoje completa {accountage} que {user} criou a conta 🎂"
         else:
             ctx.response = f"@{ctx.author.name}, {user} criou a conta há {accountage}"
-
-    @command(description="saiba quando algum usuário criou sua conta")
-    async def creation(self, ctx, user: str = None):
-        if not user:
-            user = ctx.author.name
-
-        user = convert.user(user)
-        creation = await get_creation(user)
-        user = self._user_format(ctx, user)
-
-        if user == f"@{self.bot.nick}":
-            ctx.response = f"@{ctx.author.name}, eu sempre existi..."
-        elif creation is None:
-            ctx.response = f"@{ctx.author.name}, não foi possível verificar isso"
-        elif "não existe" in creation:
-            ctx.response = f"@{ctx.author.name}, {creation}"
-        else:
-            ctx.response = f"@{ctx.author.name}, {user} criou a conta em {creation}"
 
     @command(description="saiba o código hexadecimal da cor de algum usuário")
     async def color(self, ctx, user: str = None, color: str = None):
@@ -238,21 +220,21 @@ class UserInfo(commands.AutoCog):
         elif user == ctx.author.name:
             color = ctx.author.colour
             name = await self._color_name(color)
-            ctx.response = f"@{ctx.author.name}, sua cor é {color}, {name}"
+            ctx.response = f"@{ctx.author.name}, sua cor é {color} ({name})"
             saved_color = await self.bot.db.select1(
                 "users", what="saved_color", where={"id": ctx.author.id}
             )
             if saved_color:
                 ctx.response += f" (cor salva: {saved_color})"
         elif user == self.bot.nick:
-            ctx.response = f"@{ctx.author.name}, minha cor é #FFFFFF, White"
+            ctx.response = f"@{ctx.author.name}, minha cor é #FFFFFF (White)"
         elif user == "random":
             color = f"#{random.randint(0, 0xFFFFFF):06X}"
             ctx.response = f"@{ctx.author.name}, aqui está uma cor aleatória: {color}"
         elif re.match(r"#(?:[0-9A-Fa-f]{6})$", user):
             color = user
             name = await self._color_name(color)
-            ctx.response = f"@{ctx.author.name}, {color.upper()}, {name}"
+            ctx.response = f"@{ctx.author.name}, {color.upper()} ({name})"
         else:
             color = await self.bot.db.select1(
                 "users", what="color", where={"name": user}
@@ -264,13 +246,34 @@ class UserInfo(commands.AutoCog):
                 )
             elif color == "#F8A6E9":
                 ctx.response = f"@{ctx.author.name}, rosa."
-            elif color == "#A6F8AA":
+            elif color == "#C0EDCA":
                 ctx.response = f"@{ctx.author.name}, verde."
             else:
                 name = await self._color_name(color)
                 ctx.response = (
-                    f"@{ctx.author.name}, a cor de @{user} é {color}, {name}"
+                    f"@{ctx.author.name}, a cor de @{user} é {color} ({name})"
                 )
+
+    @command(
+        aliases=["create"],
+        description="saiba quando algum usuário criou sua conta"
+    )
+    async def creation(self, ctx, user: str = None):
+        if not user:
+            user = ctx.author.name
+
+        user = convert.user(user)
+        creation = await get_creation(user)
+        user = self._user_format(ctx, user)
+
+        if user == f"@{self.bot.nick}":
+            ctx.response = f"@{ctx.author.name}, eu sempre existi..."
+        elif creation is None:
+            ctx.response = f"@{ctx.author.name}, não foi possível verificar isso"
+        elif "não existe" in creation:
+            ctx.response = f"@{ctx.author.name}, {creation}"
+        else:
+            ctx.response = f"@{ctx.author.name}, {user} criou a conta em {creation}"
     
     @command(
         aliases=["ff"],

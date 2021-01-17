@@ -40,22 +40,19 @@ class Owner(commands.AutoCog):
         usage="digite o comando e o nome do canal",
     )
     @commands.check(checks.is_owner)
-    async def join(self, ctx, channel: str):
+    async def join(self, ctx, channel: str, id: int):
         channel = convert.user(channel)
         if channel in self.bot.channels:
             ctx.response = f"@{ctx.author.name}, já estou conectado ao canal @{channel}"
         else:
             try:
-                users = await self.bot.get_users(channel)
-                user = users[0]
-                followers = await self.bot.get_followers(user.id, count=True)
                 await self.bot.join_channels([channel])
                 await self.bot.db.insert(
                     "channels",
                     values={
-                        "id": int(user.id),
+                        "id": int(id),
                         "name": channel,
-                        "follows": int(followers),
+                        "follows": 0,
                     },
                 )
                 self.bot.channels[channel] = Channel()

@@ -109,13 +109,13 @@ class Dungeons(commands.AutoCog):
                         class_ = -row["class_"]
                         subclass = None
                         dungeon += (
-                            f' e pode se tornar "%ed {op1}" ou "%ed {op2}"! PogChamp'
+                            f' e pode se tornar "%ed {op1}" ou "%ed {op2}"!'
                         )
                     else:
                         subclass = self.classes[str(class_)][
                             str(level // 10 if level // 10 < 7 else 6)
                         ]
-                        dungeon += f" e se tornou {subclass} PogChamp"
+                        dungeon += f" e se tornou {subclass}"
                 else:
                     dungeon += f" e alcançou level {level} ⬆"
             await self.bot.db.update(
@@ -171,11 +171,6 @@ class Dungeons(commands.AutoCog):
             f"({wins} vitórias, {losses} derrotas, {winrate:.2f}% winrate) ♦"
         )
 
-    async def _get_rank(self, what=["name", "level", "xp"], where={}, order_by="level desc, xp desc"):
-        return await self.bot.db.select_all(
-            "dungeons", what=what, where=where, order_by=order_by, limit=5
-        )
-
     @command(
         aliases=["ed", "ed1", "ed2"],
         description="entre na dungeon, faça sua escolha e adquira experiência",
@@ -213,7 +208,7 @@ class Dungeons(commands.AutoCog):
     @command(
         aliases=["fed"],
         description="entre na dungeon e adquira experiência sem precisar tomar uma escolha",
-        cooldown=1,
+        cooldown=5,
     )
     async def fasted(self, ctx):
         if not await self.bot.db.exists("dungeons", where={"name": ctx.author.name}):
@@ -260,6 +255,11 @@ class Dungeons(commands.AutoCog):
             level = await self._get_level(user)
             ctx.response = f"@{ctx.author.name}, @{user} {level}"
 
+    async def _get_rank(self, what=["name", "level", "xp"], where={}, order_by="level desc, xp desc"):
+        return await self.bot.db.select_all(
+            "dungeons", what=what, where=where, order_by=order_by, limit=5
+        )
+
     @command(description="saiba quais são os melhores jogadores da dungeon")
     async def rank(self, ctx, orderby: str = "dungeons"):
         orderby = orderby.lower()
@@ -281,16 +281,6 @@ class Dungeons(commands.AutoCog):
         elif orderby in ("derrota", "derrotas", "lose", "losses"):
             rank = await self._get_rank(what=["name", "losses"], order_by="losses desc")
             orderby = "derrotas"
-        elif orderby == "winrate":
-            rank = await self._get_rank(
-                what=["name", "wins/(wins+losses) as winrate"],
-                order_by="1.0 * wins / losses desc",
-            )
-        elif orderby == "loserate":
-            rank = await self._get_rank(
-                what=["name", "losses/(wins+losses) as loserate"],
-                order_by="1.0 * wins / losses asc",
-            )
         else:
             rank = await self._get_rank()
             orderby = "dungeons"
