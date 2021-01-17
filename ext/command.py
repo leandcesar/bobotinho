@@ -18,11 +18,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import datetime
+import time
 from twitchio.ext import commands
 
 DEFAULT_COOLDOWN = 5  # in seconds
-MAX_CACHE = 256
 
 
 class Command(commands.Command):
@@ -46,18 +45,18 @@ def command(name: str = None, aliases: list = None, no_global_checks: bool = Fal
     return decorator
 
 
-on_hold = dict()
-
+holder = {}
+max_lenght = 512
 
 def cooldown(ctx):
-    global on_hold
-    on_hold = {
-        k: v for k, v in on_hold.items() if v > ctx.message.timestamp
-    }
-    key = f"{ctx.author.name}-{ctx.channel.name}-{ctx.command.name}"
-    if key in on_hold:
+    global holder
+    now = time.monotonic()
+    holder = {k: v for k, v in holder.items() if v > now}
+    if len(holder) >= max_lenght:
+        del holder[list(holder.keys())[0]]
+    key = f"{ctx.author.id}-{ctx.command.name}"
+    if key in holder:
         return False
-    if len(on_hold) >= MAX_CACHE:
-        del on_hold[list(on_hold.keys())[0]]
-    on_hold[key] = ctx.message.timestamp + datetime.timedelta(seconds=ctx.command.cooldown)
-    return True
+    else:
+        holder[key] = time.monotonic() + ctx.command.cooldown
+        return True
