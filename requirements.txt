@@ -1,0 +1,4 @@
+# bobotinho/
+twitchio==1.2.3
+# bobotinho/database
+tortoise-orm==0.17.2
