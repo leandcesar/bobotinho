@@ -11,14 +11,14 @@ async def func(bot):
     #       mas depois pegar os novos reminds por trigger
     while True:
         remind = await models.Reminder.filter().order_by("scheduled_for").first()
-        if not remind or (delta := await remind.scheduled_ago) > 60:
+        if not remind or (delta := remind.scheduled_ago.total_seconds()) > 60:
             await asyncio.sleep(60, loop=bot.loop)
             continue
         if delta > 0:
             await asyncio.sleep(delta, loop=bot.loop)
         mention = "você" if remind.user_from_id == remind.user_to_id else f"@{remind.user_from_id}"
         content = remind.content or ""
-        timeago = timetools.timeago(remind.created_at)
+        timeago = timetools.date_in_full(remind.created_ago)
         response = f"@{remind.user_to_id}, {mention} deixou um lembrete cronometrado: {content} ({timeago})"
         await remind.delete()
         if "remind" not in bot.channels[remind.channel_id]["disabled"]:

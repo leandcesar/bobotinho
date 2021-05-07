@@ -89,5 +89,4 @@ def find_relative_time(target: str) -> Optional[Match[AnyStr]]:
 def find_absolute_time(target: str) -> Optional[Match[AnyStr]]:
     match = pattern_absolute_time_and_date.match(target)
     if match and any(match.groups()[1:]):
-        print(match.groups())
         return match

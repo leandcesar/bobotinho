@@ -28,8 +28,6 @@ class Pyramid:
         parts = message.content.strip().split()
         word = parts[0]
         count = parts.count(word)
-        print(word)
-        print(count)
         same = (self.user == message.author.name and self.word == word)
         if len(parts) != count:
             return self.init()

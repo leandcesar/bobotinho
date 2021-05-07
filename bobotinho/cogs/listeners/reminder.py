@@ -15,7 +15,7 @@ async def event_message(bot, message) -> bool:
         return
     mention = "você" if remind.user_from_id == message.author.name else f"@{remind.user_from_id}"
     content = remind.content or ""
-    timeago = timetools.timeago(remind.created_at, now=message.timestamp)
+    timeago = timetools.date_in_full(remind.created_ago)
     await remind.delete()
     response = f"@{message.author.name}, {mention} deixou um lembrete: {content} ({timeago})"
     await message.channel.send(response)

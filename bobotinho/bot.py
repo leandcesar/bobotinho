@@ -69,7 +69,7 @@ class Bobotinho(AutoBot):
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
         ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         ctx.prefix = self.prefixes[0]
-        await models.User.update_or_create_from_ctx(ctx)
+        await models.User.create_if_not_exists(ctx)
 
     async def global_after_hook(self, ctx):
         if not hasattr(ctx, "response") and ctx.command.usage:
@@ -93,3 +93,4 @@ class Bobotinho(AutoBot):
                 if await listen(self, message):
                     return
         await self.handle_commands(message)
+        await models.User.update_if_exists(message)

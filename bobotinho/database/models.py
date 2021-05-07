@@ -57,29 +57,25 @@ class User(Base, TimestampMixin, ContentMixin):
         return self.name
 
     @classmethod
-    async def create_from_ctx(cls, ctx):
-        return await cls.create(
-            id=ctx.author.id,
-            channel=ctx.channel.name,
-            name=ctx.author.name,
-            color=ctx.author.colour,
-            content=ctx.content,
-        )
+    async def create_if_not_exists(cls, ctx):
+        if not await cls.get_or_none(id=ctx.author.id):
+            return await cls.create(
+                id=ctx.author.id,
+                channel=ctx.channel.name,
+                name=ctx.author.name,
+                color=ctx.author.colour,
+                content=ctx.content,
+            )
 
     @classmethod
-    async def update_from_ctx(cls, ctx):
-        return await cls.filter(id=ctx.author.id).update(
-            channel=ctx.channel.name,
-            name=ctx.author.name,
-            color=ctx.author.colour,
-            content=ctx.content,
-        )
-
-    @classmethod
-    async def update_or_create_from_ctx(cls, ctx):
-        if await cls.exists(id=ctx.author.id):
-            return await cls.update_from_ctx(ctx)
-        return await cls.create_from_ctx(ctx)
+    async def update_if_exists(cls, message):
+        if user := await cls.get_or_none(id=message.author.id):
+            return await user.update_from_dict({
+                "channel": message.channel.name,
+                "name": message.author.name,
+                "color": message.author.colour,
+                "content": message.content,
+            }).save()
 
 
 class Channel(Base, TimestampMixin):
@@ -122,27 +118,19 @@ class Afk(Base, TimestampMixin, ContentMixin):
         table = "afk"
 
     @classmethod
-    async def create_from_ctx(cls, ctx, content):
+    async def update_or_create_from_ctx(cls, ctx, content):
+        if afk := await cls.get_or_none(user_id=ctx.author.name):
+            return await afk.update_from_dict({
+                "alias": ctx.command.invocation,
+                "status": True,
+                "content": content,
+            }).save()
         return await cls.create(
             user_id=ctx.author.name,
             alias=ctx.command.invocation,
             status=True,
-            content=content,
+            content=ctx.content,
         )
-
-    @classmethod
-    async def update_from_ctx(cls, ctx, content):
-        return await cls.filter(user_id=ctx.author.name).update(
-            alias=ctx.command.invocation,
-            status=True,
-            content=content,
-        )
-
-    @classmethod
-    async def update_or_create_from_ctx(cls, ctx, content):
-        if await cls.exists(user_id=ctx.author.name):
-            return await cls.update_from_ctx(ctx, content)
-        return await cls.create_from_ctx(ctx, content)
 
 
 class Cookie(Base):
@@ -255,9 +243,8 @@ class Reminder(Base, TimestampMixin, ContentMixin):
         table = "reminder"
 
     @property
-    async def scheduled_ago(cls):
-        delta = cls.scheduled_for - timezone.now()
-        return delta.total_seconds()
+    def scheduled_ago(cls):
+        return cls.scheduled_for - timezone.now()
 
 
 class Suggest(Base, ContentMixin):

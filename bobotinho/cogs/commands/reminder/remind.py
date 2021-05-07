@@ -52,7 +52,7 @@ async def func(ctx, arg: str, *, content: str = ""):
                 )
                 mention = "você" if name == ctx.author.name else f"@{name}"
                 timeago = timetools.timeago(ctx.message.timestamp, now=scheduled_for)
-                ctx.response = f"{mention} será lembrado disso daqui {timeago} ⏲"
+                ctx.response = f"{mention} será lembrado disso daqui {timeago} ⏲️"
     elif match := timetools.find_absolute_time(content):
         match_dict = match.groupdict()
         match_dict = {
