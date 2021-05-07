@@ -7,8 +7,8 @@ from bobotinho.logger import log
 
 
 async def request(
+    method: str,
     url: str,
-    method: str = "get",
     res_method: str = "json",
     raise_for_status: bool = True,
     *args,
@@ -32,7 +32,7 @@ async def get(
     *args,
     **kwargs
 ) -> Optional[Union[str, dict]]:
-    return await request(url, "get", res_method, raise_for_status, *args, **kwargs)
+    return await request("get", url, res_method, raise_for_status, *args, **kwargs)
 
 
 async def post(
@@ -42,4 +42,4 @@ async def post(
     *args,
     **kwargs
 ) -> Optional[Union[str, dict]]:
-    return await request(url, "post", res_method, raise_for_status, *args, **kwargs)
+    return await request("post", url, res_method, raise_for_status, *args, **kwargs)

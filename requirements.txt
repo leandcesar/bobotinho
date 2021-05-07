@@ -1,6 +1,9 @@
 # bobotinho/
 aiohttp==3.6.2
 twitchio==1.2.3
+# bobotinho/apis
+google-trans-new==1.1.9
+pyowm==2.10.0
 # bobotinho/database
 asyncpg==0.22.0
 tortoise-orm==0.17.2
