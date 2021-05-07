@@ -37,8 +37,10 @@ def str2int(target: Optional[str]) -> Optional[int]:
 
 
 def str2hexcode(target: Optional[str]) -> Optional[str]:
-    if target:
-        return re.match(r"#(?:[0-9A-Fa-f]{6})$", target).group(0)
+    if not target:
+        return None
+    if match := re.match(r"#(?:[0-9A-Fa-f]{6})$", target):
+        return match.group(0)
 
 
 def str2username(target: Optional[str]) -> Optional[str]:
