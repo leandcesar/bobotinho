@@ -85,7 +85,7 @@ class User(Base, TimestampMixin, ContentMixin):
 class Channel(Base, TimestampMixin):
     user = ForeignKeyField("models.User", to_field="name")
     followers = IntField(null=True, description="Twitch followers")
-    icon = IntField(null=True, description="Twitch profile icon")
+    icon = CharField(max_length=64, null=True, description="Twitch profile icon")
     banwords = JSONField(default={})
     disabled = JSONField(default={})
     status = BooleanField(default=True)
@@ -257,13 +257,6 @@ class Reminder(Base, TimestampMixin, ContentMixin):
     @property
     async def scheduled_ago(cls):
         return timezone.now() - cls.scheduled_for
-
-
-class SystemLog(Base, TimestampMixin):
-    exception = CharField(max_length=128, null=True)
-
-    class Meta:
-        table = "systemlog"
 
 
 class Suggest(Base, ContentMixin):
