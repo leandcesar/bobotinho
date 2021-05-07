@@ -17,6 +17,7 @@ class Bobotinho(AutoBot):
         )
         self.site = config.site
         self.owner = config.owner
+        self.webhook = config.webhook
         self.cache = {}
 
     async def add_all_channels(self):

@@ -9,7 +9,8 @@ class Config:
     nick = os.getenv("BOT_NAME", "bobotinho")
     prefix = os.getenv("BOT_PREFIX", "%")
     owner = os.getenv("OWNER_NAME", "discretinho")
-    site = os.getenv("BOT_SITE", "https://bobotinho.herokuapp.com")
+    site = os.getenv("URL_SITE", "https://bobotinho.herokuapp.com")
+    webhook = os.getenv("URL_LOAD_BALANCER")
 
 
 class ProdConfig(Config):
