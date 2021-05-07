@@ -1,4 +1,5 @@
 # bobotinho/
+asyncpg==0.22.0
 twitchio==1.2.3
 # bobotinho/database
 tortoise-orm==0.17.2
