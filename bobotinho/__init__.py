@@ -12,7 +12,6 @@ import sys
 from bobotinho.config import config_dict
 from bobotinho.logger import log
 
-
 try:
     config_mode = os.getenv("CONFIG_MODE", "local")
     bot_config = config_dict[config_mode]

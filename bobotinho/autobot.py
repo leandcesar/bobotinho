@@ -19,6 +19,7 @@ class AutoBot(Bot):
             _checks = ctx.command._checks
         else:
             _checks = self._checks + ctx.command._checks
+        print(_checks)
         if not _checks:
             return True
         for predicate in _checks:
@@ -51,7 +52,7 @@ class AutoBot(Bot):
                 try:
                     local = os.path.join(path, filename)
                     module = import_module(local[:-3].replace("/", "."), basedir.replace("/", "."))
-                    module.func._checks = getattr(module, "extra_checks", [])
+                    module.func.__checks__ = getattr(module, "extra_checks", [])
                     command = Command(
                         name=getattr(module, "name", filename[:-3]),
                         func=module.func,

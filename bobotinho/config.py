@@ -8,8 +8,8 @@ class Config:
     irc_token = os.getenv("TMI_TOKEN")
     nick = os.getenv("BOT_NAME", "bobotinho")
     prefix = os.getenv("BOT_PREFIX", "%")
+    site = os.getenv("BOT_SITE", "https://bobotinho.herokuapp.com")
     owner = os.getenv("OWNER_NAME", "discretinho")
-    site = os.getenv("URL_SITE", "https://bobotinho.herokuapp.com")
     webhook = os.getenv("URL_LOAD_BALANCER")
 
 
