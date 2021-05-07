@@ -19,7 +19,6 @@ class AutoBot(Bot):
             _checks = ctx.command._checks
         else:
             _checks = self._checks + ctx.command._checks
-        print(_checks)
         if not _checks:
             return True
         for predicate in _checks:

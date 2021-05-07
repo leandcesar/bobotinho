@@ -45,22 +45,25 @@ class Bobotinho(AutoBot):
         log.exception(e)
 
     async def event_command_error(self, ctx, e):
-        if isinstance(e, CheckFailure) and str(e).split()[-1] == "is_enabled":
-            ctx.response = "esse comando está desativado nesse canal"
-        elif isinstance(e, CheckFailure) and str(e).split()[-1] == "is_banword":
-            ctx.response = "sua mensagem contém um termo banido"
-        elif isinstance(e, CheckFailure) and str(e).split()[-1] == "is_allowed":
-            ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
+        if isinstance(e, CommandNotFound):
+            pass
+        elif isinstance(e, CheckFailure):
+            if str(e).split()[-1] == "is_enabled":
+                ctx.response = "esse comando está desativado nesse canal"
+            elif str(e).split()[-1] == "is_banword":
+                ctx.response = "sua mensagem contém um termo banido"
+            elif str(e).split()[-1] == "is_allowed":
+                ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
+            else:
+                log.error(e)
+            if hasattr(ctx, "response"):
+                response = f"@{ctx.author.name}, {ctx.response}"
+                await ctx.send(response)
+                log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
-        elif isinstance(e, (CheckFailure, CommandNotFound)):
-            log.error(e)
         else:
             log.exception(e)
-        if hasattr(ctx, "response"):
-            response = f"@{ctx.author.name}, {ctx.response}"
-            await ctx.send(response)
-            log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
 
     async def global_before_hook(self, ctx):
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")

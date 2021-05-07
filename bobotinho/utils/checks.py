@@ -20,7 +20,6 @@ def is_sub(ctx) -> bool:
 
 
 def is_banword(ctx) -> bool:
-    print(ctx.bot.channels[ctx.channel.name]["banwords"])
     return not any(x in ctx.content for x in ctx.bot.channels[ctx.channel.name]["banwords"])
 
 
