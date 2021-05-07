@@ -18,6 +18,6 @@ async def func(ctx, *, content: str):
             "content": content,
             "author": ctx.author.name,
             "channel": ctx.channel.name,
-            "timestamp": ctx.message.timestamp,
+            "timestamp": ctx.message.timestamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
     )
