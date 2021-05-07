@@ -23,8 +23,10 @@ pattern_absolute_time_and_date = re.compile(
     (?:on|em)\s
     (?:\b
         (?P<hour>[01]?[0-9]|2[0-3])
-        (?:h|:(?P<minute>[0-5][0-9])
-        (?::(?P<second>[0-5][0-9]))?)
+        [h:]
+        (?P<minute>[0-5][0-9])?
+        :?
+        (?P<second>[0-5][0-9])?
     \b\s?)?
     (?:\b
         (?P<day>0?[1-9]|[12][0-9]|3[01])
@@ -80,11 +82,12 @@ def timeago(target: datetime, now: datetime = None, full: bool = True) -> Union[
 
 def find_relative_time(target: str) -> Optional[Match[AnyStr]]:
     match = pattern_relative_time.match(target)
-    if match and any([match.groups()[1:]]):
+    if match and any(match.groups()[1:]):
         return match
 
 
 def find_absolute_time(target: str) -> Optional[Match[AnyStr]]:
     match = pattern_absolute_time_and_date.match(target)
-    if match and any([match.groups()[1:]]):
+    if match and any(match.groups()[1:]):
+        print(match.groups())
         return match

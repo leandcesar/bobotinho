@@ -256,7 +256,8 @@ class Reminder(Base, TimestampMixin, ContentMixin):
 
     @property
     async def scheduled_ago(cls):
-        return timezone.now() - cls.scheduled_for
+        delta = cls.scheduled_for - timezone.now()
+        return delta.total_seconds()
 
 
 class Suggest(Base, ContentMixin):
