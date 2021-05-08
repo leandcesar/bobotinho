@@ -31,12 +31,12 @@ class TimestampMixin:
     updated_at = DatetimeField(auto_now=True)
 
     @property
-    def created_ago(cls):
-        return timezone.now() - cls.created_at
+    def created_ago(self):
+        return timezone.now() - self.created_at
 
     @property
-    def updated_ago(cls):
-        return timezone.now() - cls.updated_at
+    def updated_ago(self):
+        return timezone.now() - self.updated_at
 
 
 class ContentMixin:
@@ -59,7 +59,7 @@ class User(Base, TimestampMixin, ContentMixin):
     @classmethod
     async def create_if_not_exists(cls, ctx):
         if not await cls.get_or_none(id=ctx.author.id):
-            return await cls.create(
+            await cls.create(
                 id=ctx.author.id,
                 channel=ctx.channel.name,
                 name=ctx.author.name,
@@ -69,13 +69,16 @@ class User(Base, TimestampMixin, ContentMixin):
 
     @classmethod
     async def update_if_exists(cls, message):
-        if user := await cls.get_or_none(id=message.author.id):
-            return await user.update_from_dict({
-                "channel": message.channel.name,
-                "name": message.author.name,
-                "color": message.author.colour,
-                "content": message.content,
-            }).save()
+        if self := await cls.get_or_none(id=message.author.id):
+            self.update_from_dict(
+                {
+                    "channel": message.channel.name,
+                    "name": message.author.name,
+                    "color": message.author.colour,
+                    "content": message.content,
+                }
+            )
+            await self.save()
 
 
 class Channel(Base, TimestampMixin):
@@ -94,19 +97,19 @@ class Channel(Base, TimestampMixin):
 
     @classmethod
     async def append_json(cls, name, field, key, value):
-        channel = await cls.get(user_id=name)
-        json = getattr(channel, field)
+        self = await cls.get(user_id=name)
+        json = getattr(self, field)
         json[key] = value
-        setattr(channel, field, json)
-        await channel.save()
+        setattr(self, field, json)
+        await self.save()
 
     @classmethod
     async def remove_json(cls, name, field, key):
-        channel = await cls.get(user_id=name)
-        json = getattr(channel, field)
+        self = await cls.get(user_id=name)
+        json = getattr(self, field)
         json.pop(key)
-        setattr(channel, field, json)
-        await channel.save()
+        setattr(self, field, json)
+        await self.save()
 
 
 class Afk(Base, TimestampMixin, ContentMixin):
@@ -119,13 +122,7 @@ class Afk(Base, TimestampMixin, ContentMixin):
 
     @classmethod
     async def update_or_create_from_ctx(cls, ctx, content):
-        if afk := await cls.get_or_none(user_id=ctx.author.name):
-            return await afk.update_from_dict({
-                "alias": ctx.command.invocation,
-                "status": True,
-                "content": content,
-            }).save()
-        return await cls.create(
+        await cls.update_or_create(
             user_id=ctx.author.name,
             alias=ctx.command.invocation,
             status=True,
@@ -146,16 +143,11 @@ class Cookie(Base):
 
     @classmethod
     async def use_daily(cls):
-        if not cls.daily:
-            return False
         cls.daily -= 1
         await cls.save()
-        return True
 
     @classmethod
     async def consume(cls, amount: int = 1):
-        if cls.stocked + cls.daily < amount:
-            return False
         if cls.stocked >= amount:
             cls.stocked -= amount
         else:
@@ -164,29 +156,23 @@ class Cookie(Base):
             cls.daily -= amount
         cls.count += amount
         await cls.save()
-        return True
 
     @classmethod
     async def donate(cls, amount: int = 1):
-        if cls.daily < amount:
-            return False
         cls.daily -= amount
         cls.donated += amount
         await cls.save()
-        return True
 
     @classmethod
     async def receive(cls, amount: int = 1):
         cls.stocked += amount
         cls.received += amount
         await cls.save()
-        return True
 
     @classmethod
     async def stock(cls, amount: int = 1):
         cls.stocked += amount
         await cls.save()
-        return True
 
 
 class Dungeon(Base, TimestampMixin):
@@ -243,11 +229,11 @@ class Reminder(Base, TimestampMixin, ContentMixin):
         table = "reminder"
 
     @property
-    def scheduled_ago(cls):
-        return cls.scheduled_for - timezone.now()
+    def scheduled_ago(self):
+        return self.scheduled_for - timezone.now()
 
 
-class Suggest(Base, ContentMixin):
+class Suggest(Base, TimestampMixin, ContentMixin):
     user = ForeignKeyField("models.User", to_field="name")
 
     class Meta:
