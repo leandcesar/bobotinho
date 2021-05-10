@@ -17,3 +17,4 @@ async def event_message(bot, message) -> bool:
             await message.channel.send(response)
             log.info(f"#{message.channel.name} @{bot.nick}: {response}")
             return True
+    return False

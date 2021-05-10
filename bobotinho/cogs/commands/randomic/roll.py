@@ -5,7 +5,7 @@ description = "Role um dado e veja o resultado"
 usage = "digite o comando e o(s) dado(s) no formato <quantidade>d<lados> (ex: 1d20)"
 
 
-async def func(ctx, arg: str = None):
+async def func(ctx, arg: str = ""):
     if not arg:
         arg = "1d20"
     if "d" in arg:

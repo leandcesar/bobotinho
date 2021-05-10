@@ -12,7 +12,7 @@ async def event_message(bot, message) -> bool:
         .first()
     )
     if not remind or "remind" in bot.channels[message.channel.name]["disabled"]:
-        return
+        return False
     mention = "você" if remind.user_from_id == message.author.name else f"@{remind.user_from_id}"
     content = remind.content or ""
     timeago = timetools.date_in_full(remind.created_ago)

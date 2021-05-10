@@ -7,7 +7,7 @@ aliases = ["cc"]
 extra_checks = [checks.is_banword]
 
 
-async def func(ctx, arg: str = None):
+async def func(ctx, arg: str = ""):
     name = convert.str2username(arg) or ctx.author.name
     mention = "você" if name == ctx.author.name else f"@{name}"
     if not name:

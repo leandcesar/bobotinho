@@ -12,7 +12,7 @@ class TwitchAPI:
     ]
 
     @classmethod
-    async def _request(cls, endpoint: str) -> Optional[str]:
+    async def request(cls, endpoint: str) -> Optional[str]:
         url = f"{cls.base_url}/{endpoint}"
         params = {
             "lang": "pt",
@@ -37,28 +37,28 @@ class TwitchAPI:
 
     @classmethod
     async def accountage(cls, name: str) -> Optional[str]:
-        return await cls._request(f"accountage/{name}")
+        return await cls.request(f"accountage/{name}")
 
     @classmethod
     async def creation(cls, name: str) -> Optional[str]:
-        return await cls._request(f"creation/{name}")
+        return await cls.request(f"creation/{name}")
 
     @classmethod
     async def followage(cls, channel: str, name: str) -> Optional[str]:
-        return await cls._request(f"followage/{channel}/{name}")
+        return await cls.request(f"followage/{channel}/{name}")
 
     @classmethod
     async def followcount(cls, name: str) -> Optional[str]:
-        return await cls._request(f"followcount/{name}")
+        return await cls.request(f"followcount/{name}")
 
     @classmethod
     async def followed(cls, channel: str, name: str) -> Optional[str]:
-        return await cls._request(f"followed/{channel}/{name}")
+        return await cls.request(f"followed/{channel}/{name}")
 
     @classmethod
     async def followers(cls, channel: str) -> Optional[str]:
-        return await cls._request(f"followers/{channel}")
+        return await cls.request(f"followers/{channel}")
 
     @classmethod
     async def following(cls, name: str) -> Optional[str]:
-        return await cls._request(f"following/{name}")
+        return await cls.request(f"following/{name}")

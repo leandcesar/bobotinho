@@ -7,7 +7,7 @@ aliases = ["dolar", "euro", "libra"]
 usage = "digite o comando, a sigla (ex: USD) e a quantidade para saber a conversão em reais"
 
 
-async def func(ctx, arg1: str = None, arg2: str = None):
+async def func(ctx, arg1: str = "", arg2: str = ""):
     translate = {"dolar": "USD", "euro": "EUR", "libra": "GBP"}
     target = "BRL"
     base = translate.get(ctx.command.invocation) or arg1.upper()

@@ -8,7 +8,7 @@ usage = "digite o comando e o nome de alguém para saber a data de criação da 
 extra_checks = [checks.is_banword]
 
 
-async def func(ctx, arg: str = None):
+async def func(ctx, arg: str = ""):
     name = convert.str2username(arg) or ctx.author.name
     if not name:
         ctx.response = "nome de usuário inválido"

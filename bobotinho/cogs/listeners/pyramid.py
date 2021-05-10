@@ -8,7 +8,7 @@ class Pyramid:
     def __init__(self):
         self.init()
 
-    def init(self, user: str = None, word: str = None, count: int = 0) -> None:
+    def init(self, user: Optional[str] = None, word: Optional[str] = None, count: int = 0) -> None:
         self.user = user
         self.word = word
         self.i = self.max = count
@@ -48,3 +48,4 @@ async def event_message(bot, message) -> bool:
         await message.channel.send(response)
         log.info(f"#{message.channel.name} @{bot.nick}: {response}")
         return True
+    return False

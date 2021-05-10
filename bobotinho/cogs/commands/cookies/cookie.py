@@ -6,7 +6,7 @@ FILENAME = "bobotinho//data//cookies.txt"
 description = "Coma um biscoito da sorte e receba uma frase"
 
 
-async def func(ctx, arg: str = None):
+async def func(ctx, arg: str = ""):
     amount = convert.str2int(arg) or 1
     cookie, _ = await models.Cookie.get_or_create(user_id=ctx.author.name)
     if amount == 0:

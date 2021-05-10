@@ -72,12 +72,9 @@ class Bobotinho(AutoBot):
         await models.User.create_if_not_exists(ctx)
 
     async def global_after_hook(self, ctx):
-        if not hasattr(ctx, "response") and ctx.command.usage:
-            log.error(f'"{ctx.content}" has no ctx.response from #{ctx.channel.name}')
-            ctx.response = ctx.command.usage
-        elif not hasattr(ctx, "response"):
-            log.error(f'"{ctx.content}" has no ctx.response from #{ctx.channel.name}')
-            ctx.response = "ocorreu um erro inesperado"
+        if not hasattr(ctx, "response"):
+            log.error(f'"{ctx.content}" from @{ctx.author.name} has no ctx.response')
+            ctx.response = ctx.command.usage or "ocorreu um erro inesperado"
         elif len(ctx.response) > 400:
             log.error(f'"{ctx.response}" > 400 characters')
             ctx.response = "esse comando gerou uma resposta muito grande"

@@ -15,7 +15,7 @@ async def func(ctx):
             await cookie.stock(amount=10)
             ctx.response = f"[{x}{y}{z}] você usou seu cookie diário e ganhou 10 cookies! PogChamp"
         elif x == y or x == z or y == z:
-            await cookie.stock(amount=2)
+            await cookie.stock(amount=3)
             ctx.response = f"[{x}{y}{z}] você usou seu cookie diário e ganhou 3 cookies!"
         else:
             ctx.response = f"[{x}{y}{z}] você perdeu seu cookie diário..."

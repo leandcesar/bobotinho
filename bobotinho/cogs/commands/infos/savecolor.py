@@ -5,7 +5,7 @@ from bobotinho.utils import convert
 description = "Salve um código hexadecimal de cor"
 
 
-async def func(ctx, arg: str = None):
+async def func(ctx, arg: str = ""):
     if color := convert.str2hexcode(arg or ctx.author.colour):
         await models.User.filter(name=ctx.author.name).update(saved_color=color)
         ctx.response = (

@@ -5,7 +5,7 @@ description = "Veja quais são os maiores comedores ou doadores de cookies"
 aliases = ["cc"]
 
 
-async def func(ctx, arg: str = None):
+async def func(ctx, arg: str = ""):
     if arg in ["gift", "gifts", "give", "gives", "giver", "givers"]:
         order_by, title = "donated", "givers"
     else:

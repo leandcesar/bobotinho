@@ -7,7 +7,7 @@ aliases = ["fa"]
 extra_checks = [checks.is_banword]
 
 
-async def func(ctx, arg1: str = None, arg2: str = None):
+async def func(ctx, arg1: str = "", arg2: str = ""):
     name = convert.str2username(arg1) or ctx.author.name
     channel = convert.str2username(arg2) or ctx.channel.name
     if name and channel:

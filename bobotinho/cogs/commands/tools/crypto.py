@@ -7,7 +7,7 @@ aliases = ["bitcoin", "ethereum"]
 usage = "digite o comando, a sigla (ex: BTC) e a quantidade para saber a conversão em reais"
 
 
-async def func(ctx, arg1: str = None, arg2: str = None):
+async def func(ctx, arg1: str = "", arg2: str = ""):
     translate = {"bitcoin": "BTC", "ethereum": "ETH"}
     target = "BRL"
     base = translate.get(ctx.command.invocation) or arg1.upper()

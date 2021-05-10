@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import asyncio
 
-from bobotinho.database import models
 from bobotinho.cogs.tasks import send_message
+from bobotinho.database import models
 from bobotinho.utils import timetools
 
 
