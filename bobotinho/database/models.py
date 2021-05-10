@@ -58,7 +58,7 @@ class User(Base, TimestampMixin, ContentMixin):
 
     @classmethod
     async def create_if_not_exists(cls, ctx):
-        if not await cls.get_or_none(id=ctx.author.id):
+        if not await cls.exists(id=ctx.author.id):
             await cls.create(
                 id=ctx.author.id,
                 channel=ctx.channel.name,
@@ -69,16 +69,15 @@ class User(Base, TimestampMixin, ContentMixin):
 
     @classmethod
     async def update_if_exists(cls, message):
-        if self := await cls.get_or_none(id=message.author.id):
-            self.update_from_dict(
+        if instance := await cls.get_or_none(id=message.author.id):
+            await instance.update_from_dict(
                 {
                     "channel": message.channel.name,
                     "name": message.author.name,
                     "color": message.author.colour,
                     "content": message.content,
                 }
-            )
-            await self.save()
+            ).save()
 
 
 class Channel(Base, TimestampMixin):
@@ -97,19 +96,19 @@ class Channel(Base, TimestampMixin):
 
     @classmethod
     async def append_json(cls, name, field, key, value):
-        self = await cls.get(user_id=name)
-        json = getattr(self, field)
+        instance = await cls.get(user_id=name)
+        json = getattr(instance, field)
         json[key] = value
-        setattr(self, field, json)
-        await self.save()
+        setattr(instance, field, json)
+        await instance.save()
 
     @classmethod
     async def remove_json(cls, name, field, key):
-        self = await cls.get(user_id=name)
-        json = getattr(self, field)
+        instance = await cls.get(user_id=name)
+        json = getattr(instance, field)
         json.pop(key)
-        setattr(self, field, json)
-        await self.save()
+        setattr(instance, field, json)
+        await instance.save()
 
 
 class Afk(Base, TimestampMixin, ContentMixin):
@@ -119,15 +118,6 @@ class Afk(Base, TimestampMixin, ContentMixin):
 
     class Meta:
         table = "afk"
-
-    @classmethod
-    async def update_or_create_from_ctx(cls, ctx, content):
-        await cls.update_or_create(
-            user_id=ctx.author.name,
-            alias=ctx.command.invocation,
-            status=True,
-            content=ctx.content,
-        )
 
 
 class Cookie(Base):
@@ -141,38 +131,33 @@ class Cookie(Base):
     class Meta:
         table = "cookie"
 
-    @classmethod
-    async def use_daily(cls):
-        cls.daily -= 1
-        await cls.save()
+    async def use_daily(self):
+        self.daily -= 1
+        await self.save()
 
-    @classmethod
-    async def consume(cls, amount: int = 1):
-        if cls.stocked >= amount:
-            cls.stocked -= amount
+    async def consume(self, amount: int = 1):
+        if self.stocked >= amount:
+            self.stocked -= amount
         else:
-            amount -= cls.stocked
-            cls.stocked = 0
-            cls.daily -= amount
-        cls.count += amount
-        await cls.save()
+            amount -= self.stocked
+            self.stocked = 0
+            self.daily -= amount
+        self.count += amount
+        await self.save()
 
-    @classmethod
-    async def donate(cls, amount: int = 1):
-        cls.daily -= amount
-        cls.donated += amount
-        await cls.save()
+    async def donate(self, amount: int = 1):
+        self.daily -= amount
+        self.donated += amount
+        await self.save()
 
-    @classmethod
-    async def receive(cls, amount: int = 1):
-        cls.stocked += amount
-        cls.received += amount
-        await cls.save()
+    async def receive(self, amount: int = 1):
+        self.stocked += amount
+        self.received += amount
+        await self.save()
 
-    @classmethod
-    async def stock(cls, amount: int = 1):
-        cls.stocked += amount
-        await cls.save()
+    async def stock(self, amount: int = 1):
+        self.stocked += amount
+        await self.save()
 
 
 class Dungeon(Base, TimestampMixin):
@@ -217,6 +202,10 @@ class Pet(Base):
 
     def __str__(self):
         return self.name if self.name else self.specie
+
+    @classmethod
+    async def find(cls, user: str, name: str = None, specie: str = None):
+        return await cls.filter(Q(join_type=Q.OR, name=name, specie=specie), user_id=user).first()
 
 
 class Reminder(Base, TimestampMixin, ContentMixin):
