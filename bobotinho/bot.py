@@ -17,7 +17,6 @@ class Bobotinho(AutoBot):
         )
         self.site = config.site
         self.owner = config.owner
-        self.webhook = config.webhook
         self.cooldowns = {}
         self.cache = {}
 
@@ -85,9 +84,9 @@ class Bobotinho(AutoBot):
     async def event_message(self, message):
         if message.echo:
             return
+        await models.User.update_if_exists(message)
         if self.channels[message.channel.name]["status"]:
             for listen in self.listeners:
                 if await listen(self, message):
                     return
         await self.handle_commands(message)
-        await models.User.update_if_exists(message)
