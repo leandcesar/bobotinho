@@ -9,10 +9,10 @@ class Webhook:
     timestamp_format = "%Y-%m-%dT%H:%M:%SZ"
 
     @classmethod
-    async def suggestion(cls, suggest):
+    async def suggestions(cls, suggest):
         data = {
             "app": "bobotinho-bot",
-            "resource": "suggestion",
+            "resource": "suggestions",
             "id": suggest.id,
             "content": suggest.content,
             "author": suggest.name,
@@ -25,7 +25,7 @@ class Webhook:
     async def status(cls, systemlog, created):
         data = {
             "app": "bobotinho-bot",
-            "resource": "system-log",
+            "resource": "status",
             "id": systemlog.id,
             "status": created,
             "content": systemlog.error,
