@@ -28,7 +28,7 @@ class Webhook:
             "resource": "status",
             "id": systemlog.id,
             "status": created,
-            "content": systemlog.error,
+            "error": systemlog.error,
             "timestamp": systemlog.updated_at.strftime(cls.timestamp_format),
         }
         await aiorequests.post(cls.url, json=data)
