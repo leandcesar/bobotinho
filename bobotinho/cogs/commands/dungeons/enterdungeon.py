@@ -9,37 +9,40 @@ aliases = ["ed"]
 
 async def func(ctx, *, content: str = ""):
     choice = content.lower()
-    if dungeon := await models.Dungeon.get_or_none(user_id=ctx.author.name):
-        if not dungeon.sub_class:
-            if sub_class := D.choose_sub_class(choice, dungeon.class_, dungeon.gender):
-                dungeon.sub_class = sub_class
-                c = D.classes[dungeon.class_][dungeon.gender][dungeon.sub_class][dungeon.level//10]
-                await dungeon.save()
+    if player := await models.Player.get_or_none(name=ctx.author.name):
+        if not player.sub_class:
+            if sub_class := D.choose_sub_class(choice, player.class_, player.gender):
+                player.sub_class = sub_class
+                c = D.classes[player.class_][player.gender][player.sub_class][player.level//10]
+                await player.save()
                 ctx.response = f"agora você é {c}"
             else:
-                option1, option2 = D.options_sub_class(dungeon.class_, dungeon.gender)
-                ctx.response = f"antes de continuar, digite o comando e sua nova classe: {option1} ou {option2}"
-        elif dungeon.i:
+                option1, option2 = D.options_sub_class(player.class_, player.gender)
+                ctx.response = (
+                    f"antes de continuar, digite o comando e sua nova classe: {option1} ou {option2}"
+                )
+        elif player.dungeon:
             if choice in ["1", "2"]:
-                dungeon, response = D.resume_dungeon(dungeon, choice)
-                await dungeon.save()
+                player, response = D.resume_dungeon(player, choice)
+                await player.save()
                 ctx.response = response
             else:
-                ctx.response = D.generate_dungeon(dungeon.i)[0]["quote"]
-        elif dungeon.updated_ago.total_seconds() > 10800:
-            d, dungeon.i = D.generate_dungeon()
-            await dungeon.save()
+                ctx.response = D.generate_dungeon(player.dungeon)[0]["quote"]
+        elif player.updated_ago.total_seconds() > 10800:
+            d, player.dungeon = D.generate_dungeon()
+            await player.save()
             ctx.response = d["quote"]
         else:
-            ctx.response = f"aguarde {timetools.clean(dungeon.updated_ago)} para entrar em outra dungeon ⌛"
+            ctx.response = f"aguarde {timetools.clean(player.updated_ago)} para entrar em outra dungeon ⌛"
     elif c := D.choose_class(choice):
-        dungeon = await models.Dungeon.create(
-            user_id=ctx.author.name,
+        player = await models.Player.create(
+            id=ctx.author.id,
+            name=ctx.author.name,
             class_=c["class_"],
             gender=c["gender"],
-            i=D.generate_dungeon()[1],
+            dungeon=D.generate_dungeon()[1],
         )
-        emoji = D.classes[dungeon.class_]["emoji"]
+        emoji = D.classes[player.class_]["emoji"]
         ctx.response = f"você escolheu {choice.title()}! {emoji}"
     else:
         ctx.response = (

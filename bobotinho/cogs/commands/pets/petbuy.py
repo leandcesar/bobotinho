@@ -8,7 +8,7 @@ usage = "digite o comando e um dos pets disponíveis na loja para adquirí-lo"
 
 async def func(ctx, arg: str):
     if pet := P.random_pets().get(arg.lower()):
-        if cookie := await models.Cookie.get_or_none(user_id=ctx.author.name):
+        if cookie := await models.Cookie.get_or_none(name=ctx.author.name):
             if await models.Pet.filter(user_id=ctx.author.id).count() >= 3:
                 ctx.response = "você já possui a quantidade máxima de pets"
             elif cookie.stocked < pet.price:

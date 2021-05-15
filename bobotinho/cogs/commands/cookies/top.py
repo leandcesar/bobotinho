@@ -14,7 +14,7 @@ async def func(ctx, arg: str = ""):
     emojis = "🏆🥈🥉🏅🏅"
     tops = " ".join(
         [
-            f"{emoji} @{cookie.user_id} ({getattr(cookie, order_by)})"
+            f"{emoji} @{cookie.name} ({getattr(cookie, order_by)})"
             for emoji, cookie in zip(emojis, cookies)
         ]
     )

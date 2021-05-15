@@ -29,7 +29,7 @@ except Exception as e:
 
 try:
     from bobotinho.database import Database
-    db = Database(bot_config.database_url)
+    db = Database(bot_config.dbs_url)
 except Exception as e:
     log.exception(e)
     sys.exit("[FATAL] Database constructor failure")
@@ -39,9 +39,13 @@ def run():
     try:
         loop.run_until_complete(db.init())
         loop.run_until_complete(bot._ws._connect())
+        loop.run_until_complete(db.register_init())
         loop.run_until_complete(bot._ws._listen())
     except BaseException as e:
         log.exception(e)
+        loop.run_until_complete(db.register_close(e))
+    else:
+        loop.run_until_complete(db.register_close())
     finally:
         loop.run_until_complete(bot._ws._websocket.close())
         loop.run_until_complete(db.close())

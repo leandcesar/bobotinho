@@ -11,12 +11,12 @@ async def func(ctx, arg: str = ""):
         order_by, title = "defeats", "derrotas"
     else:
         order_by, title = "level", "dungeons"
-    dungeons = await models.Dungeon.filter().order_by("-"+order_by, "-xp").limit(5).all()
+    players = await models.Player.filter().order_by("-"+order_by, "-xp").limit(5).all()
     emojis = "🏆🥈🥉🏅🏅"
     tops = " ".join(
         [
-            f"{emoji} @{dungeon.user_id} ({getattr(dungeon, order_by)})"
-            for emoji, dungeon in zip(emojis, dungeons)
+            f"{emoji} @{player.name} ({getattr(player, order_by)})"
+            for emoji, player in zip(emojis, players)
         ]
     )
-    ctx.response = f"top {len(dungeons)} {title}: {tops}"
+    ctx.response = f"top {len(players)} {title}: {tops}"

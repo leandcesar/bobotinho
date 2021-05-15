@@ -7,7 +7,7 @@ aliases = ["sm"]
 
 
 async def func(ctx):
-    cookie, _ = await models.Cookie.get_or_create(user_id=ctx.author.name)
+    cookie, _ = await models.Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
     if cookie.daily:
         x, y, z = random.choices("🍇🍊🍋🍒🍉🍐", k=3)
         await cookie.use_daily()

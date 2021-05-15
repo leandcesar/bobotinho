@@ -137,15 +137,15 @@ def create_classes():
 classes = create_classes()
 
 
-def generate_dungeon(i: int = None) -> (dict, int):
+def generate_dungeon(dungeon: int = None) -> (dict, int):
     with open(FILENAME, "r", encoding="utf-8") as file:
-        dicts = json.load(file)
-    i = int(i) if i else random.randint(0, len(dicts) - 1)
-    return dicts[i], i
+        dungeons = json.load(file)
+    dungeon = int(dungeon) if dungeon else random.randint(0, len(dungeons) - 1)
+    return dungeons[dungeon], dungeon
 
 
-def resume_dungeon(dungeon: object, choice: str = None) -> (object, str):
-    d = generate_dungeon(dungeon.i)[0]
+def resume_dungeon(player: object, choice: str = None) -> (object, str):
+    d = generate_dungeon(player.dungeon)[0]
     result = random.choices(["win", "lose"], weights=(0.66, 0.33), k=1)[0]
     if not choice:
         choice = random.choice(["1", "2"])
@@ -156,28 +156,28 @@ def resume_dungeon(dungeon: object, choice: str = None) -> (object, str):
     else:
         response = d[choice][result]
     if result == "win":
-        dungeon.wins += 1
-        gained = random.randint(50, 75) + 3 * dungeon.level
-        dungeon.xp += gained
+        player.wins += 1
+        gained = random.randint(50, 75) + 3 * player.level
+        player.xp += gained
         response += f" +{gained} XP"
-        if dungeon.xp > 100 * (dungeon.level) + 25 * sum(range(1, dungeon.level + 1)):
-            dungeon.level += + 1
-            if dungeon.level % 10 == 0 and dungeon.level < 70:
-                response += f", alcançou level {dungeon.level} ⬆"
-                if dungeon.level == 30:
-                    op1, op2 = options_sub_class(dungeon.class_, dungeon.gender)
-                    dungeon.sub_class = None
+        if player.xp > 100 * (player.level) + 25 * sum(range(1, player.level + 1)):
+            player.level += + 1
+            if player.level % 10 == 0 and player.level < 70:
+                response += f", alcançou level {player.level} ⬆"
+                if player.level == 30:
+                    op1, op2 = options_sub_class(player.class_, player.gender)
+                    player.sub_class = None
                     response += f" e pode se tornar {op1} ou {op2}!"
                 else:
-                    c = classes[dungeon.class_][dungeon.gender][dungeon.level // 10]
+                    c = classes[player.class_][player.gender][player.level // 10]
                     response += f" e se tornou {c}"
             else:
-                response += f" e alcançou level {dungeon.level} ⬆"
+                response += f" e alcançou level {player.level} ⬆"
     else:
-        dungeon.defeats += 1
+        player.defeats += 1
         response += " 0 XP"
-    dungeon.i = None
-    return (dungeon, response)
+    player.dungeon = None
+    return (player, response)
 
 
 def options_class() -> dict:

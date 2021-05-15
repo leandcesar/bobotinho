@@ -8,19 +8,19 @@ aliases = ["fed", "fd"]
 
 
 async def func(ctx):
-    if dungeon := await models.Dungeon.get_or_none(user_id=ctx.author.name):
-        if not dungeon.sub_class:
-            option1, option2 = D.options_sub_class(dungeon.class_, dungeon.gender)
+    if player := await models.Player.get_or_none(name=ctx.author.name):
+        if not player.sub_class:
+            option1, option2 = D.options_sub_class(player.class_, player.gender)
             ctx.response = (
                 f'antes de continuar, digite "{ctx.prefix}ed" e sua nova classe: {option1} ou {option2}'
             )
-        elif dungeon.updated_ago.total_seconds() > 10800:
-            dungeon, response = D.resume_dungeon(dungeon)
-            dungeon.last_at = ctx.message.timestamp
-            await dungeon.save()
+        elif player.updated_ago.total_seconds() > 10800:
+            player, response = D.resume_dungeon(player)
+            player.last_at = ctx.message.timestamp
+            await player.save()
             ctx.response = response
         else:
-            ctx.response = f"aguarde {timetools.clean(dungeon.updated_ago)} para entrar em outra dungeon ⌛"
+            ctx.response = f"aguarde {timetools.clean(player.updated_ago)} para entrar em outra dungeon ⌛"
     else:
         ctx.response = (
             "antes de continuar, escolha sua classe! "

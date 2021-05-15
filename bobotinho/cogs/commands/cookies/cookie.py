@@ -8,7 +8,7 @@ description = "Coma um biscoito da sorte e receba uma frase"
 
 async def func(ctx, arg: str = ""):
     amount = convert.str2int(arg) or 1
-    cookie, _ = await models.Cookie.get_or_create(user_id=ctx.author.name)
+    cookie, _ = await models.Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
     if amount == 0:
         ctx.response = "você não comeu nada, uau!"
     elif amount < 0:

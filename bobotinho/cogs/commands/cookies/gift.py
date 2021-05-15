@@ -10,7 +10,7 @@ extra_checks = [checks.is_banword]
 
 async def func(ctx, arg: str):
     name = convert.str2username(arg)
-    cookie_from, _ = await models.Cookie.get_or_create(user_id=ctx.author.name)
+    cookie_from, _ = await models.Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
     if not name:
         ctx.response = "nome de usuário inválido"
     elif name == ctx.bot.nick:
@@ -20,7 +20,7 @@ async def func(ctx, arg: str):
     elif not await models.User.exists(name=name):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif cookie_from.daily >= 1:
-        cookie_to, _ = await models.Cookie.get_or_create(user_id=name)
+        cookie_to, _ = await models.Cookie.get_or_create(name=name)
         await cookie_from.donate()
         await cookie_to.receive()
         ctx.response = f"você presenteou @{name} com um cookie 🎁"

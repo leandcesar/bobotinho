@@ -14,7 +14,7 @@ async def func(ctx, arg: str = ""):
         ctx.response = "nome de usuário inválido"
     elif name == ctx.bot.nick:
         ctx.response = "eu tenho cookies infinitos, e distribuo uma fração deles para vocês"
-    elif cookie := await models.Cookie.get_or_none(user_id=name):
+    elif cookie := await models.Cookie.get_or_none(name=name):
         ctx.response = (
             f"{mention} já comeu {cookie.count} cookies, presenteou {cookie.donated}, "
             f"foi presenteado com {cookie.received} e tem {cookie.stocked} estocados"

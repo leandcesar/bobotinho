@@ -15,16 +15,16 @@ async def func(ctx, arg: str = ""):
         ctx.response = "nome de usuário inválido"
     elif name == ctx.bot.nick:
         ctx.response = "eu apenas crio as dungeons..."
-    elif dungeon := await models.Dungeon.get_or_none(user_id=name):
-        if not dungeon.sub_class:
+    elif player := await models.Player.get_or_none(name=name):
+        if not player.sub_class:
             ctx.response = f"{mention} ainda não escolheu a nova classe"
         else:
-            total = (dungeon.wins + dungeon.defeats)
-            winrate = dungeon.wins / (total or 1) * 100
-            sub_class = classes[dungeon.class_][dungeon.gender][dungeon.sub_class][dungeon.level // 10]
+            total = (player.wins + player.defeats)
+            winrate = player.wins / (total or 1) * 100
+            sub_class = classes[player.class_][player.gender][player.sub_class][player.level // 10]
             ctx.response = (
-                f"{mention} é {sub_class} ({dungeon.level}, {dungeon.xp} XP) com {total} dungeons "
-                f"({dungeon.wins} vitórias, {dungeon.defeats} derrotas, {winrate:.2f}% winrate) ♦"
+                f"{mention} é {sub_class} ({player.level}, {player.xp} XP) com {total} dungeons "
+                f"({player.wins} vitórias, {player.defeats} derrotas, {winrate:.2f}% winrate) ♦"
             )
     else:
         ctx.response = f"{mention} ainda não entrou em nenhuma dungeon"
