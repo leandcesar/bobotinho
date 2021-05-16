@@ -6,7 +6,7 @@ from bobotinho.database import models
 from bobotinho.utils import timetools
 
 
-async def func(bot):
+async def func(bot) -> None:
     # TODO: substituir pra quando o bot iniciar pegar os proximos,
     #       mas depois pegar os novos reminds por trigger
     while True:

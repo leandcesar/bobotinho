@@ -2,7 +2,7 @@
 from bobotinho.logger import log
 
 
-async def send_message(bot, channel: str, response: str):
+async def send_message(bot, channel: str, response: str) -> None:
     try:
         if not bot.channels[channel]["status"]:
             return

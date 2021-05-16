@@ -14,13 +14,13 @@ async def func(ctx):
             ctx.response = (
                 f'antes de continuar, digite "{ctx.prefix}ed" e sua nova classe: {option1} ou {option2}'
             )
-        elif player.updated_ago.total_seconds() > 10800:
+        elif cooldown := timetools.on_cooldown(player.updated_at, now=ctx.message.timestamp, s=10800):
+            ctx.response = f"aguarde {cooldown} para entrar em outra dungeon ⌛"
+        else:
             player, response = D.resume_dungeon(player)
             player.last_at = ctx.message.timestamp
             await player.save()
             ctx.response = response
-        else:
-            ctx.response = f"aguarde {timetools.clean(player.updated_ago)} para entrar em outra dungeon ⌛"
     else:
         ctx.response = (
             "antes de continuar, escolha sua classe! "

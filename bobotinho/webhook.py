@@ -6,12 +6,13 @@ from bobotinho import aiorequests
 
 class Webhook:
     url = os.getenv("WEBHOOK_URL")
+    app = "bobotinho-bot"
     timestamp_format = "%Y-%m-%dT%H:%M:%SZ"
 
     @classmethod
-    async def suggestions(cls, suggest):
+    async def suggestions(cls, suggest) -> None:
         data = {
-            "app": "bobotinho-bot",
+            "app": cls.app,
             "resource": "suggestions",
             "id": suggest.id,
             "content": suggest.content,
@@ -22,9 +23,9 @@ class Webhook:
         await aiorequests.post(cls.url, json=data)
 
     @classmethod
-    async def status(cls, systemlog, created):
+    async def status(cls, systemlog, created: bool) -> None:
         data = {
-            "app": "bobotinho-bot",
+            "app": cls.app,
             "resource": "status",
             "id": systemlog.id,
             "status": created,

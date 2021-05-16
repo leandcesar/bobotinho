@@ -14,7 +14,7 @@ class AutoBot(Bot):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    async def _handle_checks(self, ctx, no_global_checks=False):
+    async def _handle_checks(self, ctx, no_global_checks: bool = False) -> bool:
         if no_global_checks:
             _checks = ctx.command._checks
         else:
@@ -30,7 +30,7 @@ class AutoBot(Bot):
                 return predicate
         return True
 
-    async def get_context(self, message):
+    async def get_context(self, message) -> Context:
         prefix = await self.get_prefix(message)
         ctx = Context(
             message=message,
@@ -41,7 +41,7 @@ class AutoBot(Bot):
         ctx.bot = self
         return ctx
 
-    def add_all_commands(self, basedir: str = "bobotinho/cogs/commands"):
+    def add_all_commands(self, basedir: str = "bobotinho/cogs/commands") -> None:
         for path in [filename.path for filename in os.scandir(basedir) if filename.is_dir()]:
             if path.endswith("__pycache__"):
                 continue
@@ -64,7 +64,7 @@ class AutoBot(Bot):
                 except Exception as e:
                     log.exception(e)
 
-    def add_all_listeners(self, basedir: str = "bobotinho/cogs/listeners"):
+    def add_all_listeners(self, basedir: str = "bobotinho/cogs/listeners") -> None:
         self.listeners = []
         for filename in os.listdir(basedir):
             if not filename.endswith(".py") or filename == "__init__.py":
@@ -72,14 +72,13 @@ class AutoBot(Bot):
             try:
                 local = os.path.join(basedir, filename)
                 module = import_module(local[:-3].replace("/", "."), basedir.replace("/", "."))
-                members = inspect.getmembers(module)
-                for name, member in members:
+                for name, member in inspect.getmembers(module):
                     if name.startswith('event_'):
                         self.listeners.append(member)
             except Exception as e:
                 log.exception(e)
 
-    def add_all_tasks(self, basedir: str = "bobotinho/cogs/tasks"):
+    def add_all_tasks(self, basedir: str = "bobotinho/cogs/tasks") -> None:
         for filename in os.listdir(basedir):
             if not filename.endswith(".py") or filename == "__init__.py":
                 continue

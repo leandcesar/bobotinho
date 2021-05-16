@@ -28,12 +28,12 @@ async def func(ctx, *, content: str = ""):
                 ctx.response = response
             else:
                 ctx.response = D.generate_dungeon(player.dungeon)[0]["quote"]
-        elif player.updated_ago.total_seconds() > 10800:
+        elif cooldown := timetools.on_cooldown(player.updated_at, now=ctx.message.timestamp, s=10800):
+            ctx.response = f"aguarde {cooldown} para entrar em outra dungeon ⌛"
+        else:
             d, player.dungeon = D.generate_dungeon()
             await player.save()
             ctx.response = d["quote"]
-        else:
-            ctx.response = f"aguarde {timetools.clean(player.updated_ago)} para entrar em outra dungeon ⌛"
     elif c := D.choose_class(choice):
         player = await models.Player.create(
             id=ctx.author.id,
