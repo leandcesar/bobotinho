@@ -38,7 +38,7 @@ class Bobotinho(AutoBot):
         self.add_all_tasks()
         self.add_all_checks([checks.is_online, checks.is_enabled, checks.is_cooldown])
         await self.add_all_channels()
-        log.info(f"{self.nick} | #{len(self.channels)} | {self.prefixes[0]}{len(self.commands)}")
+        log.debug(f"{self.nick} | #{len(self.channels)} | {self.prefixes[0]}{len(self.commands)}")
 
     async def event_error(self, e, data=None):
         log.exception(e)
@@ -58,14 +58,14 @@ class Bobotinho(AutoBot):
             if hasattr(ctx, "response"):
                 response = f"@{ctx.author.name}, {ctx.response}"
                 await ctx.send(response)
-                log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
+                log.debug(f"#{ctx.channel.name} @{self.nick}: {response}")
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
         else:
             log.exception(e)
 
     async def global_before_hook(self, ctx):
-        log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
+        log.debug(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
         ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         ctx.prefix = self.prefixes[0]
         await models.User.create_if_not_exists(ctx)
@@ -79,7 +79,7 @@ class Bobotinho(AutoBot):
             ctx.response = "esse comando gerou uma resposta muito grande"
         response = f"@{ctx.author.name}, {ctx.response}"
         await ctx.send(response)
-        log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
+        log.debug(f"#{ctx.channel.name} @{self.nick}: {response}")
 
     async def event_message(self, message):
         if message.echo:
