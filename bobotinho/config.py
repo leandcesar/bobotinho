@@ -14,10 +14,10 @@ class Config:
 
 class ProdConfig(Config):
     dbs_url = {
-        "db_1": os.getenv("HEROKU_POSTGRESQL_SILVER"),
-        "db_2": os.getenv("HEROKU_POSTGRESQL_COPPER"),
-        "db_3": os.getenv("HEROKU_POSTGRESQL_RED"),
-        "db_4": os.getenv("HEROKU_POSTGRESQL_BLUE"),
+        "db_1": os.getenv("HEROKU_POSTGRESQL_SILVER_URL"),
+        "db_2": os.getenv("HEROKU_POSTGRESQL_COPPER_URL"),
+        "db_3": os.getenv("HEROKU_POSTGRESQL_RED_URL"),
+        "db_4": os.getenv("HEROKU_POSTGRESQL_BLUE_URL"),
     }
 
 
