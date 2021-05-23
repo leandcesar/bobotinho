@@ -15,9 +15,9 @@ async def func(ctx, arg: str = ""):
     if not name:
         ctx.response = "nome de usuário inválido"
     elif arg == "list":
-        ctx.response = await petlist.func(ctx)
+        await petlist.func(ctx)
     elif arg == "pat":
-        ctx.response = await petpat.func(ctx)
+        await petpat.func(ctx)
     elif pets := await models.Pet.filter(user_id=name).all():
         ctx.response = f'{mention} possui {P.join_pets(pets, formatter="{pet} {emoji}")}'
     elif name == ctx.author.name:
