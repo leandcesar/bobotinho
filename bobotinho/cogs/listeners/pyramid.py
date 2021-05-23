@@ -46,6 +46,6 @@ async def event_message(bot, message) -> bool:
     response = bot.channels[message.channel.name]["pyramid"].update(message)
     if response:
         await message.channel.send(response)
-        log.info(f"#{message.channel.name} @{bot.nick}: {response}")
+        log.debug(f"#{message.channel.name} @{bot.nick}: {response}")
         return True
     return False
