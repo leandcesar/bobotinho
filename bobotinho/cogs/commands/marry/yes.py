@@ -9,13 +9,13 @@ async def func(ctx):
         cookie = await models.Cookie.get(name=wedding["name"])
         if cookie.stocked < 100:
             ctx.response = (
-                f"parece que @{cookie.user_id} gastou todos os cookies "
+                f"parece que @{cookie.name} gastou todos os cookies "
                 "que eram pra aliança... o casamento precisou ser cancelado"
             )
         else:
             await models.Wedding.create(user_1_id=cookie.name, user_2_id=ctx.author.name)
             cookie.stocked -= 100
             await cookie.save()
-            ctx.response = f'você aceitou se casar com @{cookie.user_id}, felicidades! 🎉💞'
+            ctx.response = f'você aceitou se casar com @{cookie.name}, felicidades! 🎉💞'
     else:
         ctx.response = "não há nenhum pedido de casamento para você"
