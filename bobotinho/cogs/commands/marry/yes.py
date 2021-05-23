@@ -13,7 +13,7 @@ async def func(ctx):
                 "que eram pra aliança... o casamento precisou ser cancelado"
             )
         else:
-            await models.Wedding.create(user_1_id=cookie.user_id, user_2_id=ctx.author.name)
+            await models.Wedding.create(user_1_id=cookie.name, user_2_id=ctx.author.name)
             cookie.stocked -= 100
             await cookie.save()
             ctx.response = f'você aceitou se casar com @{cookie.user_id}, felicidades! 🎉💞'
