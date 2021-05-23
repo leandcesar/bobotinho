@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.cogs.commands import pets as P
+from bobotinho.cogs.commands.pets import petlist, petpat
 from bobotinho.database import models
 from bobotinho.utils import checks, convert
 
@@ -13,6 +14,10 @@ async def func(ctx, arg: str = ""):
     mention = "você" if name == ctx.author.name else f"@{name}"
     if not name:
         ctx.response = "nome de usuário inválido"
+    elif arg == "list":
+        ctx.response = await petlist.func(ctx)
+    elif arg == "pat":
+        ctx.response = await petpat.func(ctx)
     elif pets := await models.Pet.filter(user_id=name).all():
         ctx.response = f'{mention} possui {P.join_pets(pets, formatter="{pet} {emoji}")}'
     elif name == ctx.author.name:
