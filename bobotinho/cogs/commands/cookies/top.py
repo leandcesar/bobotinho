@@ -2,7 +2,6 @@
 from bobotinho.database import models
 
 description = "Veja quais são os maiores comedores ou doadores de cookies"
-aliases = ["cc"]
 
 
 async def func(ctx, arg: str = ""):
