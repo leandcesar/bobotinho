@@ -22,8 +22,8 @@ async def func(ctx, *, content: str = ""):
                     f"antes de continuar, digite o comando e sua nova classe: {option1} ou {option2}"
                 )
         elif player.dungeon:
-            if choice in ["1", "2"]:
-                player, response = D.resume_dungeon(player, choice)
+            if choice and choice.split()[0] in ["1", "2"]:
+                player, response = D.resume_dungeon(player, choice.split()[0])
                 await player.save()
                 ctx.response = response
             else:
