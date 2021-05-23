@@ -13,7 +13,7 @@ async def func(ctx, arg1: str = "", arg2: str = ""):
     if name and channel:
         followage = await twitch.TwitchAPI.followage(channel, name)
         name = "você" if name == ctx.author.name else f"@{name}"
-        channel = "você" if channel == ctx.channel.name else f"@{channel}"
+        channel = "você" if channel == ctx.author.name else f"@{channel}"
     if not name:
         ctx.response = "nome de usuário inválido"
     elif not channel:
