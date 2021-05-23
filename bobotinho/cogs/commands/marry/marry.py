@@ -43,7 +43,7 @@ async def func(ctx, arg: str):
         or await models.Wedding.exists(user_2_id=name)
     ):
         ctx.response = f"controle seu desejo por pessoas casadas, @{name} já está em um compromisso"
-    elif (cookie := await models.Cookie.get_or_none(user_id=ctx.author.name)) and cookie.stocked >= 100:
+    elif (cookie := await models.Cookie.get_or_none(name=ctx.author.name)) and cookie.stocked >= 100:
         ctx.bot.cache["weddings"][name] = {"name": ctx.author.name, "time": time.monotonic() + 60}
         ctx.response = (
             f"você pediu a mão de @{name}, o usuário deve "
