@@ -9,7 +9,7 @@ aliases = ["ed"]
 
 async def func(ctx, *, content: str = ""):
     choice = content.lower()
-    if player := await models.Player.get_or_none(name=ctx.author.name):
+    if player := await models.Player.get_or_none(id=ctx.author.id):
         if not player.sub_class:
             if sub_class := D.choose_sub_class(choice, player.class_, player.gender):
                 player.sub_class = sub_class
