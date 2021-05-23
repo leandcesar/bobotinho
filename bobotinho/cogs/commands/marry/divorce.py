@@ -14,7 +14,7 @@ async def func(ctx, arg: str):
         ctx.response = "eu nunca estaria casado com você"
     elif name == ctx.author.name:
         ctx.response = "você não pode se livrar de você mesmo"
-    elif (
+    elif not (
         await models.Wedding.exists(user_1_id=ctx.author.name)
         or await models.Wedding.exists(user_2_id=ctx.author.name)
     ):
