@@ -19,7 +19,7 @@ async def update_user_name(sender, instance, created, using_db, update_fields):
 
 @signals.post_save(models.Suggest)
 async def new_suggest(sender, instance, created, using_db, update_fields):
-    await Webhook.suggestion(instance)
+    await Webhook.suggestions(instance)
 
 
 # @signals.pre_save(Table)
