@@ -34,13 +34,13 @@ async def func(ctx, arg: str):
     elif any([v for v in ctx.bot.cache["weddings"].values() if name == v["name"]]):
         ctx.response = f"@{name} está aguardando a resposta de outra pessoa"
     elif (
-        await models.Wedding.exists(user_1_id=ctx.author.name)
-        or await models.Wedding.exists(user_2_id=ctx.author.name)
+        await models.Wedding.exists(user_1_id=ctx.author.name, divorced=False)
+        or await models.Wedding.exists(user_2_id=ctx.author.name, divorced=False)
     ):
         ctx.response = "traição é inaceitável, ao menos se divorcie antes de partir pra outra"
     elif (
-        await models.Wedding.exists(user_1_id=name)
-        or await models.Wedding.exists(user_2_id=name)
+        await models.Wedding.exists(user_1_id=name, divorced=False)
+        or await models.Wedding.exists(user_2_id=name, divorced=False)
     ):
         ctx.response = f"controle seu desejo por pessoas casadas, @{name} já está em um compromisso"
     elif (cookie := await models.Cookie.get_or_none(name=ctx.author.name)) and cookie.stocked >= 100:

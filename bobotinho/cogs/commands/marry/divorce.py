@@ -15,16 +15,17 @@ async def func(ctx, arg: str):
     elif name == ctx.author.name:
         ctx.response = "você não pode se livrar de você mesmo"
     elif not (
-        await models.Wedding.exists(user_1_id=ctx.author.name)
-        or await models.Wedding.exists(user_2_id=ctx.author.name)
+        await models.Wedding.exists(user_1_id=ctx.author.name, divorced=False)
+        or await models.Wedding.exists(user_2_id=ctx.author.name, divorced=False)
     ):
         ctx.response = "você não está casado com ninguém"
     elif wedding := (
-        await models.Wedding.get_or_none(user_1_id=ctx.author.name, user_2_id=name)
-        or await models.Wedding.get_or_none(user_1_id=name, user_2_id=ctx.author.name)
+        await models.Wedding.get_or_none(user_1_id=ctx.author.name, user_2_id=name, divorced=False)
+        or await models.Wedding.get_or_none(user_1_id=name, user_2_id=ctx.author.name, divorced=False)
     ):
         # TODO: alterar wedding.divorced = True em vez de deletar
-        await wedding.delete()
+        wedding.divorced = True
+        await wedding.save()
         ctx.response = (
             "então, é isso... da próxima vez, case-se com alguém "
             "que realmente te ame, e não qualquer pessoa por aí"

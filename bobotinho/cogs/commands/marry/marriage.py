@@ -14,10 +14,10 @@ async def func(ctx, arg: str = ""):
         ctx.response = "nome de usuário inválido"
     elif name == ctx.bot.nick:
         ctx.response = "nunca me casarei com ninguém"
-    elif wedding := await models.Wedding.get_or_none(user_1_id=name):
+    elif wedding := await models.Wedding.get_or_none(user_1_id=name, divorced=False):
         timeago = timetools.timeago(wedding.created_at)
         ctx.response = f"{mention} está casado com @{wedding.user_2_id} há {timeago}"
-    elif wedding := await models.Wedding.get_or_none(user_2_id=name):
+    elif wedding := await models.Wedding.get_or_none(user_2_id=name, divorced=False):
         timeago = timetools.timeago(wedding.created_at)
         ctx.response = f"{mention} está casado com @{wedding.user_1_id} há {timeago}"
     else:
