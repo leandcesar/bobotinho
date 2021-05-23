@@ -21,7 +21,8 @@ async def func(ctx, arg: str = ""):
         else:
             total = (player.wins + player.defeats)
             winrate = player.wins / (total or 1) * 100
-            sub_class = classes[player.class_][player.gender][player.sub_class][player.level // 10]
+            lvl = player.level // 10 if player.level < 60 else 6
+            sub_class = classes[player.class_][player.gender][player.sub_class][lvl]
             ctx.response = (
                 f"{mention} é {sub_class} ({player.level}, {player.xp} XP) com {total} dungeons "
                 f"({player.wins} vitórias, {player.defeats} derrotas, {winrate:.2f}% winrate) ♦"
