@@ -6,7 +6,7 @@ description = "Aceite o pedido de casamento"
 
 async def func(ctx):
     if wedding := ctx.bot.cache.get("weddings", {}).pop(ctx.author.name, None):
-        cookie = await models.Cookie.get(user_id=wedding["name"])
+        cookie = await models.Cookie.get(name=wedding["name"])
         if cookie.stocked < 100:
             ctx.response = (
                 f"parece que @{cookie.user_id} gastou todos os cookies "
