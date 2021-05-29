@@ -29,6 +29,8 @@ def is_cooldown(ctx) -> bool:
         for k, v in ctx.bot.cooldowns.items()
         if v > time.monotonic()
     }
+    if len(ctx.bot.cooldowns) > 1023:
+        ctx.bot.cooldowns.pop(list(ctx.bot.cooldowns.keys())[0])
     on_cooldown = ctx.bot.cooldowns.get(f"{ctx.author.id}-{ctx.command.name}")
     if not on_cooldown:
         ctx.bot.cooldowns[f"{ctx.author.id}-{ctx.command.name}"] = time.monotonic() + 5
