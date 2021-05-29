@@ -22,9 +22,9 @@ def create_pets() -> dict:
 def random_pets(limit: int = 7) -> dict:
     now = datetime.utcnow()
     random.seed(now.day + now.month)
-    pets = random.sample(all_pets.items(), limit)
+    pets = dict(random.sample(all_pets.items(), limit))
     random.seed(None)
-    return dict(pets)
+    return pets
 
 
 def join_pets(pets: object, formatter: str, sep: str = " ") -> str:
