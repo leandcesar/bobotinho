@@ -1,5 +1,6 @@
 # bobotinho/
 aiohttp==3.6.2
+bugsnag==4.0.3
 twitchio==1.2.3
 # bobotinho/apis
 google-trans-new==1.1.9

@@ -76,7 +76,7 @@ class Bobotinho(AutoBot):
             log.error(f'"{ctx.content}" from @{ctx.author.name} has no ctx.response')
             ctx.response = ctx.command.usage or "ocorreu um erro inesperado"
         elif len(ctx.response) > 400:
-            log.error(f'"{ctx.response}" > 400 characters')
+            log.info(f'"{ctx.response}" > 400 characters')
             ctx.response = "esse comando gerou uma resposta muito grande"
         response = f"@{ctx.author.name}, {ctx.response}"
         await ctx.send(response)
