@@ -25,7 +25,7 @@ async def func(ctx, arg: str, *, content: str = ""):
         ctx.response = "estou sempre aqui... não precisa me deixar lembretes"
     elif await models.Reminder.filter(from_user_id=ctx.author.id).count() > 7:
         ctx.response = "já existem muitos lembretes seus pendentes..."
-    elif not (user := await models.User.exists(name=name)):
+    elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif await models.Reminder.filter(from_user_id=user.id).count() > 7:
         ctx.response = f"já existem muitos lembretes pendentes para @{name}"
