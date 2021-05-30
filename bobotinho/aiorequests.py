@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import aiohttp
+import asyncio
 import html
 from typing import Optional, Union
 
@@ -29,17 +30,37 @@ async def get(
     url: str,
     res_method: str = "json",
     raise_for_status: bool = True,
+    wait_response: bool = True,
+    loop=None,
     *args,
     **kwargs
 ) -> Optional[Union[str, dict]]:
-    return await request(url, "get", res_method, raise_for_status, *args, **kwargs)
+    if wait_response:
+        return await request(url, "get", res_method, raise_for_status, *args, **kwargs)
+    else:
+        loop = loop or asyncio.get_event_loop()
+        loop.create_task(
+            asyncio.wait_for(
+                request(url, "get", res_method, raise_for_status, *args, **kwargs), 30
+            )
+        )
 
 
 async def post(
     url: str,
     res_method: str = "json",
     raise_for_status: bool = True,
+    wait_response: bool = True,
+    loop=None,
     *args,
     **kwargs
 ) -> Optional[Union[str, dict]]:
-    return await request(url, "post", res_method, raise_for_status, *args, **kwargs)
+    if wait_response:
+        return await request(url, "post", res_method, raise_for_status, *args, **kwargs)
+    else:
+        loop = loop or asyncio.get_event_loop()
+        loop.create_task(
+            asyncio.wait_for(
+                request(url, "post", res_method, raise_for_status, *args, **kwargs), 30
+            )
+        )

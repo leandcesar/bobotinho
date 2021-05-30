@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.autobot import AutoBot, CheckFailure, CommandNotFound, MissingRequiredArgument
+from bobotinho.apis.analytics import Analytics
 from bobotinho.database import models
 from bobotinho.logger import log
 from bobotinho.utils import checks
@@ -46,7 +47,9 @@ class Bobotinho(AutoBot):
         if isinstance(e, CommandNotFound):
             pass
         elif isinstance(e, CheckFailure):
-            if str(e).split()[-1] == "is_enabled":
+            if str(e).split()[-1] == "is_cooldown":
+                pass
+            elif str(e).split()[-1] == "is_enabled":
                 ctx.response = "esse comando está desativado nesse canal"
             elif str(e).split()[-1] == "is_banword":
                 ctx.response = "sua mensagem contém um termo banido"
@@ -58,6 +61,7 @@ class Bobotinho(AutoBot):
                 response = f"@{ctx.author.name}, {ctx.response}"
                 await ctx.send(response)
                 log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
+                await Analytics.sent(ctx, handled=False)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
         else:
@@ -65,6 +69,7 @@ class Bobotinho(AutoBot):
 
     async def global_before_hook(self, ctx):
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
+        await Analytics.received(ctx, handled=True)
         ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         ctx.prefix = self.prefixes[0]
         await models.User.create_if_not_exists(ctx)
@@ -72,13 +77,14 @@ class Bobotinho(AutoBot):
     async def global_after_hook(self, ctx):
         if not hasattr(ctx, "response"):
             log.error(f'"{ctx.content}" from @{ctx.author.name} has no ctx.response')
-            ctx.response = ctx.command.usage or "ocorreu um erro inesperado"
+            ctx.response = "ocorreu um erro inesperado"
         elif len(ctx.response) > 400:
             log.info(f'"{ctx.response}" > 400 characters')
             ctx.response = "esse comando gerou uma resposta muito grande"
         response = f"@{ctx.author.name}, {ctx.response}"
         await ctx.send(response)
         log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
+        await Analytics.sent(ctx, handled=True)
 
     async def event_message(self, message):
         if message.echo:

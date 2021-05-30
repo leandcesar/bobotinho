@@ -20,7 +20,7 @@ class Webhook:
             "channel": suggest.channel,
             "timestamp": suggest.updated_at.strftime(cls.timestamp_format),
         }
-        await aiorequests.post(cls.url, json=data)
+        await aiorequests.post(cls.url, json=data, wait_response=False)
 
     @classmethod
     async def status(cls, systemlog, created: bool) -> None:
@@ -32,4 +32,4 @@ class Webhook:
             "error": systemlog.error,
             "timestamp": systemlog.updated_at.strftime(cls.timestamp_format),
         }
-        await aiorequests.post(cls.url, json=data)
+        await aiorequests.post(cls.url, json=data, wait_response=False)

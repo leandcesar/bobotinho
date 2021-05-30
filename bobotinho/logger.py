@@ -18,6 +18,6 @@ try:
 except Exception as e:
     log.exception(e)
 else:
-    handler = BugsnagHandler()
+    handler = BugsnagHandler(extra_fields={"log": ["__repr__"]})
     handler.setLevel(logging.ERROR)
     log.addHandler(handler)
