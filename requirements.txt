@@ -1,5 +1,5 @@
 # bobotinho/
-aiohttp==3.6.2
+aiohttp==3.7.4
 bugsnag==4.0.3
 twitchio==1.2.3
 # bobotinho/apis
