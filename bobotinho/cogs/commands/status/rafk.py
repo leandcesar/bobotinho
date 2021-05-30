@@ -8,7 +8,7 @@ usage = "digite o comando em até 3 minutos após ter retornado do seu AFK para 
 
 
 async def func(ctx):
-    if afk := await models.Afk.get_or_none(user_id=ctx.author.name):
+    if afk := await models.Afk.get_or_none(user_id=ctx.author.id):
         afk.status = True
         await afk.save()
         afk_type = afks[afk.alias]

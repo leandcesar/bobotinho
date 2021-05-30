@@ -3,7 +3,7 @@ from bobotinho.database.base import Base, TimestampMixin, ContentMixin, fields
 
 
 class Afk(Base, TimestampMixin, ContentMixin):
-    user = fields.ForeignKeyField("users.User", to_field="name")
+    user_id = fields.IntField()
     alias = fields.CharField(max_length=8, null=True)
     status = fields.BooleanField(default=False)
 

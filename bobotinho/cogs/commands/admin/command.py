@@ -27,9 +27,13 @@ async def func(ctx, arg1: str, arg2: str):
         ctx.response = f'"{command.name}" já está desativado'
     elif operator == "+":
         ctx.bot.channels[ctx.channel.name]["disabled"].remove(command.name)
-        await models.Channel.remove_json(ctx.channel.name, "disabled", command.name)
+        await models.Channel.remove_json(
+            ctx.bot.channels[ctx.channel.name]["id"], "disabled", command.name
+        )
         ctx.response = f'"{command.name}" foi ativado'
     elif operator == "-":
         ctx.bot.channels[ctx.channel.name]["disabled"].append(command.name)
-        await models.Channel.append_json(ctx.channel.name, "disabled", command.name, ctx.author.id)
+        await models.Channel.append_json(
+            ctx.bot.channels[ctx.channel.name]["id"], "disabled", command.name, ctx.author.id
+        )
         ctx.response = f'"{command.name}" foi desativado'

@@ -23,11 +23,11 @@ async def func(ctx, arg: str, *, content: str = ""):
         ctx.response = "nome de usuário inválido"
     elif name == ctx.bot.nick:
         ctx.response = "estou sempre aqui... não precisa me deixar lembretes"
-    elif await models.Reminder.filter(user_from_id=ctx.author.name).count() > 7:
+    elif await models.Reminder.filter(from_user_id=ctx.author.id).count() > 7:
         ctx.response = "já existem muitos lembretes seus pendentes..."
-    elif not await models.User.exists(name=name):
+    elif not (user := await models.User.exists(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
-    elif await models.Reminder.filter(user_from_id=name).count() > 7:
+    elif await models.Reminder.filter(from_user_id=user.id).count() > 7:
         ctx.response = f"já existem muitos lembretes pendentes para @{name}"
     elif len(content) > 400:
         ctx.response = "essa mensagem é muito comprida"
@@ -44,9 +44,9 @@ async def func(ctx, arg: str, *, content: str = ""):
                 ctx.response = "o tempo mínimo para lembretes cronometrados é 1 minuto"
             else:
                 await models.Reminder.create(
-                    user_from_id=ctx.author.name,
-                    user_to_id=name,
-                    channel_id=ctx.channel.name,
+                    from_user_id=ctx.author.id,
+                    to_user_id=user.id,
+                    channel_id=ctx.bot.channels[ctx.channel.name]["id"],
                     content=content,
                     scheduled_for=scheduled_for,
                 )
@@ -73,9 +73,9 @@ async def func(ctx, arg: str, *, content: str = ""):
                 ctx.response = "o tempo mínimo para lembretes cronometrados é 1 minuto"
             else:
                 await models.Reminder.create(
-                    user_from_id=ctx.author.name,
-                    user_to_id=name,
-                    channel_id=ctx.channel.name,
+                    from_user_id=ctx.author.id,
+                    to_user_id=user.id,
+                    channel_id=ctx.bot.channels[ctx.channel.name]["id"],
                     content=content,
                     scheduled_for=scheduled_for,
                 )
@@ -84,9 +84,9 @@ async def func(ctx, arg: str, *, content: str = ""):
                 ctx.response = f"{mention} será lembrado disso em {timestamp} 📅"
     else:
         await models.Reminder.create(
-            user_from_id=ctx.author.name,
-            user_to_id=name,
-            channel_id=ctx.channel.name,
+            from_user_id=ctx.author.id,
+            to_user_id=user.id,
+            channel_id=ctx.bot.channels[ctx.channel.name]["id"],
             content=content,
         )
         mention = "você" if name == ctx.author.name else f"@{name}"

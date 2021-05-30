@@ -8,5 +8,5 @@ extra_checks = [checks.is_mod]
 
 async def func(ctx):
     ctx.bot.channels[ctx.channel.name]["status"] = False
-    await models.Channel.filter(user_id=ctx.channel.name).update(status=False)
+    await models.Channel.filter(user_id=ctx.bot.channels[ctx.channel.name]["id"]).update(status=False)
     ctx.response = "você me desligou 💤"

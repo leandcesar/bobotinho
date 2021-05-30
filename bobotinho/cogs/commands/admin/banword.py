@@ -20,9 +20,13 @@ async def func(ctx, arg1: str, arg2: str):
             ctx.response = "esse termo não é um termo banido"
         elif operator == "+":
             ctx.bot.channels[ctx.channel.name]["banwords"].append(word)
-            await models.Channel.append_json(ctx.channel.name, "banwords", word, ctx.author.id)
+            await models.Channel.append_json(
+                ctx.bot.channels[ctx.channel.name]["id"], "banwords", word, ctx.author.id
+            )
             ctx.response = "esse termo foi adicionado aos termos banidos"
         elif operator == "-":
             ctx.bot.channels[ctx.channel.name]["banwords"].remove(word)
-            await models.Channel.remove_json(ctx.channel.name, "banwords", word)
+            await models.Channel.remove_json(
+                ctx.bot.channels[ctx.channel.name]["id"], "banwords", word
+            )
             ctx.response = "esse termo foi removido dos termos banidos"

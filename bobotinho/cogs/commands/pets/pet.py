@@ -18,7 +18,9 @@ async def func(ctx, arg: str = ""):
         await petlist.func(ctx)
     elif arg == "pat":
         await petpat.func(ctx)
-    elif pets := await models.Pet.filter(user_id=name).all():
+    elif not (user := await models.User.get_or_none(name=name)):
+        ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
+    elif pets := await models.Pet.filter(user_id=user.id).all():
         ctx.response = f'{mention} possui {P.join_pets(pets, formatter="{pet} {emoji}")}'
     elif name == ctx.author.name:
         ctx.response = f"adquira um pet em troca de cookies ({ctx.prefix}petlist)"

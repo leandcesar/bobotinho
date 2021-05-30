@@ -12,5 +12,5 @@ async def func(ctx):
         ctx.response = "já estou ligado ☕"
     else:
         ctx.bot.channels[ctx.channel.name]["status"] = True
-        await models.Channel.filter(user_id=ctx.channel.name).update(status=True)
+        await models.Channel.filter(user_id=ctx.bot.channels[ctx.channel.name]["id"]).update(status=True)
         ctx.response = "você me ligou ☕"

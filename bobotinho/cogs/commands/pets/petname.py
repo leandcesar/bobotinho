@@ -9,7 +9,7 @@ extra_checks = [checks.is_banword]
 
 
 async def func(ctx, *, content: str):
-    pets = await models.Pet.filter(user_id=ctx.author.name).all()
+    pets = await models.Pet.filter(user_id=ctx.author.id).all()
     if len(pets) > 1 and " " in content:
         specie, name = content.split(maxsplit=1)
         specie = specie.lower()
@@ -27,5 +27,5 @@ async def func(ctx, *, content: str):
         ctx.response = "esse nome não é válido (apenas letras e espaços)"
     else:
         # TODO: se o cara tiver 2 pets da mesma especie, vai dar ruim
-        await models.Pet.filter(user_id=ctx.author.name, specie=specie).update(name=name)
+        await models.Pet.filter(user_id=ctx.author.id, specie=specie).update(name=name)
         ctx.response = f"agora seu pet se chama {name} {P.all_pets[specie].emoji}"

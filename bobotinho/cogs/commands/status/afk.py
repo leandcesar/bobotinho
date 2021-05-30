@@ -13,9 +13,9 @@ async def func(ctx, *, content: str = ""):
         ctx.response = "essa mensagem é muito comprida"
     else:
         afk_type = afks[ctx.command.invocation]
-        await models.Afk.filter(user_id=ctx.author.name).delete()
+        await models.Afk.filter(user_id=ctx.author.id).delete()
         await models.Afk.create(
-            user_id=ctx.author.name,
+            user_id=ctx.author.id,
             alias=ctx.command.invocation,
             status=True,
             content=content,
