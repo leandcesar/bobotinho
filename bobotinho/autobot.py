@@ -100,14 +100,15 @@ class AutoBot(Bot):
         return failed
 
     async def join_all_channels(self, channels: list = []) -> list:
+        LIMIT = 100
         failed = []
-        for channel in channels:
+        for i in range(0, len(list(channels)), LIMIT):
             try:
-                await self.join_channels([channel])
+                await self.join_channels(list(channels)[i:i+LIMIT])
             except TimeoutError as e:
+                channel = str(e).split('"')[1]
                 failed.append(channel)
-                log.error(e)
+                log.info(e)
             except Exception as e:
-                failed.append(channel)
                 log.exception(e)
         return failed

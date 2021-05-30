@@ -29,9 +29,7 @@ class Bobotinho(AutoBot):
                 "status": channel.status,
             } for channel in await models.Channel.all().select_related("user")
         }
-        failed = await self.join_all_channels(list(self.channels.keys()))
-        for fail in failed:
-            self.channels.pop(fail)
+        await self.join_all_channels(list(self.channels.keys()))
 
     async def event_ready(self):
         self.add_all_commands()
