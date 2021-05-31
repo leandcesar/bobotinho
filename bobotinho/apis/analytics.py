@@ -29,7 +29,7 @@ class Analytics:
     async def sent(cls, ctx) -> Optional[dict]:
         url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type=outgoing"
         data = {
-            "text": ctx.content,
+            "text": ctx.response,
             "userId": ctx.author.id,
             "intent": {"name": ctx.command.name, "confidence": 1.0},
             "platformUserJson": {"firstName": ctx.author.name},
