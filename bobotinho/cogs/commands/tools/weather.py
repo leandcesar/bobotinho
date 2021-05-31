@@ -7,6 +7,8 @@ usage = "digite o comando e o nome de um local para saber o clima"
 
 
 async def func(ctx, *, content: str):
+    if content.lower() == "salvador":
+        content = "salvador, br"
     try:
         observation = weather.WeatherAPI.weather_at_place(content)
         city = observation.get_location().get_name()
