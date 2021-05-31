@@ -170,7 +170,7 @@ def resume_dungeon(player: object, choice: str = None) -> (object, str):
                     response += f" e pode se tornar {op1} ou {op2}!"
                 else:
                     lvl = player.level // 10 if player.level < 60 else 6
-                    c = classes[player.class_][player.gender][lvl]
+                    c = classes[player.class_][player.gender][player.sub_class][lvl]
                     response += f" e se tornou {c}"
             else:
                 response += f" e alcançou level {player.level} ⬆"
