@@ -47,7 +47,7 @@ class Bobotinho(AutoBot):
         if isinstance(e, CommandNotFound):
             pass
         elif isinstance(e, CheckFailure):
-            if str(e).split()[-1] == "is_cooldown":
+            if str(e).split()[-1] in ["is_online", "is_cooldown"]:
                 pass
             elif str(e).split()[-1] == "is_enabled":
                 ctx.response = "esse comando está desativado nesse canal"
@@ -61,7 +61,7 @@ class Bobotinho(AutoBot):
                 response = f"@{ctx.author.name}, {ctx.response}"
                 await ctx.send(response)
                 log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
-                await Analytics.sent(ctx, handled=False)
+                await Analytics.sent(ctx)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
         else:
@@ -69,7 +69,7 @@ class Bobotinho(AutoBot):
 
     async def global_before_hook(self, ctx):
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
-        await Analytics.received(ctx, handled=True)
+        await Analytics.received(ctx)
         ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         ctx.prefix = self.prefixes[0]
         await models.User.create_if_not_exists(ctx)
@@ -84,7 +84,7 @@ class Bobotinho(AutoBot):
         response = f"@{ctx.author.name}, {ctx.response}"
         await ctx.send(response)
         log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
-        await Analytics.sent(ctx, handled=True)
+        await Analytics.sent(ctx)
 
     async def event_message(self, message):
         if message.echo:

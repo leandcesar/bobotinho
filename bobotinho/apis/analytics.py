@@ -1,7 +1,6 @@
 
 # -*- coding: utf-8 -*-
 import os
-import time
 from typing import Optional
 
 from bobotinho import aiorequests
@@ -9,21 +8,17 @@ from bobotinho.logger import log
 
 
 class Analytics:
-    base_url = "https://chatbase.com/api"
+    base_url = "https://tracker.dashbot.io/track"
     key = os.getenv("API_KEY_ANALYTICS")
 
     @classmethod
-    async def received(cls, ctx, handled: bool) -> Optional[dict]:
-        url = f"{cls.base_url}/message"
+    async def received(cls, ctx) -> Optional[dict]:
+        url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type=incoming"
         data = {
-            "api_key": cls.key,
-            "version": "0.1.0",
-            "platform": "Twitch",
-            "type": "user",
-            "user_id": ctx.author.id,
-            "message": ctx.content,
-            "time_stamp": int(time.time() * 1e3),
-            "not_handled": not handled,
+            "text": ctx.content,
+            "userId": ctx.author.id,
+            "platformUserJson": {"firstName": ctx.author.name},
+            "platformJson": {"source": "Twitch", "channel": ctx.channel.name},
         }
         try:
             await aiorequests.post(url, json=data, wait_response=False, loop=ctx.bot.loop)
@@ -31,17 +26,14 @@ class Analytics:
             log.exception(e)
 
     @classmethod
-    async def sent(cls, ctx, handled: bool) -> Optional[dict]:
-        url = f"{cls.base_url}/message"
+    async def sent(cls, ctx) -> Optional[dict]:
+        url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type=outgoing"
         data = {
-            "api_key": cls.key,
-            "version": "0.1.0",
-            "platform": "Twitch",
-            "type": "agent",
-            "user_id": ctx.author.id,
-            "message": ctx.response,
-            "time_stamp": int(time.time() * 1e3),
-            "not_handled": not handled,
+            "text": ctx.content,
+            "userId": ctx.author.id,
+            "intent": {"name": ctx.command.name, "confidence": 1.0},
+            "platformUserJson": {"firstName": ctx.author.name},
+            "platformJson": {"source": "Twitch", "channel": ctx.channel.name},
         }
         try:
             await aiorequests.post(url, json=data, wait_response=False, loop=ctx.bot.loop)
