@@ -2,9 +2,6 @@
 import logging
 import os
 
-import bugsnag
-from bugsnag.handlers import BugsnagHandler
-
 key = os.getenv("API_KEY_BUGSNAG")
 
 logging.basicConfig(
@@ -13,11 +10,15 @@ logging.basicConfig(
 )
 log = logging.getLogger()
 
-try:
-    bugsnag.configure(api_key=key, project_root="/bobotinho")
-except Exception as e:
-    log.exception(e)
-else:
-    handler = BugsnagHandler(extra_fields={"log": ["__repr__"]})
-    handler.setLevel(logging.ERROR)
-    log.addHandler(handler)
+if os.getenv("CONFIG_MODE") == "prod":
+    import bugsnag
+    from bugsnag.handlers import BugsnagHandler
+
+    try:
+        bugsnag.configure(api_key=key, project_root="/bobotinho")
+    except Exception as e:
+        log.exception(e)
+    else:
+        handler = BugsnagHandler(extra_fields={"log": ["__repr__"]})
+        handler.setLevel(logging.ERROR)
+        log.addHandler(handler)

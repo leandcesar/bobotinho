@@ -6,11 +6,11 @@ aliases = ["jokempo"]
 usage = 'digite o comando e "✊", "✋" ou "✌"'
 
 
-async def func(ctx, arg1: str):
-    emoji = random.choice("✊✋✌")
-    if arg1 == emoji:
+async def func(ctx, arg: str):
+    emoji = random.choice(["✊", "✋", "✌"])
+    if arg == emoji:
         ctx.response = f"eu escolhi {emoji} também, nós empatamos..."
-    elif (arg1, emoji) in [("✊", "✋"), ("✋", "✌"), ("✌", "✊")]:
+    elif (arg, emoji) in [("✊", "✋"), ("✋", "✌"), ("✌", "✊")]:
         ctx.response = f"eu escolhi {emoji} e consegui te prever facilmente"
-    elif (emoji, arg1) in [("✊", "✋"), ("✋", "✌"), ("✌", "✊")]:
+    elif (emoji, arg) in [("✊", "✋"), ("✋", "✌"), ("✌", "✊")]:
         ctx.response = f"eu escolhi {emoji}, você deu sorte dessa vez"
