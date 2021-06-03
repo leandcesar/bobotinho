@@ -11,6 +11,8 @@ class Webhook:
 
     @classmethod
     async def suggestions(cls, suggest) -> None:
+        if not cls.url:
+            return
         data = {
             "app": cls.app,
             "resource": "suggestions",
@@ -24,6 +26,8 @@ class Webhook:
 
     @classmethod
     async def status(cls, systemlog, created: bool) -> None:
+        if not cls.url:
+            return
         data = {
             "app": cls.app,
             "resource": "status",

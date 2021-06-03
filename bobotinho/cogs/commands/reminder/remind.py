@@ -29,6 +29,8 @@ async def func(ctx, arg: str, *, content: str = ""):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif await models.Reminder.filter(from_user_id=user.id).count() > 7:
         ctx.response = f"já existem muitos lembretes pendentes para @{name}"
+    elif not content:
+        ctx.response = "deixe alguma mensagem no lembrete"
     elif len(content) > 400:
         ctx.response = "essa mensagem é muito comprida"
     elif match := timetools.find_relative_time(content):

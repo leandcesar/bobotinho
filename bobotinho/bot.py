@@ -77,7 +77,7 @@ class Bobotinho(AutoBot):
     async def global_after_hook(self, ctx):
         if not hasattr(ctx, "response"):
             log.error(f'"{ctx.content}" from @{ctx.author.name} has no ctx.response')
-            ctx.response = "ocorreu um erro inesperado"
+            ctx.response = ctx.command.usage or "ocorreu um erro inesperado"
         elif len(ctx.response) > 400:
             log.info(f'"{ctx.response}" > 400 characters')
             ctx.response = "esse comando gerou uma resposta muito grande"
