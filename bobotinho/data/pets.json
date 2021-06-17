@@ -280,21 +280,6 @@
         "price": 100
     },
     {
-        "specie": "gorila",
-        "emoji": "🦍",
-        "price": 100
-    },
-    {
-        "specie": "leão",
-        "emoji": "🦁",
-        "price": 100
-    },
-    {
-        "specie": "panda",
-        "emoji": "🐼",
-        "price": 100
-    },
-    {
         "specie": "rinoceronte",
         "emoji": "🦏",
         "price": 100
@@ -315,6 +300,21 @@
         "price": 100
     },
     {
+        "specie": "gorila",
+        "emoji": "🦍",
+        "price": 200
+    },
+    {
+        "specie": "leão",
+        "emoji": "🦁",
+        "price": 200
+    },
+    {
+        "specie": "panda",
+        "emoji": "🐼",
+        "price": 200
+    },
+    {
         "specie": "unicórnio",
         "emoji": "🦄",
         "price": 500
@@ -332,16 +332,16 @@
     {
         "specie": "alien",
         "emoji": "👽",
-        "price": 500
+        "price": 999
     },
     {
         "specie": "dragão",
         "emoji": "🐲",
-        "price": 500
+        "price": 999
     },
     {
         "specie": "robô",
         "emoji": "🤖",
-        "price": 500
+        "price": 999
     }
 ]
