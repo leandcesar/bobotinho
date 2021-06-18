@@ -28,9 +28,9 @@ class TwitchAPI:
             if response.startswith("No user with the name"):
                 name = response.split('"')[1]
                 return f"@{name} não existe"
-            if "following" in endpoint or "followers" in endpoint:
-                return response.split(", ")[0]
             if not any(e in response for e in cls.errors):
+                if "following" in endpoint or "followers" in endpoint:
+                    return response.split(", ")[0]
                 return response
         except Exception as e:
             log.exception(e)
