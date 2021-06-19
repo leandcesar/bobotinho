@@ -10,7 +10,7 @@ async def func(bot):
     last = await models.Channel.filter().order_by("-id").first()
     last_id = last.id if last else 0
     while True:
-        channel = await models.Channel.get_or_none(id=last_id+1)
+        channel = await models.Channel.filter(id__gt=last_id).order_by("id").first()
         if not channel:
             await asyncio.sleep(30, loop=bot.loop)
             continue
