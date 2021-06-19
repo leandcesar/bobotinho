@@ -12,7 +12,7 @@ async def func(bot):
     while True:
         channel = await models.Channel.get_or_none(id=last_id+1)
         if not channel:
-            await asyncio.sleep(60, loop=bot.loop)
+            await asyncio.sleep(30, loop=bot.loop)
             continue
         last_id = channel.id
         await channel.fetch_related("user")
@@ -20,6 +20,7 @@ async def func(bot):
             continue
         await bot.join_channels([channel.user.name])
         bot.channels[channel.user.name] = {
+            "id": channel.user.id,
             "banwords": list(channel.banwords.keys()),
             "disabled": list(channel.disabled.keys()),
             "status": channel.status,
