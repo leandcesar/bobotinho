@@ -10,11 +10,6 @@ class Config:
     prefix = os.getenv("BOT_PREFIX")
     site = os.getenv("BOT_SITE")
     owner = os.getenv("OWNER_NAME")
-    port = os.environ.get("PORT")
-    oauth2_url = os.getenv("OAUTH2_URL")
-    validate_url = os.getenv("REDIRECT_VALIDATE_URL")
-    success_url = os.getenv("REDIRECT_SUCCESS_URL")
-    failed_url = os.getenv("REDIRECT_FAILED_URL")
 
 
 class ProdConfig(Config):

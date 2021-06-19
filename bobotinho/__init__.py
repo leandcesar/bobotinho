@@ -35,21 +35,12 @@ except Exception as e:
     log.exception(e)
     sys.exit("[FATAL] Database constructor failure")
 
-try:
-    # TODO: forma provisória para adicionar novos canais (aka. gambiarra)
-    from bobotinho.app import app
-    app.secret_key = os.urandom(24)
-except Exception as e:
-    log.exception(e)
-    sys.exit("[FATAL] App constructor failure")
-
 
 def run():
     try:
         loop.run_until_complete(db.init())
         loop.run_until_complete(bot._ws._connect())
         loop.run_until_complete(db.register_init())
-        loop.run_in_executor(None, app.run, "0.0.0.0", bot_config.port)
         loop.run_until_complete(bot._ws._listen())
     except BaseException as e:
         log.exception(e)
