@@ -39,11 +39,9 @@ async def get(
         return await request(url, "get", res_method, raise_for_status, *args, **kwargs)
     else:
         loop = loop or asyncio.get_event_loop()
-        loop.create_task(
-            asyncio.wait_for(
-                request(url, "get", res_method, raise_for_status, *args, **kwargs), 30
-            )
-        )
+        func = request(url, "get", res_method, raise_for_status, *args, **kwargs)
+        coro = asyncio.wait_for(func, 30)
+        loop.create_task(coro)
 
 
 async def post(
@@ -59,8 +57,6 @@ async def post(
         return await request(url, "post", res_method, raise_for_status, *args, **kwargs)
     else:
         loop = loop or asyncio.get_event_loop()
-        loop.create_task(
-            asyncio.wait_for(
-                request(url, "post", res_method, raise_for_status, *args, **kwargs), 30
-            )
-        )
+        func = request(url, "post", res_method, raise_for_status, *args, **kwargs)
+        coro = asyncio.wait_for(func, 30)
+        loop.create_task(coro)
