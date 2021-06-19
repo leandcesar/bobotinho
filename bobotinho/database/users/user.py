@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.base import Base, ContentMixin, TimestampMixin, UserMixin, fields, timezone
+from bobotinho.database.base import Base, ContentMixin, TimestampMixin, UserMixin, fields
 
 
 class User(Base, UserMixin, TimestampMixin, ContentMixin):
@@ -35,5 +35,6 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
                 if getattr(instance, attr) != value:
                     setattr(instance, attr, value)
                     update_fields.append(attr)
-            instance.updated_at = timezone.now()
-            await instance.save(update_fields=update_fields)
+            if update_fields:
+                update_fields.append("updated_at")
+                await instance.save(update_fields=update_fields)
