@@ -7,6 +7,15 @@ usage = 'digite o comando e "✊", "✋" ou "✌"'
 
 
 async def func(ctx, arg: str):
+    arg = (
+        "✊"
+        if arg == "pedra"
+        else "✋"
+        if arg == "papel"
+        else "✌"
+        if arg == "tesoura"
+        else arg
+    )
     emoji = random.choice(["✊", "✋", "✌"])
     if arg == emoji:
         ctx.response = f"eu escolhi {emoji} também, nós empatamos..."
