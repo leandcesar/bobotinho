@@ -15,5 +15,5 @@ async def func(bot) -> None:
         delta = (target - now).total_seconds()
         await asyncio.sleep(delta, loop=bot.loop)
         log.info("Resetting daily cookies...")
-        await models.Cookie.select_for_update().filter(daily=0).update(daily=1)
+        await models.Cookie.filter().all().select_for_update().update(daily=1)
         log.info("Daily cookies reset")

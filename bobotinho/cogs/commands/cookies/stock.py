@@ -6,7 +6,7 @@ description = "Estoque o seu cookie diário caso não queira comê-lo"
 
 async def func(ctx):
     cookie, _ = await models.Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
-    if cookie.daily:
+    if cookie.daily >= 1:
         await cookie.use_daily()
         await cookie.stock()
         ctx.response = "você estocou seu cookie diário"

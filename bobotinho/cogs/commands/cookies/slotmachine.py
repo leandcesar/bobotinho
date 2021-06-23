@@ -8,14 +8,14 @@ aliases = ["sm"]
 
 async def func(ctx):
     cookie, _ = await models.Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
-    if cookie.daily:
+    if cookie.daily >= 1:
         x, y, z = random.choices("🍇🍊🍋🍒🍉🍐", k=3)
         await cookie.use_daily()
         if x == y == z:
-            await cookie.stock(amount=10)
+            await cookie.stock(10)
             ctx.response = f"[{x}{y}{z}] você usou seu cookie diário e ganhou 10 cookies! PogChamp"
         elif x == y or x == z or y == z:
-            await cookie.stock(amount=3)
+            await cookie.stock(3)
             ctx.response = f"[{x}{y}{z}] você usou seu cookie diário e ganhou 3 cookies!"
         else:
             ctx.response = f"[{x}{y}{z}] você perdeu seu cookie diário..."
