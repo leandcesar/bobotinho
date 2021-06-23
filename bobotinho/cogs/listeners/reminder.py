@@ -20,5 +20,5 @@ async def event_message(bot, message) -> bool:
     await remind.delete()
     response = f"@{message.author.name}, {mention} deixou um lembrete: {content} ({timeago})"
     await message.channel.send(response)
-    log.info(f"#{message.channel.name} @{bot.nick}: {response}")
+    log.debug(f"#{message.channel.name} @{bot.nick}: {response}")
     return True

@@ -60,7 +60,7 @@ class Bobotinho(AutoBot):
             if hasattr(ctx, "response"):
                 response = f"@{ctx.author.name}, {ctx.response}"
                 await ctx.send(response)
-                log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
+                log.debug(f"#{ctx.channel.name} @{self.nick}: {response}")
                 await Analytics.sent(ctx)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
@@ -68,7 +68,7 @@ class Bobotinho(AutoBot):
             log.exception(e)
 
     async def global_before_hook(self, ctx):
-        log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
+        log.debug(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
         await Analytics.received(ctx)
         ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         ctx.prefix = self.prefixes[0]
@@ -83,7 +83,7 @@ class Bobotinho(AutoBot):
             ctx.response = "esse comando gerou uma resposta muito grande"
         response = f"@{ctx.author.name}, {ctx.response}"
         await ctx.send(response)
-        log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
+        log.debug(f"#{ctx.channel.name} @{self.nick}: {response}")
         await Analytics.sent(ctx)
 
     async def event_message(self, message):
