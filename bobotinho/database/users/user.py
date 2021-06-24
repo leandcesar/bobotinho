@@ -6,6 +6,7 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     color = fields.CharField(max_length=7, null=True, description="Twitch color")
     channel = fields.CharField(max_length=64, null=True, description="Twitch channel")
     saved_color = fields.CharField(max_length=7, null=True)
+    city = fields.CharField(max_length=100, null=True)
 
     class Meta:
         app = "users"
