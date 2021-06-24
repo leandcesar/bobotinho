@@ -16,4 +16,4 @@ async def func(ctx, *, content: str):
         await pet.delete()
         ctx.response = f"você devolveu {pet} {emoji} em troca de {price} cookies"
     else:
-        ctx.response = f"adquira um pet em troca de cookies ({ctx.prefix}petlist)"
+        ctx.response = f'adquira um pet em troca de cookies ("{ctx.prefix}petlist")'

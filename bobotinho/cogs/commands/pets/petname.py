@@ -18,7 +18,7 @@ async def func(ctx, *, content: str):
         specie = pets[0].specie
         name = content.title()
     if len(pets) == 0:
-        ctx.response = f"adquira um pet em troca de cookies ({ctx.prefix}petlist)"
+        ctx.response = f'adquira um pet em troca de cookies ("{ctx.prefix}petlist")'
     elif len(pets) > 1 and (" " not in content or not any([specie == pet.specie for pet in pets])):
         ctx.response = "você tem mais de um pet, então especifque a espécie e depois o nome"
     elif len(name) > 32:

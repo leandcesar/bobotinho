@@ -18,6 +18,6 @@ async def func(ctx, arg: str):
                 await cookie.stock(-pet.price)
                 ctx.response = f"você adquiriu {pet.specie} {pet.emoji}, agora escolha o nome!"
         else:
-            ctx.response = f"comece a estocar cookies para adquirir um pet ({ctx.prefix}stock)"
+            ctx.response = f'comece a estocar cookies para adquirir um pet ("{ctx.prefix}stock")'
     else:
-        ctx.response = f"escolha um dos pets disponíveis na lista de hoje ({ctx.prefix}petlist)"
+        ctx.response = f'escolha um dos pets disponíveis na lista de hoje ("{ctx.prefix}petlist")'

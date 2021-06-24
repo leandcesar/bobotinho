@@ -10,4 +10,4 @@ async def func(ctx):
         pets = P.join_pets(all_pets, formatter="{pet} {emoji}")
         ctx.response = f"você fez carinho em {pets}"
     else:
-        ctx.response = f"adquira um pet em troca de cookies ({ctx.prefix}petlist)"
+        ctx.response = f'adquira um pet em troca de cookies ("{ctx.prefix}petlist")'
