@@ -32,6 +32,8 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
             values = [message.author.name, message.channel.name, message.author.colour, message.content]
             update_fields = []
             for attr, value in zip(attrs, values):
+                if attr == "content" and len(value) > 500:
+                    value = value[:500]
                 if getattr(instance, attr) != value:
                     setattr(instance, attr, value)
                     update_fields.append(attr)
