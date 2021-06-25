@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from bobotinho.cogs.commands.cookies import resetting_daily
 from bobotinho.database import models
 from bobotinho.utils import checks, convert
 
@@ -9,6 +10,9 @@ extra_checks = [checks.is_banword]
 
 
 async def func(ctx, arg: str):
+    if resetting_daily():
+        ctx.response = "a fornada de cookies está sendo preparada, aguarde"
+        return
     name = convert.str2username(arg)
     cookie_from, _ = await models.Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
     if not name:
