@@ -11,7 +11,7 @@ async def func(ctx, arg: str):
         "✊"
         if arg == "pedra"
         else "✋"
-        if arg == "papel"
+        if arg == "papel" or arg == "✌"
         else "✌️"
         if arg == "tesoura"
         else arg
