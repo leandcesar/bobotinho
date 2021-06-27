@@ -9,6 +9,7 @@ class Config:
     nick = os.getenv("BOT_NAME")
     prefix = os.getenv("BOT_PREFIX")
     site = os.getenv("BOT_SITE")
+    ai = bool(os.getenv("BOT_AI_URL"))
     owner = os.getenv("OWNER_NAME")
 
 

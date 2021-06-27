@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bobotinho.autobot import AutoBot, CheckFailure, CommandNotFound, MissingRequiredArgument
 from bobotinho.apis.analytics import Analytics
+from bobotinho.apis.ai import AI
 from bobotinho.database import models
 from bobotinho.logger import log
 from bobotinho.utils import checks
@@ -20,6 +21,8 @@ class Bobotinho(AutoBot):
         self.owner = config.owner
         self.cooldowns = {}
         self.cache = {}
+        if config.ai:
+            self.add_listener(self.event_mention, "event_message")
 
     async def add_all_channels(self):
         self.channels = {
@@ -95,3 +98,21 @@ class Bobotinho(AutoBot):
                 if await listen(self, message):
                     return
         await self.handle_commands(message)
+
+    async def event_mention(self, message):
+        if message.echo:
+            return
+        mention, _, content = message.content.partition(" ")
+        if mention not in [self.nick, f"@{self.nick}", f"{self.nick},", f"@{self.nick},"]:
+            return
+        prediction = await AI.nlu(content)
+        if AI.is_small_talk(prediction):
+            intent = prediction["intent"]
+            response = f"@{message.author.name}, {AI.response(intent)}"
+            await message.channel.send(response)
+            log.debug(f"#{message.channel.name} @{self.nick}: {response}")
+        else:
+            command = prediction["intent"]
+            arg = prediction["entity"] or ""
+            message.content = f"{self.prefixes[0]}{command} {arg}".strip()
+            await self.handle_commands(message)
