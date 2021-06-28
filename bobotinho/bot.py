@@ -100,7 +100,7 @@ class Bobotinho(AutoBot):
         await self.handle_commands(message)
 
     async def event_mention(self, message):
-        if message.echo:
+        if message.echo or not self.channels[message.channel.name]["status"]:
             return
         mention, _, content = message.content.partition(" ")
         if mention not in [self.nick, f"@{self.nick}", f"{self.nick},", f"@{self.nick},"]:
