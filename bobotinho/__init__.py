@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-__title__ = "bobotinho-bot"
-__author__ = "Leandro César"
-__license__ = "GNU"
-__copyright__ = "Copyright 2020 bobotinho"
-__version__ = "0.1.0"
-
 import asyncio
 import os
 import sys
 
 from bobotinho.config import config_dict
 from bobotinho.logger import log
+
+__title__ = "bobotinho-bot"
+__author__ = "Leandro César"
+__license__ = "GNU"
+__copyright__ = "Copyright 2020 bobotinho"
+__version__ = os.getenv("VERSION", "0.1.0")
 
 try:
     config_mode = os.getenv("CONFIG_MODE", "local")

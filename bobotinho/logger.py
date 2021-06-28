@@ -10,14 +10,16 @@ logging.basicConfig(
 )
 log = logging.getLogger()
 
-if os.getenv("CONFIG_MODE") == "prod":
+if os.getenv("API_KEY_BUGSNAG"):
     import bugsnag
     from bugsnag.handlers import BugsnagHandler
 
     try:
         bugsnag.configure(
+            app_version=os.getenv("VERSION"),
             api_key=os.getenv("API_KEY_BUGSNAG"),
             project_root="/bobotinho",
+            release_stage=os.getenv("CONFIG_MODE", "local"),
         )
     except Exception as e:
         log.exception(e)
