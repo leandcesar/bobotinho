@@ -4,8 +4,6 @@ import asyncio
 import html
 from typing import Optional, Union
 
-from bobotinho.logger import log
-
 
 async def request(
     url: str,
@@ -15,15 +13,12 @@ async def request(
     *args,
     **kwargs
 ) -> Optional[Union[str, dict]]:
-    try:
-        async with aiohttp.ClientSession(raise_for_status=raise_for_status) as session:
-            async with session.request(method, url, *args, **kwargs) as response:
-                if res_method == "html":
-                    res_text = await getattr(response, "text")()
-                    return html.unescape(res_text)
-                return await getattr(response, res_method)()
-    except Exception as e:
-        log.exception(e)
+    async with aiohttp.ClientSession(raise_for_status=raise_for_status) as session:
+        async with session.request(method, url, *args, **kwargs) as response:
+            if res_method == "html":
+                res_text = await getattr(response, "text")()
+                return html.unescape(res_text)
+            return await getattr(response, res_method)()
 
 
 async def get(

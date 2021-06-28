@@ -5,11 +5,6 @@ from bobotinho.webhook import Webhook
 from bobotinho.database import models
 
 
-@signals.post_save(models.SystemLog)
-async def update_system_log(sender, instance, created, using_db, update_fields):
-    await Webhook.status(instance, created)
-
-
 @signals.post_save(models.User)
 async def update_user_name(sender, instance, created, using_db, update_fields):
     if not created and update_fields and "name" in update_fields:

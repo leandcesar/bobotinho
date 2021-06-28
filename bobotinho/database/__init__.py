@@ -40,4 +40,4 @@ class Database:
     async def register_close(self, e: Exception = None):
         if self.system_log:
             self.system_log.error = str(repr(e)) if e else None
-            await self.system_log.save()
+            await self.system_log.save(update_fields=["error", "updated_at"])
