@@ -21,6 +21,8 @@ async def func(ctx, arg: str):
         ctx.response = "você não está casado com ninguém"
     elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
+    elif not user.mention:
+        ctx.response = "esse usuário optou por não permitir mencioná-lo"
     elif wedding := (
         await models.Wedding.get_or_none(user_1_id=ctx.author.id, user_2_id=user.id, divorced=False)
         or await models.Wedding.get_or_none(user_1_id=user.id, user_2_id=ctx.author.id, divorced=False)

@@ -21,8 +21,10 @@ async def func(ctx, arg: str):
         ctx.response = "eu não quero seu cookie"
     elif name == ctx.author.name:
         ctx.response = "você presenteou você mesmo, uau!"
-    elif not await models.User.exists(name=name):
+    elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
+    elif not user.mention:
+        ctx.response = "esse usuário optou por não permitir mencioná-lo"
     elif cookie_from.daily >= 1:
         cookie_to, _ = await models.Cookie.get_or_create(name=name)
         await cookie_from.donate()

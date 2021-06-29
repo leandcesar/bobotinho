@@ -8,14 +8,16 @@ from bobotinho.database import models
 aliases = ["remindme"]
 description = "Deixe um lembrete para algum usuário"
 usage = "digite o comando, o nome de alguém e uma mensagem para deixar um lembrete"
-extra_checks = [checks.is_allowed, checks.is_banword]
+extra_checks = [checks.allowed, checks.is_banword]
 
 
 async def func(ctx, arg: str, *, content: str = ""):
     if ctx.command.invocation == "remindme":
+        arg = ""
         content = f"{arg} {content}"
         name = ctx.author.name
     elif arg == "me":
+        arg = ""
         name = ctx.author.name
     else:
         name = convert.str2username(arg)
@@ -27,6 +29,8 @@ async def func(ctx, arg: str, *, content: str = ""):
         ctx.response = "já existem muitos lembretes seus pendentes..."
     elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
+    elif arg and not user.mention:
+        ctx.response = "esse usuário optou por não permitir mencioná-lo"
     elif await models.Reminder.filter(from_user_id=user.id).count() > 7:
         ctx.response = f"já existem muitos lembretes pendentes para @{name}"
     elif not content:

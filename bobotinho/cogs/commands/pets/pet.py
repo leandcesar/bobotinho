@@ -20,6 +20,8 @@ async def func(ctx, arg: str = ""):
         await petpat.func(ctx)
     elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
+    elif arg and not user.mention:
+        ctx.response = "esse usuário optou por não permitir mencioná-lo"
     elif pets := await models.Pet.filter(user_id=user.id).all():
         ctx.response = f'{mention} possui {P.join_pets(pets, formatter="{pet} {emoji}")}'
     elif name == ctx.author.name:
