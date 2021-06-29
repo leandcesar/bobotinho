@@ -21,6 +21,7 @@ class Bobotinho(AutoBot):
         self.owner = config.owner
         self.cooldowns = {}
         self.cache = {}
+        self.blocked = []
         if config.ai:
             self.add_listener(self.event_mention, "event_message")
 
@@ -39,8 +40,9 @@ class Bobotinho(AutoBot):
         self.add_all_commands()
         self.add_all_listeners()
         self.add_all_tasks()
-        self.add_all_checks([checks.is_online, checks.is_enabled, checks.is_cooldown])
+        self.add_all_checks([checks.is_online, checks.enabled, checks.on_cooldown])
         await self.add_all_channels()
+        self.blocked = await models.User.filter(block=True).all().values_list("id", flat=True)
         log.info(f"{self.nick} | #{len(self.channels)} | {self.prefixes[0]}{len(self.commands)}")
 
     async def event_error(self, e, data=None):
@@ -50,13 +52,13 @@ class Bobotinho(AutoBot):
         if isinstance(e, CommandNotFound):
             pass
         elif isinstance(e, CheckFailure):
-            if str(e).split()[-1] in ["is_online", "is_cooldown"]:
+            if str(e).split()[-1] in ["is_online", "on_cooldown"]:
                 pass
-            elif str(e).split()[-1] == "is_enabled":
+            elif str(e).split()[-1] == "enabled":
                 ctx.response = "esse comando está desativado nesse canal"
             elif str(e).split()[-1] == "is_banword":
                 ctx.response = "sua mensagem contém um termo banido"
-            elif str(e).split()[-1] == "is_allowed":
+            elif str(e).split()[-1] == "allowed":
                 ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
             else:
                 log.error(e)
@@ -90,7 +92,7 @@ class Bobotinho(AutoBot):
         await Analytics.sent(ctx)
 
     async def event_message(self, message):
-        if message.echo:
+        if message.echo or message.author.id in self.blocked:
             return
         await models.User.update_if_exists(message)
         if self.channels[message.channel.name]["status"]:
@@ -100,7 +102,9 @@ class Bobotinho(AutoBot):
         await self.handle_commands(message)
 
     async def event_mention(self, message):
-        if message.echo or not self.channels[message.channel.name]["status"]:
+        if message.echo or message.author.id in self.blocked:
+            return
+        if not self.channels[message.channel.name]["status"]:
             return
         mention, _, content = message.content.partition(" ")
         if mention not in [self.nick, f"@{self.nick}", f"{self.nick},", f"@{self.nick},"]:

@@ -23,7 +23,7 @@ def is_banword(ctx) -> bool:
     return not any(x in ctx.content for x in ctx.bot.channels[ctx.channel.name]["banwords"])
 
 
-def is_cooldown(ctx) -> bool:
+def on_cooldown(ctx) -> bool:
     ctx.bot.cooldowns = {
         k: v
         for k, v in ctx.bot.cooldowns.items()
@@ -31,14 +31,10 @@ def is_cooldown(ctx) -> bool:
     }
     if len(ctx.bot.cooldowns) > 1023:
         ctx.bot.cooldowns.pop(list(ctx.bot.cooldowns.keys())[0])
-    on_cooldown = ctx.bot.cooldowns.get(f"{ctx.author.id}-{ctx.command.name}")
-    if not on_cooldown:
+    cooldown = ctx.bot.cooldowns.get(f"{ctx.author.id}-{ctx.command.name}")
+    if not cooldown:
         ctx.bot.cooldowns[f"{ctx.author.id}-{ctx.command.name}"] = time.monotonic() + 5
-    return not on_cooldown
-
-
-def is_enabled(ctx) -> bool:
-    return ctx.command.name not in ctx.bot.channels[ctx.channel.name]["disabled"]
+    return not cooldown
 
 
 def is_online(ctx) -> bool:
@@ -49,5 +45,9 @@ def is_link(ctx) -> bool:
     return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", ctx.content) is not None
 
 
-def is_allowed(ctx) -> bool:
+def enabled(ctx) -> bool:
+    return ctx.command.name not in ctx.bot.channels[ctx.channel.name]["disabled"]
+
+
+def allowed(ctx) -> bool:
     return is_sub(ctx) or is_vip(ctx) or is_mod(ctx) or is_streamer(ctx) or not is_link(ctx)
