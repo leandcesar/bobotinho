@@ -57,9 +57,6 @@ class TranslateApi:
                     for sentence in sentences:
                         translate_text += sentence[0].strip() + " "
                     return translate_text
-                elif len(response) == 2:
-                    print("??")
-                    return [sentences.append(i[0]) for i in response]
 
     @classmethod
     def detect(cls, text: str):
