@@ -17,7 +17,7 @@ class AI:
         try:
             response = await aiorequests.post(url, params=params, json=data)
             if response["intent"]["confidence"] < 0.75:
-                return {"intent": None, "entity": None}
+                return {"intent": "nlu_fallback", "entity": None}
             intent = response["intent"]["name"]
             entity = response["entities"][0]["value"] if response["entities"] else None
             # TODO: mudar nlu pra não capturar pronomes nas entities
