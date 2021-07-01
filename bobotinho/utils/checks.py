@@ -58,6 +58,6 @@ def enabled(ctx) -> bool:
 
 
 def online(ctx) -> bool:
-    if not ctx.bot.channels[ctx.channel.name]["status"]:
+    if not ctx.bot.channels[ctx.channel.name]["online"]:
         raise BotIsNotOnline()
     return True

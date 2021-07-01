@@ -38,7 +38,7 @@ class Bobotinho(AutoBot):
                 "id": channel.user.id,
                 "banwords": list(channel.banwords.keys()),
                 "disabled": list(channel.disabled.keys()),
-                "status": channel.status,
+                "online": channel.online,
             } for channel in await models.Channel.all().select_related("user")
         }
         await self.join_all_channels(list(self.channels.keys()))
@@ -90,32 +90,42 @@ class Bobotinho(AutoBot):
         await ctx.send(ctx.response)
         await Analytics.sent(ctx)
 
+    async def reply_mention(self, message):
+        mention, _, content = message.content.partition(" ")
+        prediction = await AI.nlu(content)
+        intent = prediction["intent"]
+        entity = prediction["entity"] or ""
+        if response := AI.small_talk(intent):
+            response = f"@{message.author.name}, {response}"
+            await message.channel.send(response)
+        else:
+            message.content = f"{self.prefixes[0]}{intent} {entity}".strip()
+            await self.handle_commands(message)
+
+    async def event_listener(self, message):
+        for listen in self.listeners:
+            if await listen(self, message):
+                return True
+
     async def event_message(self, message):
-        if message.echo or message.author.id in self.blocked:
+        if message.echo:
+            return
+        if message.author.id in self.blocked:
+            return
+        if not self.channels[message.channel.name]["online"]:
             return
         await models.User.update_if_exists(message)
-        if self.channels[message.channel.name]["status"]:
-            for listen in self.listeners:
-                if await listen(self, message):
-                    return
+        if await self.event_listener(message):
+            return
         await self.handle_commands(message)
 
     async def event_mention(self, message):
-        if message.echo or message.author.id in self.blocked:
+        if message.echo:
             return
-        if not self.channels[message.channel.name]["status"]:
+        if message.author.id in self.blocked:
             return
-        mention, _, content = message.content.partition(" ")
-        if mention not in [self.nick, f"@{self.nick}", f"{self.nick},", f"@{self.nick},"]:
+        if not self.channels[message.channel.name]["online"]:
             return
-        prediction = await AI.nlu(content)
-        if AI.is_small_talk(prediction):
-            intent = prediction["intent"]
-            response = f"@{message.author.name}, {AI.response(intent)}"
-            await message.channel.send(response)
-            log.debug(f"#{message.channel.name} @{self.nick}: {response}")
-        else:
-            command = prediction["intent"]
-            arg = prediction["entity"] or ""
-            message.content = f"{self.prefixes[0]}{command} {arg}".strip()
-            await self.handle_commands(message)
+        if not message.content.startswith((self.nick, f"@{self.nick}")):
+            return
+        await self.reply_mention(message)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from typing import Optional
 
 from bobotinho import aiorequests
 from bobotinho.logger import log
@@ -31,14 +32,10 @@ class AI:
         return {"intent": None, "entity": None}
 
     @staticmethod
-    def is_small_talk(response: dict) -> bool:
-        return response["intent"] in (
-            "nlu_fallback", "ping", "greet", "how_are_you", "who_are_you", "praise", "swear"
-        )
-
-    @staticmethod
-    def response(intent: str) -> str:
-        if intent == "ping":
+    def small_talk(intent: str) -> Optional[str]:
+        if intent == "nlu_fallback":
+            return 'não entendi isso, mas tente ver meus comandos digitando "%help"'
+        elif intent == "ping":
             return "estou aqui"
         elif intent == "greet":
             return "oi"
@@ -50,4 +47,3 @@ class AI:
             return "😊"
         elif intent == "swear":
             return "🖕"
-        return 'não entendi isso, mas tente ver meus comandos digitando "%help"'

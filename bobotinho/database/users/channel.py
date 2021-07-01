@@ -7,7 +7,7 @@ class Channel(Base, TimestampMixin):
     followers = fields.IntField(null=True, description="Twitch followers")
     banwords = fields.JSONField(default={})
     disabled = fields.JSONField(default={})
-    status = fields.BooleanField(default=True)
+    online = fields.BooleanField(default=True)
 
     class Meta:
         app = "users"

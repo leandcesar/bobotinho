@@ -23,7 +23,7 @@ async def func(bot):
             "id": channel.user.id,
             "banwords": list(channel.banwords.keys()),
             "disabled": list(channel.disabled.keys()),
-            "status": channel.status,
+            "online": channel.online,
         }
         response = (
             f'@{channel.user.name}, meu prefixo é "{bot.prefixes[0]}", '

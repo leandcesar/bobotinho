@@ -8,9 +8,9 @@ no_global_checks = True
 
 
 async def func(ctx):
-    if ctx.bot.channels[ctx.channel.name]["status"]:
+    if ctx.bot.channels[ctx.channel.name]["online"]:
         ctx.response = "já estou ligado ☕"
     else:
-        ctx.bot.channels[ctx.channel.name]["status"] = True
-        await models.Channel.filter(user_id=ctx.bot.channels[ctx.channel.name]["id"]).update(status=True)
+        ctx.bot.channels[ctx.channel.name]["online"] = True
+        await models.Channel.filter(user_id=ctx.bot.channels[ctx.channel.name]["id"]).update(online=True)
         ctx.response = "você me ligou ☕"
