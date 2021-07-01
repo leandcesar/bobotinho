@@ -112,11 +112,10 @@ class Bobotinho(AutoBot):
             return
         if message.author.id in self.blocked:
             return
-        if not self.channels[message.channel.name]["online"]:
-            return
-        await models.User.update_if_exists(message)
-        if await self.event_listener(message):
-            return
+        if self.channels[message.channel.name]["online"]:
+            await models.User.update_if_exists(message)
+            if await self.event_listener(message):
+                return
         await self.handle_commands(message)
 
     async def event_mention(self, message):
