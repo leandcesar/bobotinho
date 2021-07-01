@@ -10,9 +10,11 @@ from bobotinho.logger import log
 class Analytics:
     base_url = "https://tracker.dashbot.io/track"
     key = os.getenv("API_KEY_ANALYTICS")
+    nick = os.getenv("BOT_NAME")
 
     @classmethod
     async def received(cls, ctx) -> Optional[dict]:
+        log.debug(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
         url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type=incoming"
         data = {
             "text": ctx.content,
@@ -27,6 +29,7 @@ class Analytics:
 
     @classmethod
     async def sent(cls, ctx) -> Optional[dict]:
+        log.debug(f"#{ctx.channel.name} @{cls.nick}: {ctx.response}")
         url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type=outgoing"
         data = {
             "text": ctx.response,

@@ -4,7 +4,7 @@ from bobotinho.utils import checks, convert
 
 description = "Veja quantos cookies algum usuário já comeu"
 aliases = ["cc"]
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):

@@ -2,52 +2,62 @@
 import time
 import re
 
-
-def is_streamer(ctx) -> bool:
-    return ctx.author.name == ctx.channel.name
+from bobotinho.utils import roles
 
 
-def is_mod(ctx) -> bool:
-    return ctx.author.is_mod or is_streamer(ctx)
+class BotIsNotOnline(Exception):
+    pass
 
 
-def is_vip(ctx) -> bool:
-    return bool(ctx.author.badges.get("vip"))
+class ContentHasBanword(Exception):
+    pass
 
 
-def is_sub(ctx) -> bool:
-    return ctx.author.is_subscriber
+class CommandIsDisabled(Exception):
+    pass
 
 
-def is_banword(ctx) -> bool:
-    return not any(x in ctx.content for x in ctx.bot.channels[ctx.channel.name]["banwords"])
+class CommandIsOnCooldown(Exception):
+    pass
 
 
-def on_cooldown(ctx) -> bool:
+class UserIsNotAllowed(Exception):
+    pass
+
+
+def allowed(ctx) -> bool:
+    if not roles.any(ctx) and re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", ctx.content) is not None:
+        raise UserIsNotAllowed()
+    return True
+
+
+def banword(ctx) -> bool:
+    if any(word in ctx.content for word in ctx.bot.channels[ctx.channel.name]["banwords"]):
+        raise ContentHasBanword()
+    return True
+
+
+def cooldown(ctx) -> bool:
     ctx.bot.cooldowns = {
         k: v
         for k, v in ctx.bot.cooldowns.items()
         if v > time.monotonic()
     }
-    if len(ctx.bot.cooldowns) > 1023:
-        ctx.bot.cooldowns.pop(list(ctx.bot.cooldowns.keys())[0])
-    cooldown = ctx.bot.cooldowns.get(f"{ctx.author.id}-{ctx.command.name}")
-    if not cooldown:
-        ctx.bot.cooldowns[f"{ctx.author.id}-{ctx.command.name}"] = time.monotonic() + 5
-    return not cooldown
-
-
-def is_online(ctx) -> bool:
-    return ctx.bot.channels[ctx.channel.name]["status"]
-
-
-def is_link(ctx) -> bool:
-    return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", ctx.content) is not None
+    if len(ctx.bot.cooldowns) > 512:
+        ctx.bot.cooldowns = {}  # TODO: não fazer isso
+    if ctx.bot.cooldowns.get(f"{ctx.author.id}-{ctx.command.name}"):
+        raise CommandIsOnCooldown()
+    ctx.bot.cooldowns[f"{ctx.author.id}-{ctx.command.name}"] = time.monotonic() + 5
+    return True
 
 
 def enabled(ctx) -> bool:
-    return ctx.command.name not in ctx.bot.channels[ctx.channel.name]["disabled"]
+    if ctx.command.name in ctx.bot.channels[ctx.channel.name]["disabled"]:
+        raise CommandIsDisabled()
+    return True
 
 
-def allowed(ctx) -> bool:
-    return is_sub(ctx) or is_vip(ctx) or is_mod(ctx) or is_streamer(ctx) or not is_link(ctx)
+def online(ctx) -> bool:
+    if not ctx.bot.channels[ctx.channel.name]["status"]:
+        raise BotIsNotOnline()
+    return True

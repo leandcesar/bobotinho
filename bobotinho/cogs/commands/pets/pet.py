@@ -6,7 +6,7 @@ from bobotinho.utils import checks, convert
 
 description = "Veja os pets de um usuário"
 aliases = ["pets"]
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):

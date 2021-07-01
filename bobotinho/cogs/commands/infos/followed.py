@@ -3,7 +3,7 @@ from bobotinho.apis import twitch
 from bobotinho.utils import checks, convert
 
 description = "Saiba quando algum usuário segue algum canal"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg1: str = "", arg2: str = ""):

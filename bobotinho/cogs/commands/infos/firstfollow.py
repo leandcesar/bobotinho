@@ -5,7 +5,7 @@ from bobotinho.utils import checks, convert
 description = "Saiba o primeiro seguidor e o primeiro canal seguido de algum usuário"
 aliases = ["ff"]
 usage = "digite o comando e o nome de alguém para saber a data de criação da conta"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):

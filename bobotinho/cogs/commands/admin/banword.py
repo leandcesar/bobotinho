@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from bobotinho.database import models
-from bobotinho.utils import checks, convert
+from bobotinho.utils import convert, roles
 
 aliases = ["bw"]
 description = "Adicione ou remova um termo banido"
 usage = 'digite o comando, "+" (para adicionar) ou "-" (para remover) e o termo'
-extra_checks = [checks.is_mod]
+extra_checks = [roles.mod]
 
 
 async def func(ctx, arg1: str, arg2: str):

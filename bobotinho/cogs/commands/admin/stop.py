@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from bobotinho.database import models
-from bobotinho.utils import checks
+from bobotinho.utils import roles
 
 description = "Pause o bot"
-extra_checks = [checks.is_mod]
+extra_checks = [roles.mod]
 
 
 async def func(ctx):

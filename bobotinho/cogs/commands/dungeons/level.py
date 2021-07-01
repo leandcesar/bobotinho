@@ -5,7 +5,7 @@ from bobotinho.utils import checks, convert
 
 description = "Veja qual o seu level (ou de alguém) e outras estatísticas da dungeon"
 aliases = ["lvl"]
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):

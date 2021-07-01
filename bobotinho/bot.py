@@ -3,6 +3,13 @@ from bobotinho.autobot import AutoBot, CheckFailure, CommandNotFound, MissingReq
 from bobotinho.apis.analytics import Analytics
 from bobotinho.apis.ai import AI
 from bobotinho.database import models
+from bobotinho.exceptions import (
+    BotIsNotOnline,
+    ContentHasBanword,
+    CommandIsDisabled,
+    CommandIsOnCooldown,
+    UserIsNotAllowed,
+)
 from bobotinho.logger import log
 from bobotinho.utils import checks
 
@@ -40,7 +47,7 @@ class Bobotinho(AutoBot):
         self.add_all_commands()
         self.add_all_listeners()
         self.add_all_tasks()
-        self.add_all_checks([checks.is_online, checks.enabled, checks.on_cooldown])
+        self.add_all_checks([checks.online, checks.enabled, checks.cooldown])
         await self.add_all_channels()
         self.blocked = await models.User.filter(block=True).all().values_list("id", flat=True)
         log.info(f"{self.nick} | #{len(self.channels)} | {self.prefixes[0]}{len(self.commands)}")
@@ -49,46 +56,38 @@ class Bobotinho(AutoBot):
         log.exception(e)
 
     async def event_command_error(self, ctx, e):
-        if isinstance(e, CommandNotFound):
-            pass
+        if isinstance(e, CommandIsDisabled):
+            ctx.response = "esse comando está desativado nesse canal"
+        elif isinstance(e, ContentHasBanword):
+            ctx.response = "sua mensagem contém um termo banido"
+        elif isinstance(e, UserIsNotAllowed):
+            ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
         elif isinstance(e, CheckFailure):
-            if str(e).split()[-1] in ["is_online", "on_cooldown"]:
-                pass
-            elif str(e).split()[-1] == "enabled":
-                ctx.response = "esse comando está desativado nesse canal"
-            elif str(e).split()[-1] == "is_banword":
-                ctx.response = "sua mensagem contém um termo banido"
-            elif str(e).split()[-1] == "allowed":
-                ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
-            else:
-                log.error(e)
-            if hasattr(ctx, "response"):
-                response = f"@{ctx.author.name}, {ctx.response}"
-                await ctx.send(response)
-                log.debug(f"#{ctx.channel.name} @{self.nick}: {response}")
-                await Analytics.sent(ctx)
+            log.error(e)
+        if ctx.response:
+            response = f"@{ctx.author.name}, {ctx.response}"
+            await ctx.send(response)
+            await Analytics.sent(ctx)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
-        else:
+        elif not isinstance(e, (CommandNotFound, BotIsNotOnline, CommandIsOnCooldown)):
             log.exception(e)
 
     async def global_before_hook(self, ctx):
-        log.debug(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
         await Analytics.received(ctx)
         ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         ctx.prefix = self.prefixes[0]
         await models.User.create_if_not_exists(ctx)
 
     async def global_after_hook(self, ctx):
-        if not hasattr(ctx, "response"):
+        if not ctx.response:
             log.error(f'"{ctx.content}" from @{ctx.author.name} has no ctx.response')
             ctx.response = ctx.command.usage or "ocorreu um erro inesperado"
-        elif len(ctx.response) > 400:
-            log.info(f'"{ctx.response}" > 400 characters')
+        elif len(ctx.response) > 500:
+            log.error(f'"{ctx.response}" > 500 characters')
             ctx.response = "esse comando gerou uma resposta muito grande"
-        response = f"@{ctx.author.name}, {ctx.response}"
-        await ctx.send(response)
-        log.debug(f"#{ctx.channel.name} @{self.nick}: {response}")
+        ctx.response = f"@{ctx.author.name}, {ctx.response}"
+        await ctx.send(ctx.response)
         await Analytics.sent(ctx)
 
     async def event_message(self, message):

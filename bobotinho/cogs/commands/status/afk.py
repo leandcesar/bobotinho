@@ -5,7 +5,7 @@ from bobotinho.utils import checks
 
 description = "Informe que você está se ausentando do chat"
 aliases = list(afks.keys())[1:]
-extra_checks = [checks.allowed, checks.is_banword]
+extra_checks = [checks.allowed, checks.banword]
 
 
 async def func(ctx, *, content: str = ""):

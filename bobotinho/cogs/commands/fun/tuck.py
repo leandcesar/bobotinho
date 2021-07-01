@@ -3,7 +3,7 @@ from bobotinho.utils import checks, convert
 
 description = "Coloque alguém do chat na cama para dormir"
 usage = "digite o comando e o nome de alguém para colocá-lo na cama"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):

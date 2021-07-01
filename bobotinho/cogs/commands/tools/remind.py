@@ -8,7 +8,7 @@ from bobotinho.database import models
 aliases = ["remindme"]
 description = "Deixe um lembrete para algum usuário"
 usage = "digite o comando, o nome de alguém e uma mensagem para deixar um lembrete"
-extra_checks = [checks.allowed, checks.is_banword]
+extra_checks = [checks.allowed, checks.banword]
 
 
 async def func(ctx, arg: str, *, content: str = ""):

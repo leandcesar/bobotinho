@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from bobotinho.database import models
-from bobotinho.utils import checks
+from bobotinho.utils import roles
 
 description = "Despause o bot"
-extra_checks = [checks.is_mod]
+extra_checks = [roles.mod]
 no_global_checks = True
 
 

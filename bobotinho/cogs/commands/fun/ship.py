@@ -3,7 +3,7 @@ from bobotinho.utils import checks, convert
 
 description = "Faça um ship entre o nome de duas pessoas"
 usage = "digite o comando e o nome de duas pessoas para shipá-los"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg1: str, arg2: str = ""):

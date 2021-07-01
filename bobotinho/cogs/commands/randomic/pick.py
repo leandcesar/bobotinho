@@ -5,7 +5,7 @@ from bobotinho.utils import checks
 
 description = "Sorteia uma palavra da mensagem informada"
 usage = "digite o comando e opções separadas por espaço"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, *, content: str):

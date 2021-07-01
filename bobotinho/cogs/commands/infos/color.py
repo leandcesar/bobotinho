@@ -7,7 +7,7 @@ from bobotinho.utils import checks, convert
 
 description = "Saiba o código hexadecimal da cor de algum usuário"
 aliases = ["colour"]
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):

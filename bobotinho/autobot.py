@@ -39,6 +39,7 @@ class AutoBot(Bot):
             prefix=prefix,
         )
         ctx.bot = self
+        ctx.response = None
         return ctx
 
     def add_all_commands(self, basedir: str = "bobotinho/cogs/commands") -> None:

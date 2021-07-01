@@ -5,7 +5,7 @@ from bobotinho.utils import checks
 
 description = "Dê um nome para o seu pet"
 usage = "digite o comando e o nome que desejar para seu pet"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, *, content: str):

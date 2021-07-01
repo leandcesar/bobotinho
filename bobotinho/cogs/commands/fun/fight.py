@@ -5,7 +5,7 @@ from bobotinho.utils import checks, convert
 
 description = "Desafie um usuário para lutar"
 usage = "digite o comando e o nome de alguém para desafiá-lo para luta"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):

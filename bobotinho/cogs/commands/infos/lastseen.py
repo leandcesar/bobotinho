@@ -5,7 +5,7 @@ from bobotinho.utils import checks, convert, timetools
 description = "Saiba a última vez que alguém foi visto"
 aliases = ["ls"]
 usage = "digite o comando e o nome de alguém para saber quando foi visto pela última vez"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):

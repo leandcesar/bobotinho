@@ -6,7 +6,7 @@ from bobotinho.utils import checks, convert
 description = "Presenteie algum usuário com seu cookie"
 aliases = ["give"]
 usage = "digite o comando e o nome de alguém para presenteá-lo com seu cookie"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):

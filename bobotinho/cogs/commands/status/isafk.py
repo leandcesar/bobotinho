@@ -5,7 +5,7 @@ from bobotinho.utils import checks, convert, timetools
 
 description = "Verifique se alguém está AFK"
 usage = "digite o comando e o nome do usuário para saber se ele está AFK"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):

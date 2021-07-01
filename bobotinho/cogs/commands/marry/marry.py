@@ -6,7 +6,7 @@ from bobotinho.utils import checks, convert
 
 description = "Case-se e seja feliz para sempre, mas isso custará cookies"
 usage = "digite o comando e o nome de quem você quer pedir em casamento"
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):

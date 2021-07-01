@@ -4,7 +4,7 @@ from bobotinho.utils import checks, convert, timetools
 
 description = "Saiba há quanto tempo algum usuário segue algum canal"
 aliases = ["fa"]
-extra_checks = [checks.is_banword]
+extra_checks = [checks.banword]
 
 
 async def func(ctx, arg1: str = "", arg2: str = ""):
