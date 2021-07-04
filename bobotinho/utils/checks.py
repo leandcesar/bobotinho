@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
 import re
 
 from bobotinho.utils import roles
@@ -38,16 +37,8 @@ def banword(ctx) -> bool:
 
 
 def cooldown(ctx) -> bool:
-    ctx.bot.cooldowns = {
-        k: v
-        for k, v in ctx.bot.cooldowns.items()
-        if v > time.monotonic()
-    }
-    if len(ctx.bot.cooldowns) > 512:
-        ctx.bot.cooldowns = {}  # TODO: não fazer isso
-    if ctx.bot.cooldowns.get(f"{ctx.author.id}-{ctx.command.name}"):
+    if not ctx.bot.cooldowns.set(f"{ctx.author.id}-{ctx.command.name}", 1, ex=5, nx=True):
         raise CommandIsOnCooldown()
-    ctx.bot.cooldowns[f"{ctx.author.id}-{ctx.command.name}"] = time.monotonic() + 5
     return True
 
 
