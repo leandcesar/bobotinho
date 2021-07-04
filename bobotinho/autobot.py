@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import inspect
 import os
-from concurrent.futures._base import TimeoutError
+from asyncio.exceptions import TimeoutError
 from importlib import import_module
 from twitchio.dataclasses import Context
 from twitchio.ext.commands import Bot, Command
@@ -90,26 +90,19 @@ class AutoBot(Bot):
             except Exception as e:
                 log.exception(e)
 
-    def add_all_checks(self, checks: list = []) -> list:
-        failed = []
+    def add_all_checks(self, checks: list = []) -> None:
         for check in checks:
             try:
                 self.add_check(check)
             except Exception as e:
-                failed.append(check)
                 log.exception(e)
-        return failed
 
-    async def join_all_channels(self, channels: list = []) -> list:
+    async def join_all_channels(self, channels: list = []) -> None:
         LIMIT = 100
-        failed = []
         for i in range(0, len(list(channels)), LIMIT):
             try:
                 await self.join_channels(list(channels)[i:i+LIMIT])
             except TimeoutError as e:
-                channel = str(e).split('"')[1]
-                failed.append(channel)
-                log.info(e)
+                log.error(e)
             except Exception as e:
                 log.exception(e)
-        return failed
