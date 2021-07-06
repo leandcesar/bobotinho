@@ -3,9 +3,11 @@ description = "Cancele o desafio para lutar"
 
 
 async def func(ctx):
-    ctx.response = "você não tem desafios para cancelar"
-    for k, v in ctx.bot.cache.get("fights", {}).items():
-        if ctx.author.name == v["name"]:
-            ctx.response = f"você cancelou o desafio contra @{k}"
-            ctx.bot.cache.get("fights", {}).pop(k, None)
+    for key in ctx.bot.cache.keys(pattern="fight"):
+        if ctx.author.name == ctx.bot.cache.get(key):
+            name = key.split("-")[1]
+            ctx.response = f"você cancelou o desafio contra @{name}"
+            ctx.bot.cache.delete(key)
             break
+    else:
+        ctx.response = "você não tem desafios para cancelar"

@@ -5,9 +5,8 @@ description = "Aceite o desafio para lutar"
 
 
 async def func(ctx):
-    fight = ctx.bot.cache.get("fights", {}).pop(ctx.author.name, None)
-    if fight:
-        fighters = ["você", "@" + fight["name"]]
+    if name := ctx.bot.cache.get(f"fight-{ctx.author.name}"):
+        fighters = ["você", "@" + name]
         random.shuffle(fighters)
         quote = random.choice(
             [
@@ -24,5 +23,6 @@ async def func(ctx):
             ]
         )
         ctx.response = f"{quote}! GG"
+        ctx.bot.cache.delete(f"fight-{ctx.author.name}")
     else:
         ctx.response = "você não tem desafios para aceitar"

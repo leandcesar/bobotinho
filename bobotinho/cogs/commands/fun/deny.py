@@ -3,7 +3,8 @@ description = "Recuse o desafio para lutar"
 
 
 async def func(ctx):
-    if fight := ctx.bot.cache.get("fights", {}).pop(ctx.author.name, None):
-        ctx.response = f'você recusou o desafio contra @{fight["name"]} LUL'
+    if name := ctx.bot.cache.get(f"fight-{ctx.author.name}"):
+        ctx.response = f"você recusou o desafio contra @{name} LUL"
+        ctx.bot.cache.delete(f"fight-{ctx.author.name}")
     else:
         ctx.response = "você não tem desafios para recusar"

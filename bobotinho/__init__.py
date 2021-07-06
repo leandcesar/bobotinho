@@ -49,5 +49,6 @@ def run():
         loop.run_until_complete(db.register_close())
     finally:
         bot.cooldowns.close()
+        bot.cache.close()
         loop.run_until_complete(bot._ws._websocket.close())
         loop.run_until_complete(db.close())

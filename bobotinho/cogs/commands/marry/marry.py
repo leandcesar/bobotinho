@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
-
 from bobotinho.database import models
 from bobotinho.utils import checks, convert
 
@@ -10,11 +8,6 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):
-    ctx.bot.cache["weddings"] = {
-        k: v
-        for k, v in ctx.bot.cache.get("weddings", {}).items()
-        if v["time"] < time.monotonic()
-    }
     name = convert.str2username(arg)
     if not name:
         ctx.response = "nome de usuário inválido"
@@ -22,17 +15,13 @@ async def func(ctx, arg: str):
         ctx.response = "não fui programado para fazer parte de um relacionamento"
     elif name == ctx.author.name:
         ctx.response = "você não pode se casar com você mesmo..."
-    elif ctx.author.name in ctx.bot.cache["weddings"].keys():
+    elif someone := ctx.bot.cache.get(f"marry-{ctx.author.name}"):
         ctx.response = (
-            "antes você precisa responder ao pedido que lhe fizeram! "
+            f"antes você precisa responder ao pedido de @{someone}! "
             f'Digite "{ctx.prefix}yes" ou "{ctx.prefix}no"'
         )
-    elif any([v for v in ctx.bot.cache["weddings"].values() if ctx.author.name == v["name"]]):
-        ctx.response = "vá com calma garanhão, você acabou de pedir alguém em casamento"
-    elif name in ctx.bot.cache["weddings"].keys():
-        ctx.response = f"alguém chegou primeiro e já fez uma proposta à mão de @{name}"
-    elif any([v for v in ctx.bot.cache["weddings"].values() if name == v["name"]]):
-        ctx.response = f"@{name} está aguardando a resposta de outra pessoa"
+    elif someone := ctx.bot.cache.get(f"marry-{name}"):
+        ctx.response = f"@{someone} chegou primeiro e já fez uma proposta à mão de @{name}"
     elif (
         await models.Wedding.exists(user_1_id=ctx.author.id, divorced=False)
         or await models.Wedding.exists(user_2_id=ctx.author.id, divorced=False)
@@ -48,7 +37,7 @@ async def func(ctx, arg: str):
     ):
         ctx.response = f"controle seu desejo por pessoas casadas, @{name} já está em um compromisso"
     elif (cookie := await models.Cookie.get_or_none(name=ctx.author.name)) and cookie.stocked >= 100:
-        ctx.bot.cache["weddings"][name] = {"name": ctx.author.name, "time": time.monotonic() + 180}
+        ctx.bot.cache.set(f"marry-{name}", ctx.author.name, ex=180)
         ctx.response = (
             f"você pediu a mão de @{name}, o usuário deve "
             f'digitar "{ctx.prefix}yes" ou "{ctx.prefix}no" 💐💍'
