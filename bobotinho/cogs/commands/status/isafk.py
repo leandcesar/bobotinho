@@ -20,7 +20,7 @@ async def func(ctx, arg: str):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif not user.mention:
         ctx.response = "esse usuário optou por não permitir mencioná-lo"
-    elif (afk := await models.Afk.get_or_none(user_id=user.id)) and afk.status:
+    elif (afk := await models.Afk.get_or_none(user_id=user.id)):
         afk_type = afks[afk.alias]
         timesince = timetools.date_in_full(afk.created_ago)
         ctx.response = f"@{name} está {afk_type.isafk}: {afk.content or afk_type.emoji} ({timesince})"
