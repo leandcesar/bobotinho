@@ -3,7 +3,7 @@ import inspect
 import os
 from asyncio.exceptions import TimeoutError
 from importlib import import_module
-from twitchio.dataclasses import Context
+from twitchio.dataclasses import Context  # NOQA
 from twitchio.ext.commands import Bot, Command
 from twitchio.ext.commands.errors import CheckFailure, CommandNotFound, MissingRequiredArgument  # NOQA
 
@@ -29,18 +29,6 @@ class AutoBot(Bot):
             if not result:
                 return predicate
         return True
-
-    async def get_context(self, message) -> Context:
-        prefix = await self.get_prefix(message)
-        ctx = Context(
-            message=message,
-            channel=message.channel,
-            user=message.author,
-            prefix=prefix,
-        )
-        ctx.bot = self
-        ctx.response = None
-        return ctx
 
     def add_all_commands(self, basedir: str = "bobotinho/cogs/commands") -> None:
         for path in [filename.path for filename in os.scandir(basedir) if filename.is_dir()]:

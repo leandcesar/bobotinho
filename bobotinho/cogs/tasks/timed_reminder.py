@@ -26,7 +26,7 @@ async def func(bot) -> None:
             mention = f"@{from_user.name}"
         content = remind.content or ""
         timeago = timetools.date_in_full(remind.created_ago)
-        response = f"@{to_user.name}, {mention} deixou um lembrete cronometrado: {content} ({timeago})"
+        response = f"@{to_user}, {mention} deixou um lembrete cronometrado: {content} ({timeago})"
         await remind.delete()
         if "remind" not in bot.channels[channel.name]["disabled"]:
             await send_message(bot, channel.name, response)

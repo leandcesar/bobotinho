@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from bobotinho.apis.ai import AI
 from bobotinho.apis.analytics import Analytics
-from bobotinho.autobot import AutoBot
+from bobotinho.autobot import AutoBot, Context
 from bobotinho.cache import cache
 from bobotinho.database import models
 from bobotinho.exceptions import (
@@ -69,7 +69,7 @@ class Bobotinho(AutoBot):
         elif isinstance(e, CheckFailure):
             log.error(e)
         if ctx.response:
-            response = f"@{ctx.author.name}, {ctx.response}"
+            response = f"@{ctx.user}, {ctx.response}"
             await ctx.send(response)
             await Analytics.sent(ctx)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
@@ -77,11 +77,31 @@ class Bobotinho(AutoBot):
         elif not isinstance(e, (CommandNotFound, BotIsNotOnline, CommandIsOnCooldown)):
             log.exception(e)
 
+    async def get_context(self, message) -> Context:
+        prefix = await self.get_prefix(message)
+        ctx = Context(
+            message=message,
+            channel=message.channel,
+            user=message.author,
+            prefix=prefix,
+        )
+        ctx.bot = self
+        ctx.response = None
+        ctx.user = await models.User.get_or_create(
+            id=ctx.author.id,
+            defaults={
+                "channel": ctx.channel.name,
+                "name": ctx.author.name,
+                "color": ctx.author.colour,
+                "content": ctx.content,
+            },
+        )
+        return ctx
+
     async def global_before_hook(self, ctx):
         await Analytics.received(ctx)
         ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
         ctx.prefix = self.prefixes[0]
-        await models.User.create_if_not_exists(ctx)
 
     async def global_after_hook(self, ctx):
         if not ctx.response:
@@ -90,7 +110,7 @@ class Bobotinho(AutoBot):
         elif len(ctx.response) > 500:
             log.error(f'"{ctx.response}" > 500 characters')
             ctx.response = "esse comando gerou uma resposta muito grande"
-        ctx.response = f"@{ctx.author.name}, {ctx.response}"
+        ctx.response = f"@{ctx.user}, {ctx.response}"
         await ctx.send(ctx.response)
         await Analytics.sent(ctx)
 

@@ -14,11 +14,12 @@ async def event_message(bot, message) -> bool:
     if not remind or "remind" in bot.channels[message.channel.name]["disabled"]:
         return False
     from_user = await models.User.get_or_none(id=remind.from_user_id)
+    to_user = await models.User.get_or_none(id=remind.to_user_id)
     mention = "você" if remind.from_user_id == message.author.id else f"@{from_user.name}"
     content = remind.content or ""
     timeago = timetools.date_in_full(remind.created_ago)
     await remind.delete()
-    response = f"@{message.author.name}, {mention} deixou um lembrete: {content} ({timeago})"
+    response = f"@{to_user}, {mention} deixou um lembrete: {content} ({timeago})"
     await message.channel.send(response)
     log.debug(f"#{message.channel.name} @{bot.nick}: {response}")
     return True

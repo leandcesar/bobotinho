@@ -9,8 +9,7 @@ usage = "digite o comando e o nome de um local para saber o clima"
 
 async def func(ctx, *, content: str = ""):
     if not content:
-        user = await models.User.get(id=ctx.author.id)
-        place = user.city
+        place = ctx.user.city
     elif content.lower() == "salvador":
         place = "salvador, br"
     else:

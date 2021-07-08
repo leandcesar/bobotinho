@@ -37,7 +37,7 @@ def banword(ctx) -> bool:
 
 
 def cooldown(ctx) -> bool:
-    if not ctx.bot.cooldowns.set(f"{ctx.author.id}-{ctx.command.name}", 1, ex=5, nx=True):
+    if not ctx.bot.cooldowns.set(f"{ctx.author.id}-{ctx.command.name}", 1, ex=10, nx=True):
         raise CommandIsOnCooldown()
     return True
 

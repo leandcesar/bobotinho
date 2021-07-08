@@ -18,3 +18,7 @@ def sub(ctx) -> bool:
 
 def any(ctx) -> bool:
     return sub(ctx) or vip(ctx) or mod(ctx) or streamer(ctx)
+
+
+def sponsor(ctx) -> bool:
+    return ctx.user.sponsor

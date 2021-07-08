@@ -10,24 +10,17 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     ping = fields.BooleanField(default=True)
     mention = fields.BooleanField(default=True)
     block = fields.BooleanField(default=False)
+    sponsor = fields.BooleanField(default=False)
+    badge = fields.CharField(max_length=16, null=True)
 
     class Meta:
         app = "users"
         table = "user"
 
     def __str__(self):
-        return self.name
-
-    @classmethod
-    async def create_if_not_exists(cls, ctx):
-        if not await cls.exists(id=ctx.author.id):
-            await cls.create(
-                id=ctx.author.id,
-                channel=ctx.channel.name,
-                name=ctx.author.name,
-                color=ctx.author.colour,
-                content=ctx.content,
-            )
+        if self.sponsor and self.badge:
+            return f"{self.badge} @{self.name}"
+        return f"@{self.name}"
 
     @classmethod
     async def update_if_exists(cls, message):

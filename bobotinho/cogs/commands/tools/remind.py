@@ -25,7 +25,7 @@ async def func(ctx, arg: str, *, content: str = ""):
         ctx.response = "nome de usuário inválido"
     elif name == ctx.bot.nick:
         ctx.response = "estou sempre aqui... não precisa me deixar lembretes"
-    elif await models.Reminder.filter(from_user_id=ctx.author.id).count() > 7:
+    elif await models.Reminder.filter(from_user_id=ctx.author.id).count() > 7 * (3 * ctx.user.sponsor or 1):
         ctx.response = "já existem muitos lembretes seus pendentes..."
     elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
