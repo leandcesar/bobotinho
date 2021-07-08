@@ -41,7 +41,8 @@ def banword(ctx) -> bool:
 
 
 def cooldown(ctx) -> bool:
-    if not ctx.bot.cooldowns.set(f"{ctx.author.id}-{ctx.command.name}", 1, ex=10, nx=True):
+    time = 1 if roles.sponsor(ctx) else 10
+    if not ctx.bot.cooldowns.set(f"{ctx.author.id}-{ctx.command.name}", 1, ex=time, nx=True):
         raise CommandIsOnCooldown()
     return True
 
