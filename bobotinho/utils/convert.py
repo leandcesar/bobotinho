@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 import random
 import re
+from emoji import demojize
 from typing import Union, Optional
 from unidecode import unidecode
+
+
+def emoji2str(target: str) -> str:
+    return demojize(target)
 
 
 def str2ascii(target: str) -> str:

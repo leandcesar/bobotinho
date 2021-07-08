@@ -10,4 +10,5 @@ from bobotinho.utils.checks import (  # NOQA
     CommandIsDisabled,
     CommandIsOnCooldown,
     UserIsNotAllowed,
+    UserIsNotASponsor,
 )

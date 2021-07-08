@@ -13,6 +13,7 @@ from bobotinho.exceptions import (
     ContentHasBanword,
     MissingRequiredArgument,
     UserIsNotAllowed,
+    UserIsNotASponsor,
 )
 from bobotinho.logger import log
 from bobotinho.utils import checks
@@ -66,10 +67,12 @@ class Bobotinho(AutoBot):
             ctx.response = "sua mensagem contém um termo banido"
         elif isinstance(e, UserIsNotAllowed):
             ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
+        elif isinstance(e, UserIsNotASponsor):
+            ctx.response = f'apenas apoiadores podem usar esse comando, digite "{ctx.prefix}donate"'
         elif isinstance(e, CheckFailure):
             log.error(e)
         if ctx.response:
-            response = f"@{ctx.user}, {ctx.response}"
+            response = f"{ctx.user}, {ctx.response}"
             await ctx.send(response)
             await Analytics.sent(ctx)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
@@ -87,7 +90,7 @@ class Bobotinho(AutoBot):
         )
         ctx.bot = self
         ctx.response = None
-        ctx.user = await models.User.get_or_create(
+        ctx.user, _ = await models.User.get_or_create(
             id=ctx.author.id,
             defaults={
                 "channel": ctx.channel.name,
@@ -110,7 +113,7 @@ class Bobotinho(AutoBot):
         elif len(ctx.response) > 500:
             log.error(f'"{ctx.response}" > 500 characters')
             ctx.response = "esse comando gerou uma resposta muito grande"
-        ctx.response = f"@{ctx.user}, {ctx.response}"
+        ctx.response = f"{ctx.user}, {ctx.response}"
         await ctx.send(ctx.response)
         await Analytics.sent(ctx)
 

@@ -19,7 +19,7 @@ async def event_message(bot, message) -> bool:
     content = remind.content or ""
     timeago = timetools.date_in_full(remind.created_ago)
     await remind.delete()
-    response = f"@{to_user}, {mention} deixou um lembrete: {content} ({timeago})"
+    response = f"{to_user}, {mention} deixou um lembrete: {content} ({timeago})"
     await message.channel.send(response)
     log.debug(f"#{message.channel.name} @{bot.nick}: {response}")
     return True

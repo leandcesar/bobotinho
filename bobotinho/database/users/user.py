@@ -17,6 +17,11 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
         app = "users"
         table = "user"
 
+    def __rep__(self):
+        if self.sponsor and self.badge:
+            return f"{self.badge} @{self.name}"
+        return f"@{self.name}"
+
     def __str__(self):
         if self.sponsor and self.badge:
             return f"{self.badge} @{self.name}"

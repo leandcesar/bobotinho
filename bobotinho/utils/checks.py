@@ -24,6 +24,10 @@ class UserIsNotAllowed(Exception):
     pass
 
 
+class UserIsNotASponsor(Exception):
+    pass
+
+
 def allowed(ctx) -> bool:
     if not roles.any(ctx) and re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", ctx.content) is not None:
         raise UserIsNotAllowed()
@@ -51,4 +55,10 @@ def enabled(ctx) -> bool:
 def online(ctx) -> bool:
     if not ctx.bot.channels[ctx.channel.name]["online"]:
         raise BotIsNotOnline()
+    return True
+
+
+def sponsor(ctx) -> bool:
+    if not roles.sponsor(ctx):
+        raise UserIsNotASponsor()
     return True
