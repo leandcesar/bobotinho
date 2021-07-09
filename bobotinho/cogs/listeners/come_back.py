@@ -2,7 +2,7 @@
 from bobotinho.cogs.commands.status import afks
 from bobotinho.database import models
 from bobotinho.logger import log
-from bobotinho.utils import timetools
+from bobotinho.utils import convert, timetools
 
 
 async def event_message(bot, message) -> bool:
@@ -11,12 +11,9 @@ async def event_message(bot, message) -> bool:
         content = afk.content or afks[afk.alias].emoji
         timeago = timetools.date_in_full(afk.created_ago)
         await afk.delete()
-        bot.cache.set(
-            f"afk-{message.author.id}",
-            {"content": content, "created_at": afk.created_at},
-            ex=180,
-            nx=True,
-        )
+        timestamp = convert.datetime2str(afk.created_at)
+        afk = convert.dict2str({"content": content, "created_at": timestamp})
+        bot.cache.set(f"afk-{message.author.id}", afk, ex=180)
         if "afk" not in bot.channels[message.channel.name]["disabled"]:
             user = await models.User.get(id=message.author.id)
             response = f"{user} {action}: {content} ({timeago})"

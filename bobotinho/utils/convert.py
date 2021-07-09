@@ -1,17 +1,26 @@
 # -*- coding: utf-8 -*-
+import json
 import random
 import re
+from datetime import datetime
 from emoji import demojize
 from typing import Union, Optional
 from unidecode import unidecode
 
 
+def datetime2str(target: datetime) -> str:
+    return target.isoformat()
+
+
+def dict2str(target: Optional[dict]) -> str:
+    try:
+        return json.dumps(target)
+    except Exception:
+        return ""
+
+
 def emoji2str(target: str) -> str:
     return demojize(target)
-
-
-def str2ascii(target: str) -> str:
-    return unidecode(target).lower().strip()
 
 
 def txt2randomline(target: str) -> str:
@@ -25,6 +34,21 @@ def number2str(target: Union[int, float]) -> Optional[str]:
         return f"{target:,d}".replace(",", ".")
     if isinstance(target, float):
         return f"{target:,.2f}"[::-1].replace(",", ".").replace(".", ",", 1)[::-1]
+
+
+def str2ascii(target: str) -> str:
+    return unidecode(target).lower().strip()
+
+
+def str2datetime(target: str) -> datetime:
+    return datetime.fromisoformat(target)
+
+
+def str2dict(target: Optional[str]) -> dict:
+    try:
+        return json.loads(target)
+    except Exception:
+        return {}
 
 
 def str2float(target: Optional[str]) -> Optional[float]:
