@@ -13,7 +13,6 @@ extra_checks = [checks.allowed, checks.banword]
 
 async def func(ctx, arg: str, *, content: str = ""):
     if ctx.command.invocation == "remindme":
-        arg = ""
         content = f"{arg} {content}"
         name = ctx.author.name
     elif arg == "me":
