@@ -13,7 +13,8 @@ async def event_message(bot, message) -> bool:
         await afk.delete()
         bot.cache.set(f"afk-{message.author.id}", content, ex=180, nx=True)
         if "afk" not in bot.channels[message.channel.name]["disabled"]:
-            response = f"{message.author.name} {action}: {content} ({timeago})"
+            user = await models.User.get(id=message.author.id)
+            response = f"{user} {action}: {content} ({timeago})"
             await message.channel.send(response)
             log.debug(f"#{message.channel.name} @{bot.nick}: {response}")
             return True
