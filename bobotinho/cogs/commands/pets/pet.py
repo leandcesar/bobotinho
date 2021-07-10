@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.cogs.commands import pets as P
-from bobotinho.cogs.commands.pets import petlist, petpat
+from bobotinho.cogs.commands.pets import petbuy, petlist, petname, petpat, petsell
 from bobotinho.database import models
 from bobotinho.utils import checks, convert
 
@@ -9,15 +9,21 @@ aliases = ["pets"]
 extra_checks = [checks.banword]
 
 
-async def func(ctx, arg: str = ""):
+async def func(ctx, arg: str = "", *, content: str = ""):
     name = convert.str2username(arg) or ctx.author.name
     mention = "você" if name == ctx.author.name else f"@{name}"
     if not name:
         ctx.response = "nome de usuário inválido"
+    elif arg == "buy":
+        await petbuy.func(ctx, arg=content)
     elif arg == "list":
         await petlist.func(ctx)
+    elif arg == "name":
+        await petname.func(ctx, content=content)
     elif arg == "pat":
         await petpat.func(ctx)
+    elif arg == "sell":
+        await petsell.func(ctx, content=content)
     elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif arg and not user.mention:
