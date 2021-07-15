@@ -3,13 +3,14 @@ from bobotinho.database.base import Base, TimestampMixin, fields
 
 
 class Channel(Base, TimestampMixin):
-    user = fields.ForeignKeyField("models.User", unique=True)
+    user = fields.ForeignKeyField("users.User", unique=True)
     followers = fields.IntField(null=True, description="Twitch followers")
     banwords = fields.JSONField(default={})
     disabled = fields.JSONField(default={})
     online = fields.BooleanField(default=True)
 
     class Meta:
+        app = "users"
         table = "channel"
 
     @classmethod

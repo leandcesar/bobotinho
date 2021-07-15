@@ -14,17 +14,32 @@ class Config:
 
 
 class ProdConfig(Config):
-    database_url = os.getenv("DATABASE_URL")
+    dbs_url = {
+        "db_1": os.getenv("HEROKU_POSTGRESQL_1_URL"),
+        "db_2": os.getenv("HEROKU_POSTGRESQL_2_URL"),
+        "db_3": os.getenv("HEROKU_POSTGRESQL_3_URL"),
+        "db_4": os.getenv("HEROKU_POSTGRESQL_4_URL"),
+    }
 
 
 class LocalConfig(Config):
     __basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     __dbfile = os.path.join(__basedir, "db.sqlite3")
-    database_url = f"sqlite:///{__dbfile}"
+    dbs_url = {
+        "db_1": f"sqlite:///{__dbfile}",
+        "db_2": f"sqlite:///{__dbfile}",
+        "db_3": f"sqlite:///{__dbfile}",
+        "db_4": f"sqlite:///{__dbfile}",
+    }
 
 
 class TestConfig(Config):
-    database_url = "sqlite:///:memory:"
+    dbs_url = {
+        "db_1": "sqlite:///:memory:",
+        "db_2": "sqlite:///:memory:",
+        "db_3": "sqlite:///:memory:",
+        "db_4": "sqlite:///:memory:",
+    }
 
 
 config_dict = {"prod": ProdConfig, "local": LocalConfig, "test": TestConfig}

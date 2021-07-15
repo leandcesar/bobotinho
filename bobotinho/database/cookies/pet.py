@@ -3,7 +3,7 @@ from bobotinho.database.base import Base, fields
 
 
 class Pet(Base):
-    user = fields.ForeignKeyField("models.Cookie")
+    user = fields.ForeignKeyField("cookies.Cookie")
     name = fields.CharField(max_length=32, null=True)
     specie = fields.CharField(max_length=16)
     xp = fields.IntField(default=0)
@@ -14,6 +14,7 @@ class Pet(Base):
     love = fields.SmallIntField(default=0)
 
     class Meta:
+        app = "cookies"
         table = "pet"
 
     def __str__(self):
