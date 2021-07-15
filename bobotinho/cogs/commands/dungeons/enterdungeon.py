@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from bobotinho.cogs.commands import dungeons as D
 from bobotinho.database import models
-from bobotinho.utils import timetools
+from bobotinho.utils import checks, timetools
 
 description = "Entre na dungeon, faça sua escolha e adquira experiência"
 aliases = ["ed"]
+extra_checks = [checks.online, checks.enabled]
+no_global_checks = True
 
 
 async def func(ctx, *, content: str = ""):
