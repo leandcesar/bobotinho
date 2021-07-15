@@ -21,4 +21,4 @@ def any(ctx) -> bool:
 
 
 def sponsor(ctx) -> bool:
-    return ctx.user.sponsor
+    return ctx.user and ctx.user.sponsor
