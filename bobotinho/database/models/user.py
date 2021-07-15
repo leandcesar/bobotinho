@@ -14,7 +14,6 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     badge = fields.CharField(max_length=16, null=True)
 
     class Meta:
-        app = "users"
         table = "user"
 
     def __rep__(self):

@@ -6,5 +6,4 @@ class SystemLog(Base, TimestampMixin):
     error = fields.CharField(max_length=500, null=True)
 
     class Meta:
-        app = "system"
         table = "systemlog"

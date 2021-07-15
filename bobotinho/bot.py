@@ -77,11 +77,13 @@ class Bobotinho(AutoBot):
             await Analytics.sent(ctx)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
-        elif not isinstance(e, (CommandNotFound, BotIsNotOnline, CommandIsOnCooldown)):
+        elif not isinstance(e, (BotIsNotOnline, CheckFailure, CommandIsOnCooldown, CommandNotFound)):
             log.exception(e)
 
     async def get_context(self, message) -> Context:
         prefix = await self.get_prefix(message)
+        if not prefix:
+            return
         ctx = Context(
             message=message,
             channel=message.channel,

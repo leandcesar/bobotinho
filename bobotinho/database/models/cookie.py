@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.base import Base, UserMixin, fields
+from bobotinho.database.base import Base, UserMixin, TimestampMixin, fields
 
 
-class Cookie(Base, UserMixin):
+class Cookie(Base, UserMixin, TimestampMixin):
     count = fields.SmallIntField(default=0)
     daily = fields.SmallIntField(default=1)
     donated = fields.SmallIntField(default=0)
@@ -10,7 +10,6 @@ class Cookie(Base, UserMixin):
     stocked = fields.SmallIntField(default=0)
 
     class Meta:
-        app = "cookies"
         table = "cookie"
 
     async def use_daily(self):

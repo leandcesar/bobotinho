@@ -13,5 +13,4 @@ class Player(Base, UserMixin, TimestampMixin):
     xp = fields.IntField(default=0)
 
     class Meta:
-        app = "dungeons"
         table = "player"

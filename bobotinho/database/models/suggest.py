@@ -7,5 +7,4 @@ class Suggest(Base, TimestampMixin, ContentMixin):
     channel = fields.CharField(max_length=64, description="Twitch username")
 
     class Meta:
-        app = "system"
         table = "suggest"
