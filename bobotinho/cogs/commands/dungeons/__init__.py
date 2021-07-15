@@ -144,7 +144,7 @@ def generate_dungeon(dungeon: int = None) -> (dict, int):
     return dungeons[dungeon], dungeon
 
 
-def resume_dungeon(player: object, choice: str = None) -> (object, str):
+def resume_dungeon(player: object, choice: str = None, multiplier: int = 1) -> (object, str):
     d = generate_dungeon(player.dungeon)[0]
     result = random.choices(["win", "lose"], weights=(0.66, 0.33), k=1)[0]
     if not choice:
@@ -157,7 +157,7 @@ def resume_dungeon(player: object, choice: str = None) -> (object, str):
         response = d[choice][result]
     if result == "win":
         player.wins += 1
-        gained = random.randint(50, 75) + 3 * player.level
+        gained = (random.randint(50, 75) + 3 * player.level) * multiplier
         player.xp += gained
         response += f" +{gained} XP"
         if player.xp > 100 * (player.level) + 25 * sum(range(1, player.level + 1)):

@@ -17,7 +17,8 @@ async def func(ctx):
         elif cooldown := timetools.on_cooldown(player.updated_at, now=ctx.message.timestamp, s=10800):
             ctx.response = f"aguarde {cooldown} para entrar em outra dungeon ⌛"
         else:
-            player, response = D.resume_dungeon(player)
+            multiplier = 2 if ctx.user.sponsor else 1
+            player, response = D.resume_dungeon(player, multiplier=multiplier)
             player.last_at = ctx.message.timestamp
             await player.save()
             ctx.response = response

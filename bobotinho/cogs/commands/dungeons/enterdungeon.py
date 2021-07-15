@@ -23,7 +23,8 @@ async def func(ctx, *, content: str = ""):
                 )
         elif player.dungeon:
             if choice and choice.split()[0] in ["1", "2"]:
-                player, response = D.resume_dungeon(player, choice.split()[0])
+                multiplier = 2 if ctx.user.sponsor else 1
+                player, response = D.resume_dungeon(player, choice.split()[0], multiplier=multiplier)
                 await player.save()
                 ctx.response = response
             else:
