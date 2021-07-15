@@ -82,8 +82,6 @@ class Bobotinho(AutoBot):
 
     async def get_context(self, message) -> Context:
         prefix = await self.get_prefix(message)
-        if not prefix:
-            return
         ctx = Context(
             message=message,
             channel=message.channel,
@@ -92,6 +90,12 @@ class Bobotinho(AutoBot):
         )
         ctx.bot = self
         ctx.response = None
+        return ctx
+
+    async def global_before_hook(self, ctx):
+        await Analytics.received(ctx)
+        ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
+        ctx.prefix = self.prefixes[0]
         ctx.user, _ = await models.User.get_or_create(
             id=ctx.author.id,
             defaults={
@@ -101,12 +105,6 @@ class Bobotinho(AutoBot):
                 "content": ctx.content,
             },
         )
-        return ctx
-
-    async def global_before_hook(self, ctx):
-        await Analytics.received(ctx)
-        ctx.command.invocation = ctx.content.partition(" ")[0][len(ctx.prefix):]
-        ctx.prefix = self.prefixes[0]
 
     async def global_after_hook(self, ctx):
         if not ctx.response:
