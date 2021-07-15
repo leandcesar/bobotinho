@@ -9,7 +9,6 @@ class Reminder(Base, TimestampMixin, ContentMixin):
     scheduled_for = fields.DatetimeField(null=True)
 
     class Meta:
-        app = "system"
         table = "reminder"
 
     @property

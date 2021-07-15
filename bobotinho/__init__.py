@@ -30,7 +30,7 @@ except Exception as e:
 
 try:
     from bobotinho.database import Database
-    db = Database(bot_config.dbs_url)
+    db = Database(bot_config.database_url)
 except Exception as e:
     log.exception(e)
     sys.exit("[FATAL] Database constructor failure")
