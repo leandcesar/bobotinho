@@ -82,14 +82,14 @@ class Bobotinho(AutoBot):
 
     async def get_context(self, message) -> Context:
         prefix = await self.get_prefix(message)
-        if not prefix:
-            return
         ctx = Context(
             message=message,
             channel=message.channel,
             user=message.author,
             prefix=prefix,
         )
+        if not prefix:
+            return ctx
         ctx.bot = self
         ctx.response = None
         ctx.user, _ = await models.User.get_or_create(
