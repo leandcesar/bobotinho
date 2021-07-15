@@ -90,6 +90,7 @@ class Bobotinho(AutoBot):
         )
         ctx.bot = self
         ctx.response = None
+        ctx.user = None
         return ctx
 
     async def global_before_hook(self, ctx):
