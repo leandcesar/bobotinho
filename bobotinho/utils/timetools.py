@@ -65,6 +65,22 @@ def date_in_full(delta: timedelta) -> str:
     return response.rstrip(", ")
 
 
+def find_relative_time(target: str) -> Optional[Match[AnyStr]]:
+    match = pattern_relative_time.match(target)
+    if match and any(match.groups()[1:]):
+        return match
+
+
+def find_absolute_time(target: str) -> Optional[Match[AnyStr]]:
+    match = pattern_absolute_time_and_date.match(target)
+    if match and any(match.groups()[1:]):
+        return match
+
+
+def format(target: datetime) -> str:
+    return (target - timedelta(hours=3)).strftime("%d/%m/%y às %H:%M:%S")
+
+
 def on_cooldown(target: datetime, now: datetime = None, s: int = 0) -> Optional[timedelta]:
     now = now or datetime.utcnow()
     delta = clean(now) - clean(target)
@@ -78,15 +94,3 @@ def timeago(target: datetime, now: datetime = None, full: bool = True) -> Union[
     if full:
         return date_in_full(delta)
     return delta
-
-
-def find_relative_time(target: str) -> Optional[Match[AnyStr]]:
-    match = pattern_relative_time.match(target)
-    if match and any(match.groups()[1:]):
-        return match
-
-
-def find_absolute_time(target: str) -> Optional[Match[AnyStr]]:
-    match = pattern_absolute_time_and_date.match(target)
-    if match and any(match.groups()[1:]):
-        return match
