@@ -21,34 +21,34 @@ except KeyError:
 
 loop = asyncio.get_event_loop()
 
-try:
-    from bobotinho.bot import Bobotinho
-    bot = Bobotinho(bot_config, loop=loop)
-except Exception as e:
-    log.exception(e)
-    sys.exit("[FATAL] Bot constructor failure")
-
-try:
-    from bobotinho.database import Database
-    db = Database(bot_config.database_url)
-except Exception as e:
-    log.exception(e)
-    sys.exit("[FATAL] Database constructor failure")
-
 
 def run():
+    try:
+        from bobotinho.database import Database
+        db = Database(bot_config.database_url)
+    except Exception as e:
+        log.exception(e)
+        sys.exit("[FATAL] Database constructor failure")
+
+    try:
+        from bobotinho.bot import Bobotinho
+        bot = Bobotinho(bot_config, loop=loop)
+    except Exception as e:
+        log.exception(e)
+        sys.exit("[FATAL] Bot constructor failure")
+
     try:
         loop.run_until_complete(db.init())
         loop.run_until_complete(bot._ws._connect())
         loop.run_until_complete(db.register_init())
         loop.run_until_complete(bot._ws._listen())
-    except BaseException as e:
+    except Exception as e:
         log.exception(e)
         loop.run_until_complete(db.register_close(e))
     else:
         loop.run_until_complete(db.register_close())
     finally:
+        loop.run_until_complete(db.close())
         bot.cooldowns.close()
         bot.cache.close()
         loop.run_until_complete(bot._ws._websocket.close())
-        loop.run_until_complete(db.close())
