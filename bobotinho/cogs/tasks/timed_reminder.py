@@ -10,7 +10,7 @@ async def func(bot) -> None:
     # TODO: substituir pra quando o bot iniciar pegar os proximos,
     #       mas depois pegar os novos reminds por trigger
     while True:
-        remind = await models.Reminder.filter().order_by("scheduled_for").first()
+        remind = await models.Reminder.filter(scheduled_for__not_isnull=True).order_by("scheduled_for").first()
         if not remind or (delta := remind.scheduled_ago.total_seconds()) > 60:
             await asyncio.sleep(60, loop=bot.loop)
             continue
