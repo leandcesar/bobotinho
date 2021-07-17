@@ -24,7 +24,7 @@ class LocalConfig(Config):
 
 
 class TestConfig(Config):
-    database_url = "sqlite:///:memory:"
+    database_url = "sqlite://:memory:"
 
 
 config_dict = {"prod": ProdConfig, "local": LocalConfig, "test": TestConfig}
