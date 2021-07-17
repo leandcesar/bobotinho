@@ -3,23 +3,23 @@ import random
 
 description = "Tente vencer no pedra, papel e tesoura"
 aliases = ["jokempo"]
-usage = 'digite o comando e "✊", "✋" ou "✌️"'
+usage = 'digite o comando e "pedra", "papel" ou "tesoura"'
 
 
 async def func(ctx, arg: str):
     arg = (
-        "✊"
-        if arg == "pedra"
-        else "✋"
-        if arg == "papel" or arg == "✌"
-        else "✌️"
-        if arg == "tesoura"
+        "pedra"
+        if arg == "✊"
+        else "papel"
+        if arg == "✋"
+        else "tesoura"
+        if arg in ("✌️", "✌")
         else arg
     )
-    emoji = random.choice(["✊", "✋", "✌️"])
-    if arg == emoji:
-        ctx.response = f"eu escolhi {emoji} também, nós empatamos..."
-    elif (arg, emoji) in [("✊", "✋"), ("✋", "✌️"), ("✌️", "✊")]:
-        ctx.response = f"eu escolhi {emoji} e consegui te prever facilmente"
-    elif (emoji, arg) in [("✊", "✋"), ("✋", "✌️"), ("✌️", "✊")]:
-        ctx.response = f"eu escolhi {emoji}, você deu sorte dessa vez"
+    choice = random.choice(["papel", "pedra", "tesoura"])
+    if arg == choice:
+        ctx.response = f"eu também escolhi {choice}, nós empatamos..."
+    elif (arg, choice) in [("pedra", "papel"), ("papel", "tesoura"), ("tesoura", "pedra")]:
+        ctx.response = f"eu escolhi {choice} e consegui te prever facilmente"
+    elif (choice, arg) in [("pedra", "papel"), ("papel", "tesoura"), ("tesoura", "pedra")]:
+        ctx.response = f"eu escolhi {choice}, você deu sorte dessa vez"

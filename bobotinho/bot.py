@@ -72,8 +72,8 @@ class Bobotinho(AutoBot):
         elif isinstance(e, CheckFailure):
             log.error(e)
         if ctx.response:
-            response = f"{ctx.user}, {ctx.response}"
-            await ctx.send(response)
+            ctx.response = f"{ctx.user}, {ctx.response}"
+            await ctx.send(ctx.response)
             await Analytics.sent(ctx)
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
