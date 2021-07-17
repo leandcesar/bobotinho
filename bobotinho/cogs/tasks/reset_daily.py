@@ -17,7 +17,7 @@ async def func(bot) -> None:
         await asyncio.sleep(delta, loop=bot.loop)
         log.info("Resetting daily cookies...")
         os.environ["RESETTING_DAILY"] = "1"
-        sponsors = await models.User.filter(sponsors=True).all().values_list(["id"], flat=True)
+        sponsors = await models.User.filter(sponsors=True).all().values_list("id", flat=True)
         await models.Cookie.filter(id__in=sponsors).update(daily=2)
         await models.Cookie.filter(id__not_in=sponsors, daily=0).update(daily=1)
         log.info("Daily cookies reset")
