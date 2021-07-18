@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import time
 from collections import OrderedDict
 from threading import RLock
@@ -70,7 +69,7 @@ class TTLOrderedDict(OrderedDict):
         pass
 
 
-if url := os.getenv("REDIS_URL"):
-    cache = Redis.from_url(url, encoding="utf-8", decode_responses=True)
-else:
-    cache = TTLOrderedDict()
+def create_cache(redis_url: str = None):
+    if redis_url:
+        return Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
+    return TTLOrderedDict()

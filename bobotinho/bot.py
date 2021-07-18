@@ -2,7 +2,7 @@
 from bobotinho.apis.ai import AI
 from bobotinho.apis.analytics import Analytics
 from bobotinho.autobot import AutoBot, Context
-from bobotinho.cache import cache
+from bobotinho.cache import create_cache
 from bobotinho.database import models
 from bobotinho.exceptions import (
     BotIsNotOnline,
@@ -32,8 +32,8 @@ class Bobotinho(AutoBot):
         )
         self.site = config.site
         self.owner = config.owner
-        self.cache = cache
-        self.cooldowns = cache
+        self.cache = create_cache(config.redis_url)
+        self.cooldowns = create_cache(config.redis_url)
         self.blocked = []
         if config.ai:
             self.add_listener(self.event_mention, "event_message")

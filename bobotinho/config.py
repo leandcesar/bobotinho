@@ -15,16 +15,23 @@ class Config:
 
 class ProdConfig(Config):
     database_url = os.getenv("DATABASE_URL")
+    redis_url = os.getenv("REDIS_URL")
 
 
 class LocalConfig(Config):
     __basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     __dbfile = os.path.join(__basedir, "db.sqlite3")
     database_url = f"sqlite:///{__dbfile}"
+    redis_url = os.getenv("REDIS_URL")
 
 
 class TestConfig(Config):
+    client_id = None
+    client_secret = None
+    irc_token = None
+    ai = False
     database_url = "sqlite://:memory:"
+    redis_url = None
 
 
 config_dict = {"prod": ProdConfig, "local": LocalConfig, "test": TestConfig}
