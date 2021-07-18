@@ -14,8 +14,7 @@ async def func(bot) -> None:
         if now.hour > 9:
             target += timedelta(days=1)
         delta = (target - now).total_seconds()
-        if os.getenv("RESETTING_DAILY") == "0":
-            await asyncio.sleep(delta, loop=bot.loop)
+        await asyncio.sleep(delta, loop=bot.loop)
         log.info("Resetting daily cookies...")
         os.environ["RESETTING_DAILY"] = "1"
         sponsors = await models.User.filter(sponsor=True).all().values_list("id", flat=True)
