@@ -7,13 +7,11 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg1: str, arg2: str = ""):
-    name1 = convert.str2username(arg1)
-    name2 = convert.str2username(arg2)
-    if name1 and not name2:
-        name1, name2 = ctx.author.name, name1
-    if not name1:
-        ctx.response = "nome de usuário inválido"
-    elif name1 == name2:
+    name1 = convert.str2name(arg1)
+    name2 = convert.str2name(arg2, default=ctx.author.name)
+    if not arg2:
+        name1, name2 = name2, name1
+    if name1 == name2:
         ctx.response = "uma pessoa não pode ser shipada com ela mesma..."
     else:
         ship1 = name1[:len(name1)//2 + 1] if len(name1) > 2 else name1

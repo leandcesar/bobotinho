@@ -9,11 +9,9 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):
-    name = convert.str2username(arg) or ctx.author.name
+    name = convert.str2name(arg, default=ctx.author.name)
     mention = "você" if name == ctx.author.name else f"@{name}"
-    if not name:
-        ctx.response = "nome de usuário inválido"
-    elif name == ctx.bot.nick:
+    if name == ctx.bot.nick:
         ctx.response = "eu apenas crio as dungeons..."
     elif player := await models.Player.get_or_none(name=name):
         if not player.sub_class:

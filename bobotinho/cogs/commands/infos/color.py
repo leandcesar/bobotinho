@@ -11,10 +11,8 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):
-    name = convert.str2username(arg) or ctx.author.name
-    if not name:
-        ctx.response = "nome de usuário inválido"
-    elif name == ctx.bot.nick:
+    name = convert.str2name(arg, default=ctx.author.name)
+    if name == ctx.bot.nick:
         ctx.response = "eu uso a cor #FFFFFF (White)"
     elif name == "random":
         ctx.response = f"aqui está uma cor aleatória: #{random.randint(0, 0xFFFFFF):06X}"

@@ -12,3 +12,6 @@ from bobotinho.utils.checks import (  # NOQA
     UserIsNotAllowed,
     UserIsNotASponsor,
 )
+from bobotinho.utils.convert import (  # NOQA
+    InvalidName,
+)

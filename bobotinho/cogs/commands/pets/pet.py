@@ -10,11 +10,9 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = "", *, content: str = ""):
-    name = convert.str2username(arg) or ctx.author.name
+    name = convert.str2name(arg, default=ctx.author.name)
     mention = "você" if name == ctx.author.name else f"@{name}"
-    if not name:
-        ctx.response = "nome de usuário inválido"
-    elif arg == "buy":
+    if arg == "buy":
         await petbuy.func(ctx, arg=content)
     elif arg == "list":
         await petlist.func(ctx)

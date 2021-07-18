@@ -8,17 +8,13 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg1: str = "", arg2: str = ""):
-    name = convert.str2username(arg1) or ctx.author.name
-    channel = convert.str2username(arg2) or ctx.channel.name
+    name = convert.str2name(arg1, default=ctx.author.name)
+    channel = convert.str2name(arg2, default=ctx.channel.name)
     if name and channel:
         followage = await twitch.TwitchAPI.followage(channel, name)
         name = "você" if name == ctx.author.name else f"@{name}"
         channel = "você" if channel == ctx.author.name else f"@{channel}"
-    if not name:
-        ctx.response = "nome de usuário inválido"
-    elif not channel:
-        ctx.response = "nome de canal inválido"
-    elif name == f"@{ctx.bot.nick}":
+    if name == f"@{ctx.bot.nick}":
         ctx.response = f"eu sempre estive em {channel}..."
     elif name == channel:
         ctx.response = f"{name} não pode se seguir"

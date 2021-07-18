@@ -9,10 +9,8 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):
-    name = convert.str2username(arg)
-    if not name:
-        ctx.response = "nome de usuário inválido"
-    elif name == ctx.bot.nick:
+    name = convert.str2name(arg)
+    if name == ctx.bot.nick:
         ctx.response = "eu sempre estou aqui... observando"
     elif name == ctx.author.name:
         ctx.response = "você não está AFK... obviamente"

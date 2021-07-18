@@ -8,6 +8,10 @@ from typing import Union, Optional
 from unidecode import unidecode
 
 
+class InvalidName(Exception):
+    pass
+
+
 def datetime2str(target: datetime) -> str:
     return target.isoformat()
 
@@ -72,12 +76,14 @@ def str2hexcode(target: Optional[str]) -> Optional[str]:
         return match.group(0)
 
 
-def str2username(target: Optional[str]) -> Optional[str]:
-    if not target:
-        return None
-    if target[0] == "@":
-        target = target[1:]
-    if target[-1] == ",":
-        target = target[:-1]
-    if target.replace("_", "").isalnum():
-        return target.lower()
+def str2name(target: str, default: Optional[str] = None) -> Optional[str]:
+    if not target and default:
+        return default
+    if target:
+        if target[0] == "@":
+            target = target[1:]
+        if target[-1] == ",":
+            target = target[:-1]
+        if target.replace("_", "").isalnum() and unidecode(target) == target:
+            return target.lower()
+    raise InvalidName()

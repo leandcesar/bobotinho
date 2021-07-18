@@ -11,6 +11,7 @@ from bobotinho.exceptions import (
     CommandIsOnCooldown,
     CommandNotFound,
     ContentHasBanword,
+    InvalidName,
     MissingRequiredArgument,
     UserIsNotAllowed,
     UserIsNotASponsor,
@@ -75,6 +76,8 @@ class Bobotinho(AutoBot):
             ctx.response = f"{ctx.user}, {ctx.response}"
             await ctx.send(ctx.response)
             await Analytics.sent(ctx)
+        elif isinstance(e, InvalidName):
+            ctx.response = "nome de usuário inválido"
         elif isinstance(e, MissingRequiredArgument) and ctx.command.usage:
             ctx.response = ctx.command.usage
         elif not isinstance(e, (BotIsNotOnline, CheckFailure, CommandIsOnCooldown, CommandNotFound)):
