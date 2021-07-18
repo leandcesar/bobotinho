@@ -13,11 +13,9 @@ async def func(ctx):
                 "que eram pra aliança... o casamento precisou ser cancelado"
             )
         else:
-            if not await models.Cookie.exists(id=ctx.author.id):
-                await models.Cookie.create(id=ctx.author.id)
+            await models.Cookie.get_or_create(id=ctx.author.id, defaults={"name": ctx.author.name})
             await models.Wedding.create(user_1_id=cookie.id, user_2_id=ctx.author.id)
-            cookie.stocked -= 100
-            await cookie.save()
+            await cookie.stock(-100)
             ctx.response = f"você aceitou o pedido de @{name}, felicidades para o casal! 🎉💞"
         ctx.bot.cache.delete(f"marry-{ctx.author.name}")
     else:

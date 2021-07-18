@@ -8,23 +8,23 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str = ""):
-    name = convert.str2username(arg) or ctx.author.name
+    name = convert.str2name(arg, default=ctx.author.name)
     mention = "você" if name == ctx.author.name else f"@{name}"
-    if not name:
-        ctx.response = "nome de usuário inválido"
-    elif name == ctx.bot.nick:
+    if name == ctx.bot.nick:
         ctx.response = "nunca me casarei com ninguém"
     elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif arg and not user.mention:
         ctx.response = "esse usuário optou por não permitir mencioná-lo"
-    elif wedding := await models.Wedding.get_or_none(user_1_id=user.id, divorced=False):
-        timeago = timetools.timeago(wedding.created_at)
-        user_2 = await models.User.get_or_none(id=wedding.user_2_id)
-        ctx.response = f"{mention} está casado com @{user_2.name} há {timeago}"
-    elif wedding := await models.Wedding.get_or_none(user_2_id=user.id, divorced=False):
-        timeago = timetools.timeago(wedding.created_at)
-        user_1 = await models.User.get_or_none(id=wedding.user_1_id)
-        ctx.response = f"{mention} está casado com @{user_1.name} há {timeago}"
+    elif (weddings := await models.Wedding.find_all(user.id)):
+        users = [await wedding.spouse(ctx.author.id) for wedding in weddings]
+        timeago = [timetools.timeago(wedding.created_at) for wedding in weddings]
+        if len(weddings) == 1:
+            ctx.response = f"{mention} está casado com @{users[0].name} há {timeago[0]}"
+        else:
+            ctx.response = (
+                f"{mention} está casado com @{users[0].name} há {timeago[0]} e "
+                f"com @{users[1].name} há {timeago[1]}"
+            )
     else:
         ctx.response = f"{mention} não está casado com ninguém"

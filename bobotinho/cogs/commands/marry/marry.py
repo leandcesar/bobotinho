@@ -8,10 +8,8 @@ extra_checks = [checks.banword]
 
 
 async def func(ctx, arg: str):
-    name = convert.str2username(arg)
-    if not name:
-        ctx.response = "nome de usuário inválido"
-    elif name == ctx.bot.nick:
+    name = convert.str2name(arg)
+    if name == ctx.bot.nick:
         ctx.response = "não fui programado para fazer parte de um relacionamento"
     elif name == ctx.author.name:
         ctx.response = "você não pode se casar com você mesmo..."
@@ -22,20 +20,20 @@ async def func(ctx, arg: str):
         )
     elif someone := ctx.bot.cache.get(f"marry-{name}"):
         ctx.response = f"@{someone} chegou primeiro e já fez uma proposta à mão de @{name}"
-    elif (
-        await models.Wedding.exists(user_1_id=ctx.author.id, divorced=False)
-        or await models.Wedding.exists(user_2_id=ctx.author.id, divorced=False)
-    ):
+    elif (weddings := await models.Wedding.find_all(ctx.author.id)) and not ctx.user.sponsor:
         ctx.response = "traição é inaceitável, ao menos se divorcie antes de partir pra outra"
+    elif len(weddings) >= 2:
+        ctx.response = "você já está em dois relacionamentos, não é o suficiente?"
     elif not (user := await models.User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif not user.mention:
         ctx.response = "esse usuário optou por não permitir mencioná-lo"
-    elif (
-        await models.Wedding.exists(user_1_id=user.id, divorced=False)
-        or await models.Wedding.exists(user_2_id=user.id, divorced=False)
-    ):
+    elif await models.Wedding.find(ctx.author.id, user.id):
+        ctx.response = "vocês dois já são casados... não se lembra?"
+    elif (weddings := await models.Wedding.find_all(user.id)) and not user.sponsor:
         ctx.response = f"controle seu desejo por pessoas casadas, @{name} já está em um compromisso"
+    elif len(weddings) >= 2:
+        ctx.response = f"@{name} já está em dois compromissos, não há espaço para mais um..."
     elif (cookie := await models.Cookie.get_or_none(name=ctx.author.name)) and cookie.stocked >= 100:
         ctx.bot.cache.set(f"marry-{name}", ctx.author.name, ex=180)
         ctx.response = (
