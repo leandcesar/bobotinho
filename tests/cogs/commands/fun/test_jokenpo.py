@@ -17,36 +17,36 @@ async def test_jokenpo_invalid_arg(ctx):
 
 
 @pytest.mark.asyncio
-async def test_jokenpo_with_rock_arg(ctx):
+async def test_jokenpo_with_rock(ctx):
     await jokenpo.func(ctx, "pedra")
     assert ctx.response == "eu escolhi tesoura, você deu sorte dessa vez"
 
 
 @pytest.mark.asyncio
-async def test_jokenpo_with_paper_arg(ctx):
+async def test_jokenpo_with_paper(ctx):
     await jokenpo.func(ctx, "papel")
     assert ctx.response == "eu também escolhi papel, nós empatamos..."
 
 
 @pytest.mark.asyncio
-async def test_jokenpo_with_scissors_arg(ctx):
+async def test_jokenpo_with_scissors(ctx):
     await jokenpo.func(ctx, "tesoura")
     assert ctx.response == "eu escolhi pedra e consegui te prever facilmente"
 
 
 @pytest.mark.asyncio
-async def test_jokenpo_with_rock_emoji_arg(ctx):
+async def test_jokenpo_with_rock_emoji(ctx):
     await jokenpo.func(ctx, "✊")
     assert ctx.response == "eu escolhi papel e consegui te prever facilmente"
 
 
 @pytest.mark.asyncio
-async def test_jokenpo_with_paper_emoji_arg(ctx):
+async def test_jokenpo_with_paper_emoji(ctx):
     await jokenpo.func(ctx, "✋")
     assert ctx.response == "eu escolhi pedra, você deu sorte dessa vez"
 
 
 @pytest.mark.asyncio
-async def test_jokenpo_with_scissors_emoji_arg(ctx):
+async def test_jokenpo_with_scissors_emoji(ctx):
     await jokenpo.func(ctx, "✌️")
     assert ctx.response == "eu escolhi pedra e consegui te prever facilmente"

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import asyncio
 from datetime import datetime, timezone
+from unittest.mock import Mock
 
 import pytest
 from tortoise.contrib.test import finalizer, initializer
@@ -8,7 +9,9 @@ from twitchio import Channel, Context, Message, User
 
 from bobotinho import bot_config
 from bobotinho.bot import Bobotinho
+from bobotinho.cache import create_cache
 
+TEST_NOT_NAME = "bobotinho"
 TEST_CHANNEL_ID = 1
 TEST_CHANNEL_NAME = "channel"
 TEST_CHANNEL_COLOR = "#000000"
@@ -36,6 +39,24 @@ def create_bot(params: dict = None) -> Bobotinho:
         params = dict(config=bot_config)
     bot = Bobotinho(**params)
     return bot
+
+
+def create_mocked_bot(params: dict = None) -> Mock:
+    if not params:
+        params = dict(nick=TEST_NOT_NAME, prefix=TEST_PREFIX, cache=create_cache())
+    mocked_bot = Mock()
+    for name, value in params.items():
+        setattr(mocked_bot, name, value)
+    return mocked_bot
+
+
+def create_mocked_user(params: dict = None) -> Mock:
+    if not params:
+        params = dict(id=TEST_USER_ID, name=TEST_USER_NAME, sponsor=False, mention=True)
+    mocked_user = Mock()
+    for name, value in params.items():
+        setattr(mocked_user, name, value)
+    return mocked_user
 
 
 def create_twitch_channel(params: dict = None) -> Channel:
@@ -84,6 +105,8 @@ def create_ctx(params: dict = None) -> Context:
         )
     ctx = Context(**params)
     ctx.response = None
+    ctx.bot = create_mocked_bot()
+    ctx.user = create_mocked_user()
     return ctx
 
 
