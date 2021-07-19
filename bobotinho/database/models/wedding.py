@@ -14,9 +14,9 @@ class Wedding(Base, TimestampMixin):
         self.divorced = True
         await self.save()
 
-    async def spouse(self, id: int):
+    async def spouse(self, name: str):
         await self.fetch_related("user_1", "user_2")
-        return self.user_1 if self.user_2_id == id else self.user_2
+        return self.user_1 if self.user_2.name == name else self.user_2
 
     @classmethod
     async def find(cls, id_1: int, id_2: int = None):

@@ -16,7 +16,7 @@ async def func(ctx, arg: str = ""):
     elif arg and not user.mention:
         ctx.response = "esse usuário optou por não permitir mencioná-lo"
     elif (weddings := await models.Wedding.find_all(user.id)):
-        users = [await wedding.spouse(ctx.author.id) for wedding in weddings]
+        users = [await wedding.spouse(name) for wedding in weddings]
         date = [timetools.format(wedding.created_at) for wedding in weddings]
         if len(weddings) == 1:
             ctx.response = f"{mention} se casou com @{users[0].name} em {date[0]}"
