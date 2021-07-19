@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from bobotinho.apis import weather
-from bobotinho.database import models
 
 description = "Saiba o clima atual de alguma cidade"
 aliases = ["wt"]
@@ -10,8 +9,8 @@ usage = "digite o comando e o nome de um local para saber o clima"
 async def func(ctx, *, content: str = ""):
     if not content:
         place = ctx.user.city
-    elif content.lower() == "salvador":
-        place = "salvador, br"
+    elif content.lower() in ("salvador", "socorro"):
+        place = f"{content.lower()}, br"
     else:
         place = content.lower()
     try:
