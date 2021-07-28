@@ -16,17 +16,13 @@ async def func(bot) -> None:
             continue
         if delta > 0:
             await asyncio.sleep(delta, loop=bot.loop)
-        from_user = await models.User.get(id=remind.from_user_id)
-        channel = await models.User.get(id=remind.channel_id)
-        if remind.from_user_id == remind.to_user_id:
-            to_user = from_user
-            mention = "você"
-        else:
-            to_user = await models.User.get(id=remind.to_user_id)
-            mention = f"@{from_user.name}"
+        await remind.fetch_related("from_user")
+        await remind.fetch_related("to_user")
+        await remind.fetch_related("channel")
+        mention = "você" if remind.from_user_id == remind.to_user_id else f"@{remind.from_user.name}"
         content = remind.content or ""
         timeago = timetools.date_in_full(remind.created_ago)
-        response = f"{to_user}, {mention} deixou um lembrete cronometrado: {content} ({timeago})"
+        response = f"{remind.to_user.name}, {mention} deixou um lembrete cronometrado: {content} ({timeago})"
         await remind.delete()
-        if "remind" not in bot.channels[channel.name]["disabled"]:
-            await send_message(bot, channel.name, response)
+        if "remind" not in bot.channels[remind.channel.name]["disabled"]:
+            await send_message(bot, remind.channel.name, response)
