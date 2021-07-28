@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .afk import Afk  # NOQA
+from .bug import Bug  # NOQA
 from .channel import Channel  # NOQA
 from .cookie import Cookie  # NOQA
 from .pet import Pet  # NOQA
