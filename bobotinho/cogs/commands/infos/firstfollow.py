@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.apis import twitch
+from bobotinho.apis.twitch import TwitchAPI
 from bobotinho.utils import checks, convert
 
 description = "Saiba o primeiro seguidor e o primeiro canal seguido de algum usuário"
@@ -13,8 +13,8 @@ async def func(ctx, arg: str = ""):
     if name == ctx.bot.nick:
         ctx.response = "eu sempre existi..."
     else:
-        following = await twitch.TwitchAPI.following(name)
-        follower = await twitch.TwitchAPI.followers(name)
+        following = await TwitchAPI.following(name)
+        follower = await TwitchAPI.followers(name)
         mention = "você" if name == ctx.author.name else f"@{name}"
         if following and "não existe" in following:
             ctx.response = following
