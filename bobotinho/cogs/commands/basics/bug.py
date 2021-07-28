@@ -2,7 +2,7 @@
 from bobotinho.database import models
 
 description = "Reporte um bug que está ocorrendo no Bot"
-usage = "digite o comando e o bug que você encontrou com o máximo de contexto possível"
+usage = "digite o comando e o bug que você encontrou"
 
 
 async def func(ctx, *, content: str):
