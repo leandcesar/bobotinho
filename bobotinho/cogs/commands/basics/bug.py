@@ -9,6 +9,6 @@ async def func(ctx, *, content: str):
     bug = await models.Bug.create(
         name=ctx.author.name,
         channel=ctx.channel.name,
-        content=content
+        content=content,
     )
     ctx.response = f"seu bug foi reportado 🐛 (ID {bug.id})"
