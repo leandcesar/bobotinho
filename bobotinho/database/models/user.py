@@ -29,10 +29,14 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     @classmethod
     async def update_if_exists(cls, message):
         if instance := await cls.get_or_none(id=message.author.id):
-            attrs = ["name", "channel", "color", "content"]
-            values = [message.author.name, message.channel.name, message.author.colour, message.content]
+            attrs = {
+                "name": message.author.name,
+                "channel": message.channel.name,
+                "color": message.author.colour,
+                "content": message.content.replace("ACTION", "", 1),
+            }
             update_fields = []
-            for attr, value in zip(attrs, values):
+            for attr, value in attrs.items():
                 if attr == "content" and len(value) > 500:
                     value = value[:500]
                 if getattr(instance, attr) != value:

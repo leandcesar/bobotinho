@@ -101,7 +101,7 @@ class Bobotinho(AutoBot):
                 "channel": ctx.channel.name,
                 "name": ctx.author.name,
                 "color": ctx.author.colour,
-                "content": ctx.content,
+                "content": ctx.content.replace("ACTION", "", 1),
             },
         )
         return ctx

@@ -10,6 +10,6 @@ async def func(ctx, *, content: str):
     suggest = await models.Suggest.create(
         name=ctx.author.name,
         channel=ctx.channel.name,
-        content=content
+        content=content,
     )
     ctx.response = f"sua sugestão foi anotada 📝 (ID {suggest.id})"
