@@ -3,9 +3,9 @@ from bobotinho.database.base import Base, TimestampMixin, ContentMixin, fields, 
 
 
 class Reminder(Base, TimestampMixin, ContentMixin):
-    from_user_id = fields.IntField()
-    to_user_id = fields.IntField()
-    channel_id = fields.IntField()
+    from_user = fields.ForeignKeyField("models.User", related_name="reminders_from")
+    to_user = fields.ForeignKeyField("models.User", related_name="reminders_to")
+    channel = fields.ForeignKeyField("models.User", related_name="reminders_channel")
     scheduled_for = fields.DatetimeField(null=True)
 
     class Meta:
