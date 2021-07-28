@@ -16,11 +16,11 @@ async def func(ctx, arg: str = ""):
         ctx.response = "não foi possível verificar isso"
     elif "não existe" in uptime:
         ctx.response = uptime
-    elif title := await TwitchAPI.title(name) and "is offline" in uptime:
+    elif (title := await TwitchAPI.title(name)) and "is offline" in uptime:
         ctx.response = f"{mention} está offline: {title}"
     elif "is offline" in uptime:
         ctx.response = f"{mention} está offline"
-    elif game := await TwitchAPI.game(name) and title:
+    elif (game := await TwitchAPI.game(name)) and title:
         ctx.response = f"{mention} está streamando {game}: {title}"
     elif title:
         ctx.response = f"{mention} está online: {title}"
