@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
 from aiohttp.web import Application, Response, RouteTableDef, run_app
 
 import bobotinho
+from bobotinho import config
 
 routes = RouteTableDef()
 
@@ -15,4 +15,4 @@ async def root(request):
 if __name__ == "__main__":
     app = Application()
     app.add_routes(routes)
-    run_app(app, host=os.getenv("HOST"), port=os.getenv("PORT"))
+    run_app(app, host=config.host, port=config.port)

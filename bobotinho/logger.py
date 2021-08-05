@@ -1,29 +1,35 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
 
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+from bobotinho import config
 
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL),
-    format="[%(levelname)s] %(module)s.py:%(lineno)s %(funcName)s: %(message)s",
-)
-log = logging.getLogger()
+try:
+    logging.basicConfig(
+        level=config.log_level,
+        format="[%(levelname)s] %(module)s.py:%(lineno)s: %(message)s",
+    )
+except ValueError:
+    print(f"[ERROR] Invalid <LOG_LEVEL>. Not expected '{config.log_level}'")
+    logging.basicConfig()
+finally:
+    log: logging.Logger = logging.getLogger()
 
-if os.getenv("API_KEY_BUGSNAG"):
+if config.bugsnag_key:
     import bugsnag
     from bugsnag.handlers import BugsnagHandler
 
     try:
         bugsnag.configure(
-            app_version=os.getenv("VERSION"),
-            api_key=os.getenv("API_KEY_BUGSNAG"),
+            app_version=config.version,
+            api_key=config.bugsnag_key,
             project_root="/bobotinho",
-            release_stage=os.getenv("CONFIG_MODE", "local"),
+            release_stage=config.mode,
         )
+        handler: BugsnagHandler = BugsnagHandler(
+            extra_fields={"log": ["__repr__"], "ctx": ["ctx"]}
+        )
+        handler.setLevel(logging.ERROR)
     except Exception as e:
         log.exception(e)
     else:
-        handler = BugsnagHandler(extra_fields={"log": ["__repr__"]})
-        handler.setLevel(logging.ERROR)
         log.addHandler(handler)

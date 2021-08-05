@@ -16,24 +16,19 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
     class Meta:
         table = "user"
 
-    def __rep__(self):
-        if self.sponsor and self.badge:
-            return f"{self.badge} @{self.name}"
-        return f"@{self.name}"
-
-    def __str__(self):
+    def __str__(self) -> str:
         if self.sponsor and self.badge:
             return f"{self.badge} @{self.name}"
         return f"@{self.name}"
 
     @classmethod
-    async def update_if_exists(cls, message):
-        if instance := await cls.get_or_none(id=message.author.id):
+    async def update_or_none(cls, ctx):
+        if instance := await cls.get_or_none(id=ctx.author.id):
             attrs = {
-                "name": message.author.name,
-                "channel": message.channel.name,
-                "color": message.author.colour,
-                "content": message.content.replace("ACTION", "", 1),
+                "name": ctx.author.name,
+                "channel": ctx.channel.name,
+                "color": ctx.author.colour,
+                "content": ctx.message.content.replace("ACTION", "", 1),
             }
             update_fields = []
             for attr, value in attrs.items():
@@ -45,3 +40,4 @@ class User(Base, UserMixin, TimestampMixin, ContentMixin):
             if update_fields:
                 update_fields.append("updated_at")
                 await instance.save(update_fields=update_fields)
+            return instance

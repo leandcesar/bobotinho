@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from typing import Optional
 
-from bobotinho import aiorequests
-from bobotinho.logger import log
+from bobotinho import aiorequests, config
 
 
-class TwitchAPI:
-    base_url = "https://decapi.me/twitch"
+class Twitch:
+    base_url = config.twitch_url
     errors = [
         "Error", "Not Found", "not follow", "be specified", "No user", "not found", "cannot follow", "not have"
     ]
@@ -23,17 +22,14 @@ class TwitchAPI:
             "count": "1",
             "limit": "2",
         }
-        try:
-            response = await aiorequests.get(url, params=params, res_method="text")
-            if response.startswith("No user with the name"):
-                name = response.split('"')[1]
-                return f"@{name} não existe"
-            if not any(e in response for e in cls.errors):
-                if endpoint.startswith(("following", "followers")):
-                    return response.split(", ")[0]
-                return response
-        except Exception as e:
-            log.exception(e)
+        response = await aiorequests.get(url, params=params, res_method="text")
+        if response.startswith("No user with the name"):
+            name = response.split('"')[1]
+            return f"@{name} não existe"
+        if not any(e in response for e in cls.errors):
+            if endpoint.startswith(("following", "followers")):
+                return response.split(", ")[0]
+            return response
 
     @classmethod
     async def account_age(cls, name: str) -> Optional[str]:

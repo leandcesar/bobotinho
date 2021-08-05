@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-import os
-
-from bobotinho import aiorequests
+from bobotinho import aiorequests, config
+from bobotinho.exceptions import WebhookUrlNotDefined
 
 
 class Webhook:
-    url = os.getenv("BOT_NOTIFIER_URL")
-    timestamp_format = "%Y-%m-%dT%H:%M:%SZ"
+    base_url: str = config.webhook_url
+    timestamp_format: str = "%Y-%m-%dT%H:%M:%SZ"
 
     @classmethod
-    async def send(cls, resource, **kwargs) -> None:
-        if not cls.url:
-            return
-        data = {
+    async def send(cls, resource: str, **kwargs) -> None:
+        if not cls.base_url:
+            raise WebhookUrlNotDefined()
+        data: dict = {
             "resource": resource,
             "data": kwargs,
         }

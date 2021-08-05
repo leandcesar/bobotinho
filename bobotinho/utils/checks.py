@@ -2,64 +2,33 @@
 import re
 
 from bobotinho.utils import roles
-
-
-class BotIsNotOnline(Exception):
-    pass
-
-
-class ContentHasBanword(Exception):
-    pass
-
-
-class CommandIsDisabled(Exception):
-    pass
-
-
-class CommandIsOnCooldown(Exception):
-    pass
-
-
-class UserIsNotAllowed(Exception):
-    pass
-
-
-class UserIsNotASponsor(Exception):
-    pass
+from bobotinho.exceptions import (
+    BotIsOffline,
+    ContentHasBanword,
+    CommandIsDisabled,
+    UserIsNotAllowed,
+)
 
 
 def allowed(ctx) -> bool:
-    if not roles.any(ctx) and re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", ctx.content) is not None:
-        raise UserIsNotAllowed()
+    if not roles.any(ctx) and re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", ctx.message.content) is not None:
+        raise UserIsNotAllowed(channel=ctx.channel.name, user=ctx.author.name)
     return True
 
 
 def banword(ctx) -> bool:
-    if any(word in ctx.content for word in ctx.bot.channels[ctx.channel.name]["banwords"]):
-        raise ContentHasBanword()
-    return True
-
-
-def cooldown(ctx) -> bool:
-    time = 1 if roles.sponsor(ctx) else 10
-    if not ctx.bot.cooldowns.set(f"{ctx.author.id}-{ctx.command.name}", 1, ex=time, nx=True):
-        raise CommandIsOnCooldown()
+    if any(word in ctx.message.content for word in ctx.bot.channels[ctx.channel.name]["banwords"]):
+        raise ContentHasBanword(channel=ctx.channel.name, content=ctx.message.content)
     return True
 
 
 def enabled(ctx) -> bool:
     if ctx.command.name in ctx.bot.channels[ctx.channel.name]["disabled"]:
-        raise CommandIsDisabled()
+        raise CommandIsDisabled(channel=ctx.channel.name, command=ctx.command.name)
     return True
 
 
 def online(ctx) -> bool:
     if not ctx.bot.channels[ctx.channel.name]["online"]:
-        raise BotIsNotOnline()
-    return True
-
-
-def sponsor(ctx) -> bool:
-    if not roles.sponsor(ctx):
-        raise UserIsNotASponsor()
+        raise BotIsOffline(channel=ctx.channel.name)
     return True

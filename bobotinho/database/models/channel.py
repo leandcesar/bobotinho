@@ -13,7 +13,7 @@ class Channel(Base, TimestampMixin):
         table = "channel"
 
     @classmethod
-    async def append_json(cls, id, field, key, value):
+    async def append_json(cls, id, field, key, value) -> None:
         instance = await cls.get(user_id=id)
         json = getattr(instance, field)
         json[key] = value
@@ -21,7 +21,7 @@ class Channel(Base, TimestampMixin):
         await instance.save()
 
     @classmethod
-    async def remove_json(cls, id, field, key):
+    async def remove_json(cls, id, field, key) -> None:
         instance = await cls.get(user_id=id)
         json = getattr(instance, field)
         json.pop(key)
