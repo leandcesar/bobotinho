@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from tortoise import timezone
-from tortoise import fields
+from tortoise import fields, timezone
 from tortoise.models import Model
 
 
@@ -9,6 +8,9 @@ class Base(Model):
 
     class Meta:
         abstract = True
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id})"
 
 
 class TimestampMixin:

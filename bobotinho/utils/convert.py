@@ -7,9 +7,7 @@ from emoji import demojize
 from typing import Union, Optional
 from unidecode import unidecode
 
-
-class InvalidName(Exception):
-    pass
+from bobotinho.exceptions import InvalidName
 
 
 def datetime2str(target: datetime) -> str:

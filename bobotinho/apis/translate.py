@@ -3,6 +3,7 @@ import json
 import requests
 import urllib3
 from urllib.parse import quote
+from bobotinho import config
 
 FILENAME = "bobotinho//data//languages.json"
 
@@ -12,10 +13,10 @@ with open(FILENAME, "r", encoding="utf-8") as file:
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class TranslateApi:
+class Translator:
     timeout = 5
     proxies = {}
-    url = "https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute"
+    base_url = config.translate_url
     headers = {
         "Referer": "https://translate.google.cn",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) "
@@ -36,7 +37,7 @@ class TranslateApi:
         lang_src = lang_src if LANGUAGES.get(lang_tgt) else "auto"
         response = requests.Request(
             method="POST",
-            url=cls.url,
+            url=cls.base_url,
             data=cls._package_rpc(text, lang_src, lang_tgt),
             headers=cls.headers,
         )
@@ -62,7 +63,7 @@ class TranslateApi:
     def detect(cls, text: str):
         response = requests.Request(
             method="POST",
-            url=cls.url,
+            url=cls.base_url,
             data=cls._package_rpc(text),
             headers=cls.headers,
         )

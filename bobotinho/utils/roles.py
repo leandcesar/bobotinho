@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+def owner(ctx) -> bool:
+    return ctx.author.name == ctx.bot.owner
+
+
 def streamer(ctx) -> bool:
     return ctx.author.name == ctx.channel.name
 
 
 def mod(ctx) -> bool:
-    return ctx.author.is_mod or streamer(ctx)
+    return ctx.author.is_mod or streamer(ctx) or owner(ctx)
 
 
 def vip(ctx) -> bool:
@@ -17,7 +21,7 @@ def sub(ctx) -> bool:
 
 
 def any(ctx) -> bool:
-    return sub(ctx) or vip(ctx) or mod(ctx) or streamer(ctx)
+    return sub(ctx) or vip(ctx) or mod(ctx) or streamer(ctx) or owner(ctx)
 
 
 def sponsor(ctx) -> bool:

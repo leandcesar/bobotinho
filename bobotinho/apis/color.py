@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 from typing import Optional
 
-from bobotinho import aiorequests
-from bobotinho.logger import log
+from bobotinho import aiorequests, config
 
 
-class ColorAPI:
-    base_url = "https://www.thecolorapi.com"
+class Color:
+    base_url = config.color_url
 
     @classmethod
     async def name(cls, color: str) -> Optional[str]:
         url = f"{cls.base_url}/id"
         params = {"hex": color}
-        try:
-            response = await aiorequests.get(url, params=params)
-            color = response.get("name", {})
-            color_name = color.get("value")
-            return color_name
-        except Exception as e:
-            log.exception(e)
+        response = await aiorequests.get(url, params=params)
+        color = response.get("name", {})
+        color_name = color.get("value")
+        return color_name

@@ -1,44 +1,27 @@
-
 # -*- coding: utf-8 -*-
-import os
-from typing import Optional
-
-from bobotinho import aiorequests
-from bobotinho.logger import log
+from bobotinho import aiorequests, config
 
 
 class Analytics:
-    base_url = "https://tracker.dashbot.io/track"
-    key = os.getenv("API_KEY_ANALYTICS")
-    nick = os.getenv("BOT_NAME")
+    base_url = config.analytics_url
+    key = config.analytics_key
 
     @classmethod
-    async def received(cls, ctx) -> Optional[dict]:
-        log.debug(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.content}")
-        url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type=incoming"
+    async def request(cls, type: str, loop, **kwargs):
+        url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type={type}"
         data = {
-            "text": ctx.content,
-            "userId": ctx.author.id,
-            "platformUserJson": {"firstName": ctx.author.name},
-            "platformJson": {"source": "Twitch", "channel": ctx.channel.name},
+            "text": kwargs["text"],
+            "userId": kwargs["id"],
+            "intent": {"name": kwargs.get("intent"), "confidence": kwargs.get("confidence")},
+            "platformUserJson": {"firstName": kwargs.get("name")},
+            "platformJson": {"source": "Twitch", "channel": kwargs.get("channel")},
         }
-        try:
-            await aiorequests.post(url, json=data, wait_response=False, loop=ctx.bot.loop)
-        except Exception as e:
-            log.exception(e)
+        await aiorequests.post(url, json=data, wait_response=False, loop=loop)
 
     @classmethod
-    async def sent(cls, ctx) -> Optional[dict]:
-        log.debug(f"#{ctx.channel.name} @{cls.nick}: {ctx.response}")
-        url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type=outgoing"
-        data = {
-            "text": ctx.response,
-            "userId": ctx.author.id,
-            "intent": {"name": ctx.command.name, "confidence": 1.0},
-            "platformUserJson": {"firstName": ctx.author.name},
-            "platformJson": {"source": "Twitch", "channel": ctx.channel.name},
-        }
-        try:
-            await aiorequests.post(url, json=data, wait_response=False, loop=ctx.bot.loop)
-        except Exception as e:
-            log.exception(e)
+    async def received(cls, loop, **kwargs) -> None:
+        await cls.request("incoming", loop, **kwargs)
+
+    @classmethod
+    async def sent(cls, loop, **kwargs) -> None:
+        await cls.request("outgoing", loop, **kwargs)

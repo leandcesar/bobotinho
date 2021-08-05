@@ -1,41 +1,37 @@
 # -*- coding: utf-8 -*-
-import os
 from typing import Optional
 
-from bobotinho import aiorequests
-from bobotinho.logger import log
+from bobotinho import aiorequests, config
 
 
 class AI:
-    base_url = os.getenv("BOT_AI_URL")
-    key = os.getenv("BOT_AI_KEY")
+    base_url = config.ai_url
+    key = config.ai_key
 
     @classmethod
-    async def nlu(cls, text: str) -> dict:
+    async def nlu(cls, text: str) -> Optional[dict]:
         url = f"{cls.base_url}/model/parse"
         params = {"token": cls.key}
         data = {"text": text}
-        try:
-            response = await aiorequests.post(url, params=params, json=data)
-            if response["intent"]["confidence"] < 0.75:
-                return {"intent": "nlu_fallback", "entity": None}
-            intent = response["intent"]["name"]
-            entity = response["entities"][0]["value"] if response["entities"] else None
-            # TODO: mudar nlu pra não capturar pronomes nas entities
-            if entity and entity.startswith(
-                ("o ", "a ", "do ", "da ", "no ", "na ", "em ")
-            ):
-                entity = entity.split(maxsplit=1)[1]
-            return {"intent": intent, "entity": entity}
-        except Exception as e:
-            log.exception(e)
-        return {"intent": None, "entity": None}
+        return await aiorequests.post(url, params=params, json=data)
+
+    @classmethod
+    async def predict(cls, text: str) -> dict:
+        response = cls.nlu(text)
+        intent: str = response["intent"]["name"]
+        entity: Optional[str] = response["entities"][0]["value"] if response["entities"] else ""
+        confidence: float = response["intent"]["confidence"]
+        if intent == "nlu_fallback":
+            intent = None
+        elif entity and entity.startswith(
+            ("o ", "a ", "do ", "da ", "no ", "na ", "em ")
+        ):
+            entity = entity.split(maxsplit=1)[1]
+        return {"intent": intent, "entity": entity, "confidence": confidence}
 
     @staticmethod
     def small_talk(intent: str) -> Optional[str]:
-        if intent == "nlu_fallback":
-            return 'não entendi isso, mas tente ver meus comandos digitando "%help"'
-        elif intent == "ping":
+        if intent == "ping":
             return "estou aqui"
         elif intent == "greet":
             return "oi"

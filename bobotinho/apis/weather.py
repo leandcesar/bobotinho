@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
 from pyowm import OWM
+from bobotinho import config
 
-WeatherAPI = OWM(os.getenv("API_KEY_WEATHER"), language="pt")
+Weather = OWM(config.weather_key, language="pt")
