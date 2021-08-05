@@ -65,6 +65,7 @@ class TwitchBot(Bot):
         self.site: str = config.site_url
         self.blocked: list = []
         self.listeners: list = []
+        self.routines: list = []
         self.channels: dict = {}
         self.cache: object = None
 
@@ -129,7 +130,7 @@ class TwitchBot(Bot):
                     time=getattr(module, "time", None),
                     delta=getattr(module, "delta", None),
                 )
-                routine.start(self)
+                self.routines.append(routine)
             except Exception as e:
                 log.error(f"Routine '{name}' failed to load: {e}")
 
@@ -251,6 +252,8 @@ class TwitchBot(Bot):
         return await self.reply(ctx)
 
     async def event_ready(self) -> None:
+        for routine in self.routines:
+            routine.start(self)
         log.info(f"{self.nick} | #{len(self.channels)} | {self._prefix}{len(self.commands)}")
 
     async def event_command_error(self, ctx: Ctx, e: Exception) -> None:
