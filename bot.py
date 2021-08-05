@@ -34,11 +34,11 @@ if __name__ == "__main__":
     try:
         bot.loop.run_until_complete(db.init())
         bot.loop.run_until_complete(db.register_init())
-        bot.loop.run_until_complete(bot.connect())
-        bot.loop.run_until_complete(bot.join_all_channels())
         bot.loop.run_until_complete(bot.fetch_blocked())
         bot.add_checks()
         bot.load_cogs()
+        bot.loop.run_until_complete(bot.connect())
+        bot.loop.run_until_complete(bot.join_all_channels())
         bot.loop.run_forever()
     except KeyboardInterrupt:
         bot.loop.run_until_complete(db.register_close())
