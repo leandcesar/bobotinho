@@ -12,7 +12,7 @@ async def command(ctx, *, content: str = ""):
     if content and len(content) > 400:
         ctx.response = "essa mensagem é muito comprida"
     else:
-        invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):]
+        invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
         afk_type = afks[invoke_by]
         await Afk.create(
             user_id=ctx.author.id,

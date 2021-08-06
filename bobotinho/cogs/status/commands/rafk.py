@@ -11,7 +11,7 @@ usage = "digite o comando em até 3 minutos após ter retornado do seu AFK para 
 async def command(ctx):
     if afk := ctx.bot.cache.get(f"afk-{ctx.author.id}"):
         ctx.bot.cache.delete(f"afk-{ctx.author.id}")
-        invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):]
+        invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
         afk_type = afks[invoke_by[1:]]
         afk = convert.str2dict(afk)
         content = afk.get("content")

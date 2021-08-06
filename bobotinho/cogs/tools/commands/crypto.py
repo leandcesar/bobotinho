@@ -10,7 +10,7 @@ usage = "digite o comando, a sigla (ex: BTC) e a quantidade para saber a convers
 async def command(ctx, arg1: str = "", arg2: str = ""):
     translate = {"bitcoin": "BTC", "ethereum": "ETH"}
     target = "BRL"
-    invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):]
+    invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
     base = translate.get(invoke_by) or arg1.upper()
     amount = convert.str2float(arg1) or convert.str2float(arg2) or 1.0
     if base and (conversion := await Crypto.conversion(base, target)):

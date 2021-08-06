@@ -12,7 +12,7 @@ extra_checks = [checks.allowed, checks.banword]
 
 
 async def command(ctx, arg: str, *, content: str = ""):
-    invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):]
+    invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
     if invoke_by == "remindme":
         content = f"{arg} {content}"
         name = ctx.author.name
