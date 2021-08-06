@@ -9,7 +9,7 @@ usage = "digite o comando e o nome de um local para saber o clima"
 async def command(ctx, *, content: str = ""):
     if not content:
         place = ctx.user.city
-    elif content.lower() in ("salvador", "socorro"):
+    elif content.lower() in ("salvador", "socorro", "santiago"):
         place = f"{content.lower()}, br"
     else:
         place = content.lower()
