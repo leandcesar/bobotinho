@@ -11,8 +11,9 @@ class Webhook:
     async def send(cls, resource: str, **kwargs) -> None:
         if not cls.base_url:
             raise WebhookUrlNotDefined()
+        url = cls.base_url
         data: dict = {
             "resource": resource,
             "data": kwargs,
         }
-        await aiorequests.post(cls.url, json=data, wait_response=False)
+        await aiorequests.post(url, json=data, wait_response=False)

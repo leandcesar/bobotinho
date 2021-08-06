@@ -269,7 +269,7 @@ class TwitchBot(Bot):
             log.info(e)
         else:
             ctx.response = "ocorreu um erro inesperado"
-            log.exception(e, extra={"ctx": dict(ctx)})
+            log.error(e, extra={"ctx": dict(ctx)})
         await self.reply(ctx)
 
     async def event_message(self, message: Message) -> None:
