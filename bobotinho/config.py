@@ -7,7 +7,7 @@ from typing import Optional, Union
 class Config:
     version: str = os.environ.get("VERSION", "0.1.0")
     log_level: str = os.environ.get("LOG_LEVEL", "INFO")
-    access_token: str = os.environ["ACCESS_TOKEN"]
+    access_token: str = os.environ.get("ACCESS_TOKEN")
     client_secret: Optional[str] = os.environ.get("CLIENT_SECRET")
     prefix: Optional[str] = os.environ.get("BOT_PREFIX", "%")
     owner: Optional[str] = os.environ.get("OWNER_NICK")
