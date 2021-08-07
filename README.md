@@ -1,4 +1,4 @@
-![https://www.python.org](https://img.shields.io/badge/Python-3.8+-blue.svg) ![https://github.com/leandcesar/bobotinho/blob/master/LICENSE](https://img.shields.io/badge/license-AGPL%20v3-lightgray.svg) ![https://github.com/psf/black](https://img.shields.io/badge/code%20style-black-000000.svg) ![https://bobotinho.vercel.app](https://img.shields.io/badge/site-bobotinho-9147ff.svg) ![https://discord.gg/6Ue66Vs5eQ](https://img.shields.io/badge/discord-bobotinho-7289da.svg)
+![https://www.python.org](https://img.shields.io/badge/Python-3.8+-blue.svg) ![https://github.com/leandcesar/bobotinho/blob/master/LICENSE](https://img.shields.io/badge/license-AGPL%20v3-lightgray.svg) ![https://github.com/psf/black](https://img.shields.io/badge/code%20style-black-000000.svg) ![https://bobotinho.vercel.app](https://img.shields.io/badge/invite-website-9147ff.svg) ![https://discord.gg/6Ue66Vs5eQ](https://img.shields.io/badge/support-discord-7289da.svg)
 
 # Bobotinho
 Main repository for the chatbot Bobotinho.
@@ -88,7 +88,7 @@ Execute the following commands in your `/bobotinho-bot` directory:
 $ docker-compose up --build
 ```
 
-> *Use `--build` flag only the first run*
+> *Use `--build` flag only on the first run*
 
 ### 🎉 Use
 
