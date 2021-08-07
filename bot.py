@@ -15,6 +15,7 @@ try:
     from bobotinho.bots import TwitchBot
 
     bot: TwitchBot = TwitchBot(config)
+    bot.load_cogs()
 except Exception as e:
     log.critical(e, exc_info=1)
     sys.exit("[CRITICAL] Twitch Bot constructor failure")
@@ -33,22 +34,16 @@ except Exception as e:
 if __name__ == "__main__":
     try:
         bot.loop.run_until_complete(db.init())
-        bot.loop.run_until_complete(db.register_init())
         bot.loop.run_until_complete(bot.fetch_blocked())
-        bot.add_checks()
-        bot.load_cogs()
         bot.loop.run_until_complete(bot.connect())
         bot.loop.run_until_complete(bot.join_all_channels())
         bot.loop.run_forever()
-    except KeyboardInterrupt:
-        bot.loop.run_until_complete(db.register_close())
     except Exception as e:
-        bot.loop.run_until_complete(db.register_close(e))
         log.exception(e)
+        bot.loop.run_until_complete(db.close(e))
     else:
-        bot.loop.run_until_complete(db.register_close())
-    finally:
         bot.loop.run_until_complete(db.close())
+    finally:
         bot.cache.close()
         bot.loop.run_until_complete(bot.close())
         bot.loop.close()
