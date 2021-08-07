@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from datetime import datetime, timedelta, timezone
-from typing import AnyStr, Union, Optional
+from typing import Union, Optional
 
 pattern_relative_time = re.compile(
     r"""
@@ -64,13 +64,13 @@ def date_in_full(delta: timedelta) -> str:
     return response.rstrip(", ")
 
 
-def find_relative_time(target: str) -> Optional[re.Match[AnyStr]]:
+def find_relative_time(target: str) -> Optional[re.Match]:
     match = pattern_relative_time.match(target)
     if match and any(match.groups()[1:]):
         return match
 
 
-def find_absolute_time(target: str) -> Optional[re.Match[AnyStr]]:
+def find_absolute_time(target: str) -> Optional[re.Match]:
     match = pattern_absolute_time_and_date.match(target)
     if match and any(match.groups()[1:]):
         return match

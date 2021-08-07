@@ -42,9 +42,12 @@ class ProdConfig(Config, ApiConfig):
 
 class LocalConfig(Config, ApiConfig):
     mode: str = "local"
-    database_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    database_file: str = os.path.join(database_dir, "db.sqlite3")
-    database_url: str = f"sqlite:///{database_file}"
+    if os.environ.get("DATABASE_URL"):
+        database_url: str = os.environ["DATABASE_URL"]
+    else:
+        database_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        database_file: str = os.path.join(database_dir, "db.sqlite3")
+        database_url: str = f"sqlite:///{database_file}"
     redis_url: Optional[str] = os.environ.get("REDIS_URL")
 
 
@@ -61,6 +64,6 @@ config_mode: str = os.environ.get("CONFIG_MODE", "local")
 try:
     config: Union[ProdConfig, LocalConfig, TestConfig] = config_options[config_mode]
 except KeyError:
-    sys.exit(f"[CRITICAL] Invalid <CONFIG_MODE>. Expected 'local', 'test' or 'prod', not '{config.mode}'.")
+    sys.exit(f"[CRITICAL] Invalid <CONFIG_MODE>. Expected 'local', 'test' or 'prod', not '{config_mode}'.")
 else:
     print(f"[INFO] Running with <CONFIG_MODE>='{config.mode}'")

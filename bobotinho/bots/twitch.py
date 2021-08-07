@@ -69,6 +69,16 @@ class TwitchBot(Bot):
         self.channels: dict = {}
         self.cache: object = None
 
+    async def connect(self) -> None:
+        await self._connection._connect()
+        for routine in self.routines:
+            routine.start(self)
+
+    async def close(self) -> None:
+        for routine in self.routines:
+            routine.stop()
+        await self._connection._close()
+
     def add_checks(self) -> None:
         for check in [checks.online, checks.enabled, checks.banword]:
             self.check(check)
@@ -135,6 +145,7 @@ class TwitchBot(Bot):
                 log.error(f"Routine '{name}' failed to load: {e}")
 
     def load_cogs(self, base: str = "bobotinho/cogs") -> None:
+        self.add_checks()
         for cog in os.listdir(base):
             paths: str = os.listdir(os.path.join(base, cog))
             if "commands" in paths:
@@ -152,7 +163,7 @@ class TwitchBot(Bot):
                 "disabled": list(channel.disabled.keys()),
                 "online": channel.online,
             } for channel in await Channel.all().select_related("user")
-        }
+        } or {self.owner: {"id": 0, "banwords": [], "disabled": [], "online": True}}
         await self.join_channels(list(self.channels))
 
     async def fetch_blocked(self) -> None:
@@ -252,8 +263,6 @@ class TwitchBot(Bot):
         return await self.reply(ctx)
 
     async def event_ready(self) -> None:
-        for routine in self.routines:
-            routine.start(self)
         log.info(f"{self.nick} | #{len(self.channels)} | {self._prefix}{len(self.commands)}")
 
     async def event_command_error(self, ctx: Ctx, e: Exception) -> None:
