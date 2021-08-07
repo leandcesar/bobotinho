@@ -163,7 +163,7 @@ class TwitchBot(Bot):
                 "disabled": list(channel.disabled.keys()),
                 "online": channel.online,
             } for channel in await Channel.all().select_related("user")
-        } or {self.owner: {"id": 0, "banwords": [], "disabled": [], "online": True}}
+        } or {self.owner.lower(): {"id": 0, "banwords": [], "disabled": [], "online": True}}
         await self.join_channels(list(self.channels))
 
     async def fetch_blocked(self) -> None:
