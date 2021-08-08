@@ -1,4 +1,4 @@
-![https://www.python.org](https://img.shields.io/badge/Python-3.8+-blue.svg) ![https://github.com/leandcesar/bobotinho/blob/master/LICENSE](https://img.shields.io/badge/license-AGPL%20v3-lightgray.svg) ![https://github.com/psf/black](https://img.shields.io/badge/code%20style-black-000000.svg) ![https://bobotinho.vercel.app](https://img.shields.io/badge/invite-website-9147ff.svg) ![https://discord.gg/6Ue66Vs5eQ](https://img.shields.io/badge/support-discord-7289da.svg)
+[![CI](https://github.com/leandcesar/bobotinho-bot/workflows/CI/badge.svg)](https://github.com/leandcesar/bobotinho-bot/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org) [![License](https://img.shields.io/badge/license-AGPL%20v3-lightgray.svg)](https://github.com/leandcesar/bobotinho/blob/master/LICENSE) [![Black](https://img.shields.io/badge/style-black-000000.svg)](https://github.com/psf/black) [![Website](https://img.shields.io/badge/invite-website-9147ff.svg)](https://bobotinho.vercel.app) [![Discord](https://img.shields.io/badge/support-discord-7289da.svg)](https://discord.gg/6Ue66Vs5eQ)
 
 # Bobotinho
 Main repository for the chatbot Bobotinho.
@@ -36,10 +36,10 @@ After clone this repo, create `.env` file in your `/bobotinho-bot` directory. Ad
 
 ```
 ACCESS_TOKEN=your-token-here
-OWNER=your-twitch-nick
+OWNER_NAME=your-twitch-nick
 ```
 
-### Run 
+### ▶️ Run 
 
 #### 🏠 Option 1: locally
 
@@ -92,4 +92,4 @@ $ docker-compose up --build
 
 ### 🎉 Use
 
-Go to Twitch channel set on `OWNER` and send `%ping`.
+Go to Twitch channel set on `OWNER_NAME` and send `%ping`.
