@@ -26,7 +26,7 @@ if config.bugsnag_key:
             release_stage=config.mode,
         )
         handler: BugsnagHandler = BugsnagHandler(
-            extra_fields={"log": ["__repr__"], "ctx": ["ctx"]}
+            extra_fields={"log": ["__repr__"], "locals": ["locals"], "ctx": ["ctx"]}
         )
         handler.setLevel(logging.ERROR)
     except Exception as e:

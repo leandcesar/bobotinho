@@ -34,4 +34,4 @@ async def routine(bot) -> None:
                 await bot.get_channel(remind.channel.name).send(response)
                 log.info(f"#{remind.channel.name} @{bot.nick}: {response}")
             except Exception as e:
-                log.exception(e)
+                log.exception(e, extra={"locals": locals()})

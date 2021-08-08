@@ -33,7 +33,7 @@ from bobotinho.exceptions import (
 from bobotinho.utils import checks
 
 DEFAULT_COOLDOWN_RATE = 2
-DEFAULT_COOLDOWN_PER = 10
+DEFAULT_COOLDOWN_PER = 5
 DEFAULT_COOLDOWN_BUCKET = Bucket.user
 
 
@@ -111,7 +111,7 @@ class TwitchBot(Bot):
                 command.usage: Optional[str] = getattr(module, "usage", None)
                 self.add_command(command)
             except Exception as e:
-                log.error(f"Command '{name}' failed to load: {e}")
+                log.error(f"Command '{name}' failed to load: {e}", extra={"locals": locals()})
 
     def load_listeners(self, path: str) -> None:
         for filename in os.listdir(path):
@@ -124,7 +124,7 @@ class TwitchBot(Bot):
                 module: types.ModuleType = import_module(name, package=package)
                 self.listeners.append(module.listener)
             except Exception as e:
-                log.error(f"Listener '{name}' failed to load: {e}")
+                log.error(f"Listener '{name}' failed to load: {e}", extra={"locals": locals()})
 
     def load_routines(self, path: str) -> None:
         for filename in os.listdir(path):
@@ -142,7 +142,7 @@ class TwitchBot(Bot):
                 )
                 self.routines.append(routine)
             except Exception as e:
-                log.error(f"Routine '{name}' failed to load: {e}")
+                log.error(f"Routine '{name}' failed to load: {e}", extra={"locals": locals()})
 
     def load_cogs(self, base: str = "bobotinho/cogs") -> None:
         self.add_checks()
@@ -173,21 +173,13 @@ class TwitchBot(Bot):
         if not ctx.response:
             return False
         try:
-            response = f"{ctx.user or ctx.author.name}, {ctx.response}"
-            await ctx.send(response)
+            ctx.response = f"{ctx.user or ctx.author.name}, {ctx.response}"
+            await ctx.send(ctx.response)
         except Exception as e:
             log.error(e, extra={"ctx": dict(ctx)})
         else:
-            log.info(f"#{ctx.channel.name} @{self.nick}: {response}")
-            await Analytics.sent(
-                self.loop,
-                id=ctx.author.id,
-                text=response,
-                name=ctx.author.name,
-                channel=ctx.channel.name,
-                intent=ctx.prediction.get("intent"),
-                confidence=ctx.prediction.get("confidence"),
-            )
+            log.info(f"#{ctx.channel.name} @{self.nick}: {ctx.response}")
+            await Analytics.sent(self.loop, ctx)
             return True
         return False
 
@@ -200,13 +192,7 @@ class TwitchBot(Bot):
             return False
         if not ctx.prediction:
             log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
-            await Analytics.received(
-                self.loop,
-                id=ctx.author.id,
-                text=ctx.message.content,
-                name=ctx.author.name,
-                channel=ctx.channel.name,
-            )
+            await Analytics.received(self.loop, ctx)
         if not ctx.user:
             ctx.user, _ = await User.get_or_create(
                 id=ctx.author.id,
@@ -233,13 +219,7 @@ class TwitchBot(Bot):
         if not ctx.message.content.startswith((self.nick, f"@{self.nick}")):
             return False
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
-        await Analytics.received(
-            self.loop,
-            id=ctx.author.id,
-            text=ctx.message.content,
-            name=ctx.author.name,
-            channel=ctx.channel.name,
-        )
+        await Analytics.received(self.loop, ctx)
         content: str = ctx.message.content.partition(" ")[2]
         prediction: dict = await AI.predict(content)
         intent: str = prediction["intent"]
