@@ -25,7 +25,7 @@ async def routine(bot) -> None:
                 f"@{channel.user.name}, obrigado por me adicionar, "
                 f'veja meus comandos com "{bot._prefix}help"'
             )
-            await bot.get_channel(channel.user.name).send(response)
+            await bot.create_user(channel.user.id, channel.user.name).channel.send(response)
             log.info(f"#{channel.user.name} @{bot.nick}: {response}")
         except Exception as e:
             log.exception(e, extra={"locals": locals()})
