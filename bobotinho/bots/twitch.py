@@ -164,7 +164,7 @@ class TwitchBot(Bot):
                 "online": channel.online,
             }
             for channel in await Channel.all().select_related("user")
-            if not channel.user.blocked
+            if not channel.user.block
         } or {
             self.owner.lower(): {"id": 0, "banwords": [], "disabled": [], "online": True}
         }
