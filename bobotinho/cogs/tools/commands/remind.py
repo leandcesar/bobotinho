@@ -2,8 +2,9 @@
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
-from bobotinho.utils import checks, convert, timetools
+from bobotinho.database.base import timezone
 from bobotinho.database.models import Reminder, User
+from bobotinho.utils import checks, convert, timetools
 
 aliases = ["remindme"]
 description = "Deixe um lembrete para algum usuário"
@@ -59,49 +60,53 @@ async def command(ctx, arg: str, *, content: str = ""):
         match_dict = {k: int(v) if v else 0 for k, v in match_dict.items()}
         content = content.replace(match.group(0), "")
         try:
-            scheduled_for = ctx.message.timestamp + relativedelta(**match_dict)
+            scheduled_for = timezone.now() + relativedelta(**match_dict)
         except Exception:
             ctx.response = "isso ultrapassa o tempo máximo para lembretes cronometrados"
         else:
-            if (scheduled_for - ctx.message.timestamp).total_seconds() < 60:
+            remind = Reminder(
+                from_user_id=ctx.author.id,
+                to_user_id=user.id,
+                channel_id=ctx.bot.channels[ctx.channel.name]["id"],
+                content=content,
+                scheduled_for=scheduled_for,
+            )
+            if remind.scheduled_ago.total_seconds() < 0:
+                ctx.response = "eu ainda não inventei a máquina do tempo"
+            elif remind.scheduled_ago.total_seconds() < 59:
                 ctx.response = "o tempo mínimo para lembretes cronometrados é 1 minuto"
             else:
-                remind = await Reminder.create(
-                    from_user_id=ctx.author.id,
-                    to_user_id=user.id,
-                    channel_id=ctx.bot.channels[ctx.channel.name]["id"],
-                    content=content,
-                    scheduled_for=scheduled_for,
-                )
+                await remind.save()
                 mention = "você" if name == ctx.author.name else f"@{name}"
-                timeago = timetools.timeago(ctx.message.timestamp, now=scheduled_for)
+                timeago = timetools.timeago(timezone.now(), now=scheduled_for)
                 ctx.response = f"{mention} será lembrado disso daqui {timeago} ⏲️ (ID {remind.id})"
     elif match := timetools.find_absolute_time(content):
         match_dict = match.groupdict()
         match_dict = {
             k: int(v)
             if v
-            else getattr(ctx.message.timestamp, k)
+            else getattr(timezone.now(), k)
             for k, v in match_dict.items()
         }
         content = content.replace(match.group(0), "")
         try:
-            scheduled_for = ctx.message.timestamp + relativedelta(**match_dict) + timedelta(hours=3)
+            scheduled_for = timezone.now() + relativedelta(**match_dict)
         except Exception:
             ctx.response = "essa não é uma data válida"
         else:
-            if scheduled_for <= ctx.message.timestamp:
+            remind = Reminder(
+                from_user_id=ctx.author.id,
+                to_user_id=user.id,
+                channel_id=ctx.bot.channels[ctx.channel.name]["id"],
+                content=content,
+                scheduled_for=scheduled_for,
+            )
+            if remind.scheduled_ago.total_seconds() < 0:
                 ctx.response = "eu ainda não inventei a máquina do tempo"
-            elif (scheduled_for - ctx.message.timestamp).total_seconds() < 60:
+            elif remind.scheduled_ago.total_seconds() < 59:
                 ctx.response = "o tempo mínimo para lembretes cronometrados é 1 minuto"
             else:
-                remind = await Reminder.create(
-                    from_user_id=ctx.author.id,
-                    to_user_id=user.id,
-                    channel_id=ctx.bot.channels[ctx.channel.name]["id"],
-                    content=content,
-                    scheduled_for=scheduled_for,
-                )
+                await remind.save()
                 mention = "você" if name == ctx.author.name else f"@{name}"
                 timestamp = (scheduled_for - timedelta(hours=3)).strftime("%d/%m/%Y às %H:%M:%S")
                 ctx.response = f"{mention} será lembrado disso em {timestamp} 📅 (ID {remind.id})"
