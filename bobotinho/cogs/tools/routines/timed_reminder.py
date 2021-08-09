@@ -11,10 +11,9 @@ delta = 60
 
 
 async def routine(bot) -> None:
-    now = timezone.now()
     reminds = await Reminder.filter(
         scheduled_for__not_isnull=True,
-        scheduled_for__lt=now + timedelta(seconds=60),
+        scheduled_for__lt=timezone.now() + timedelta(seconds=60),
     ).order_by("scheduled_for").all()
     for remind in reminds:
         await remind.fetch_related("from_user", "to_user", "channel")
