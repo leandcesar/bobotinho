@@ -2,7 +2,7 @@
 from bobotinho.database.models import Channel
 from bobotinho import log
 
-delta = 30
+delta = 60
 
 
 async def routine(bot) -> None:

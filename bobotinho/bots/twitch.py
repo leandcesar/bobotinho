@@ -249,6 +249,13 @@ class TwitchBot(Bot):
     async def event_ready(self) -> None:
         log.info(f"{self.nick} | #{len(self.channels)} | {self._prefix}{len(self.commands)}")
 
+    async def event_raw_data(self, data) -> None:
+        bot_part_prefix = f":{self.nick}!{self.nick}@{self.nick}.tmi.twitch.tv PART"
+        if data.startswith(f"{bot_part_prefix} #"):
+            i = len(f"{bot_part_prefix} #")
+            channel = data[i:].strip("\r\n")
+            self._connection._cache.pop(channel)
+
     async def event_command_error(self, ctx: Ctx, e: Exception) -> None:
         if isinstance(e, CommandIsDisabled):
             ctx.response = "esse comando está desativado nesse canal"
