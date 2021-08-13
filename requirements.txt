@@ -2,7 +2,7 @@
 aiohttp==3.7.4
 bugsnag==4.0.3
 redis==3.5.3
-twitchio==2.0.5
+git+git://github.com/leandcesar/TwitchIO.git@master#egg=TwitchIO
 # bobotinho/apis/
 pyowm==2.10.0
 # bobotinho/database/

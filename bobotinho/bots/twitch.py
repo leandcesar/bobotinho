@@ -111,7 +111,7 @@ class TwitchBot(Bot):
                 command.usage: Optional[str] = getattr(module, "usage", None)
                 self.add_command(command)
             except Exception as e:
-                log.error(f"Command '{name}' failed to load: {e}", extra={"locals": locals()})
+                log.error(f"Command '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     def load_listeners(self, path: str) -> None:
         for filename in os.listdir(path):
@@ -124,7 +124,7 @@ class TwitchBot(Bot):
                 module: types.ModuleType = import_module(name, package=package)
                 self.listeners.append(module.listener)
             except Exception as e:
-                log.error(f"Listener '{name}' failed to load: {e}", extra={"locals": locals()})
+                log.error(f"Listener '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     def load_routines(self, path: str) -> None:
         for filename in os.listdir(path):
@@ -141,8 +141,9 @@ class TwitchBot(Bot):
                     delta=getattr(module, "delta", None),
                 )
                 self.routines.append(routine)
+                log.info(f"Routine '{filename[:-3]}' loaded with time/delta '{routine._time or routine._delta}'")
             except Exception as e:
-                log.error(f"Routine '{name}' failed to load: {e}", extra={"locals": locals()})
+                log.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     def load_cogs(self, base: str = "bobotinho/cogs") -> None:
         self.add_checks()
