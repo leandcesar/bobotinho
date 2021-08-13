@@ -38,8 +38,8 @@ if __name__ == "__main__":
         bot.loop.run_until_complete(bot.connect())
         bot.loop.run_until_complete(bot.join_all_channels())
         bot.loop.run_forever()
-    except Exception as e:
-        log.exception(e)
+    except BaseException as e:
+        log.exception(e, extra={"locals": locals()})
         bot.loop.run_until_complete(db.close(e))
     else:
         bot.loop.run_until_complete(db.close())

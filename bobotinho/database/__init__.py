@@ -18,7 +18,7 @@ class Database:
             pass
 
     async def close(self, e: Exception = None):
-        await Tortoise.close_connections()
         if self.system_log:
             self.system_log.error = str(repr(e)) if e else None
             await self.system_log.save(update_fields=["error", "updated_at"])
+        await Tortoise.close_connections()
