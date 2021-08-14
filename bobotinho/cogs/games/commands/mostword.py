@@ -5,7 +5,7 @@ from bobotinho.apis import Dicio
 from bobotinho.utils import checks, convert, roles
 
 aliases = ["mw"]
-description = ""
+description = "Jogo de mais palavras com determinada sílaba, dura 30 segundas"
 extra_checks = [roles.mod, checks.game]
 
 

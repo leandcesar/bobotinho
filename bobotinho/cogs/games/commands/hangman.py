@@ -5,7 +5,7 @@ from asyncio.exceptions import TimeoutError
 from bobotinho.utils import checks, convert, roles
 
 aliases = ["hm"]
-description = ""
+description = "Jogo da forca, descubra a palavra em até 5 tentativas e 2 minutos"
 extra_checks = [roles.mod, checks.game]
 
 
