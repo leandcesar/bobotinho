@@ -343,5 +343,115 @@
         "specie": "robô",
         "emoji": "🤖",
         "price": 999
+    },
+    {
+        "specie": "canguru",
+        "emoji": "🦘",
+        "price": 75
+    },
+    {
+        "specie": "lhama",
+        "emoji": "🦙",
+        "price": 100
+    },
+    {
+        "specie": "pavão",
+        "emoji": "🦚",
+        "price": 100
+    },
+    {
+        "specie": "hipopótamo",
+        "emoji": "🦛",
+        "price": 75
+    },
+    {
+        "specie": "guaxinim",
+        "emoji": "🦝",
+        "price": 75
+    },
+    {
+        "specie": "caranguejo",
+        "emoji": "🦞",
+        "price": 30
+    },
+    {
+        "specie": "mosquito",
+        "emoji": "🦟",
+        "price": 20
+    },
+    {
+        "specie": "bactéria",
+        "emoji": "🦠",
+        "price": 100
+    },
+    {
+        "specie": "texugo",
+        "emoji": "🦡",
+        "price": 50
+    },
+    {
+        "specie": "cisne",
+        "emoji": "🦢",
+        "price": 75
+    },
+    {
+        "specie": "mamute",
+        "emoji": "🦣",
+        "price": 100
+    },
+    {
+        "specie": "dodô",
+        "emoji": "🦤",
+        "price": 75
+    },
+    {
+        "specie": "preguiça",
+        "emoji": "🦥",
+        "price": 100
+    },
+    {
+        "specie": "lontra",
+        "emoji": "🦦",
+        "price": 50
+    },
+    {
+        "specie": "orangotango",
+        "emoji": "🦧",
+        "price": 100
+    },
+    {
+        "specie": "gambá",
+        "emoji": "🦨",
+        "price": 50
+    },
+    {
+        "specie": "flamingo",
+        "emoji": "🦩",
+        "price": 75
+    },
+    {
+        "specie": "ostra",
+        "emoji": "🦪",
+        "price": 50
+    },
+    {
+        "specie": "castor",
+        "emoji": "🦫",
+        "price": 50
+    },
+    {
+        "specie": "bisão",
+        "emoji": "🦬",
+        "price": 75
+    },
+    {
+        "specie": "foca",
+        "emoji": "🦭",
+        "price": 75
+    },
+    {
+        "specie": "cão-guia",
+        "emoji": "🦮",
+        "price": 100
     }
 ]
