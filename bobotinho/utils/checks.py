@@ -6,6 +6,7 @@ from bobotinho.exceptions import (
     BotIsOffline,
     ContentHasBanword,
     CommandIsDisabled,
+    GameIsAlreadyRunning,
     UserIsNotAllowed,
 )
 
@@ -25,6 +26,12 @@ def banword(ctx) -> bool:
 def enabled(ctx) -> bool:
     if ctx.command.name in ctx.bot.channels[ctx.channel.name]["disabled"]:
         raise CommandIsDisabled(channel=ctx.channel.name, command=ctx.command.name)
+    return True
+
+
+def game(ctx) -> bool:
+    if ctx.bot.cache.get(f"game-{ctx.channel.name}"):
+        raise GameIsAlreadyRunning(channel=ctx.channel.name, command=ctx.command.name)
     return True
 
 

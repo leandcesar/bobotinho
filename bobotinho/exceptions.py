@@ -33,6 +33,11 @@ class UserIsNotAllowed(CheckException):
         super().__init__(f"'{user}' user is not allowed to send links on '{channel}' channel.")
 
 
+class GameIsAlreadyRunning(CheckException):
+    def __init__(self, *, channel: str, command: str) -> None:
+        super().__init__(f"'{command}' failed because another game is already running on '{channel}' channel.")
+
+
 class InvalidName(BobotinhoException):
     pass
 

@@ -27,6 +27,7 @@ from bobotinho.exceptions import (
     BotIsOffline,
     CommandIsDisabled,
     ContentHasBanword,
+    GameIsAlreadyRunning,
     InvalidName,
     UserIsNotAllowed,
 )
@@ -266,6 +267,8 @@ class TwitchBot(Bot):
             ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
         elif isinstance(e, InvalidName):
             ctx.response = "nome de usuário inválido"
+        elif isinstance(e, GameIsAlreadyRunning):
+            ctx.response = "um jogo já está em andamento nesse canal"
         elif isinstance(e, (BotIsOffline, CommandOnCooldown, CommandNotFound, CheckFailure)):
             log.info(e)
         else:
