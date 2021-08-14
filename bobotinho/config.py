@@ -28,6 +28,7 @@ class ApiConfig:
     crypto_key: Optional[str] = os.environ.get("API_CRYPTO_KEY")
     currency_url: Optional[str] = os.environ.get("API_CURRENCY_URL", "https://v6.exchangerate-api.com/v6")
     currency_key: Optional[str] = os.environ.get("API_CURRENCY_KEY")
+    dicio_url: Optional[str] = os.environ.get("API_DICIO_URL", "http://www.dicio.com.br")
     math_url: Optional[str] = os.environ.get("API_MATH_URL", "https://api.mathjs.org/v4")
     translate_url: Optional[str] = os.environ.get("API_TRANSLATE_URL")
     twitch_url: Optional[str] = os.environ.get("API_TWITCH_URL", "http://decapi.me/twitch")
