@@ -15,11 +15,10 @@ class Suggest(Base, TimestampMixin, ContentMixin):
 
 @signals.post_save(Suggest)
 async def new_suggest(sender, instance, created, using_db, update_fields):
-    await Webhook.send(
-        "suggestions",
+    await Webhook.suggestions(
         id=instance.id,
         content=instance.content,
         author=instance.name,
         channel=instance.channel,
-        timestamp=instance.updated_at.strftime(Webhook.timestamp_format),
+        timestamp=instance.updated_at,
     )

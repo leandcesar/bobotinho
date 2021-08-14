@@ -43,5 +43,5 @@ class InvalidName(BobotinhoException):
 
 
 class WebhookUrlNotDefined(RequestException):
-    def __init__(self) -> None:
-        super().__init__("<BOT_WEBHOOK_URL> not defined, webhook not sent.")
+    def __init__(self, resource: str) -> None:
+        super().__init__(f"{resource} webhook URL not defined, webhook not sent.")

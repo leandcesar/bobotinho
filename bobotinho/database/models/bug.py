@@ -15,11 +15,10 @@ class Bug(Base, TimestampMixin, ContentMixin):
 
 @signals.post_save(Bug)
 async def new_bug(sender, instance, created, using_db, update_fields):
-    await Webhook.send(
-        "bugs",
+    await Webhook.bugs(
         id=instance.id,
         content=instance.content,
         author=instance.name,
         channel=instance.channel,
-        timestamp=instance.updated_at.strftime(Webhook.timestamp_format),
+        timestamp=instance.updated_at,
     )

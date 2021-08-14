@@ -14,9 +14,13 @@ class Config:
     site_url: Optional[str] = os.environ.get("BOT_SITE_URL")
     ai_url: Optional[str] = os.environ.get("BOT_AI_URL")
     ai_key: Optional[str] = os.environ.get("BOT_AI_KEY")
-    webhook_url: Optional[str] = os.environ.get("BOT_WEBHOOK_URL")
+    bugs_webhook_url: Optional[str] = os.environ.get("DISCORD_WEBHOOK_BUGS")
+    suggestions_webhook_url: Optional[str] = os.environ.get("DISCORD_WEBHOOK_SUGGESTIONS")
     host: Optional[str] = os.environ.get("HOST")
     port: Optional[str] = os.environ.get("PORT")
+    color_bot: str = os.environ.get("COLOR_BOT", 0x9147FF)
+    color_green: str = os.environ.get("COLOR_BOT", 0x23C552)
+    color_red: str = os.environ.get("COLOR_BOT", 0xF84F31)
 
 
 class ApiConfig:
@@ -30,7 +34,7 @@ class ApiConfig:
     currency_key: Optional[str] = os.environ.get("API_CURRENCY_KEY")
     dicio_url: Optional[str] = os.environ.get("API_DICIO_URL", "http://www.dicio.com.br")
     math_url: Optional[str] = os.environ.get("API_MATH_URL", "https://api.mathjs.org/v4")
-    translate_url: Optional[str] = os.environ.get("API_TRANSLATE_URL")
+    translate_url: Optional[str] = os.environ.get("API_TRANSLATE_URL", "https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute")
     twitch_url: Optional[str] = os.environ.get("API_TWITCH_URL", "http://decapi.me/twitch")
     weather_key: Optional[str] = os.environ.get("API_WEATHER_KEY")
 
