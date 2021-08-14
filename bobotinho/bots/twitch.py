@@ -70,15 +70,14 @@ class TwitchBot(Bot):
         self.channels: dict = {}
         self.cache: object = None
 
-    async def connect(self) -> None:
-        await self._connection._connect()
-        for routine in self.routines:
-            routine.start(self)
+    async def start(self) -> None:
+        await self.connect()
+        await self.join_all_channels()
+        await self.fetch_blocked()
 
-    async def close(self) -> None:
-        for routine in self.routines:
-            routine.stop()
-        await self._connection._close()
+    async def stop(self) -> None:
+        [routine.stop() for routine in self.routines]
+        await self.close()
 
     def add_checks(self) -> None:
         for check in [checks.online, checks.enabled, checks.banword]:
@@ -249,6 +248,7 @@ class TwitchBot(Bot):
         return await self.reply(ctx)
 
     async def event_ready(self) -> None:
+        [routine.start(self) for routine in self.routines]
         log.info(f"{self.nick} | #{len(self.channels)} | {self._prefix}{len(self.commands)}")
 
     async def event_raw_data(self, data) -> None:

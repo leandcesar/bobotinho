@@ -30,13 +30,10 @@ except Exception as e:
     log.warning(e)
     bot.cache = TTLOrderedDict()
 
-
 if __name__ == "__main__":
     try:
         bot.loop.run_until_complete(db.init())
-        bot.loop.run_until_complete(bot.fetch_blocked())
-        bot.loop.run_until_complete(bot.connect())
-        bot.loop.run_until_complete(bot.join_all_channels())
+        bot.loop.run_until_complete(bot.start())
         bot.loop.run_forever()
     except BaseException as e:
         log.exception(e, extra={"locals": locals()})
@@ -45,5 +42,5 @@ if __name__ == "__main__":
         bot.loop.run_until_complete(db.close())
     finally:
         bot.cache.close()
-        bot.loop.run_until_complete(bot.close())
+        bot.loop.run_until_complete(bot.stop())
         bot.loop.close()
