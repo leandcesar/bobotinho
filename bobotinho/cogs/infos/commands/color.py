@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import random
-
 from bobotinho.apis import Color
 from bobotinho.database.models import User
 from bobotinho.utils import convert
@@ -13,8 +11,6 @@ async def command(ctx, arg: str = ""):
     name = convert.str2name(arg, default=ctx.author.name)
     if name == ctx.bot.nick:
         ctx.response = "eu uso a cor #FFFFFF (White)"
-    elif name == "random":
-        ctx.response = f"aqui está uma cor aleatória: #{random.randint(0, 0xFFFFFF):06X}"
     elif not (user := await User.get_or_none(name=name)):
         ctx.response = f"@{name} ainda não foi registrado (não usou nenhum comando)"
     elif arg and not user.mention:
