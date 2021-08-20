@@ -1,4 +1,11 @@
-[![CI](https://github.com/leandcesar/bobotinho-bot/workflows/CI/badge.svg)](https://github.com/leandcesar/bobotinho-bot/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org) [![License](https://img.shields.io/badge/license-AGPL%20v3-lightgray.svg)](https://github.com/leandcesar/bobotinho/blob/master/LICENSE) [![Black](https://img.shields.io/badge/style-black-000000.svg)](https://github.com/psf/black) [![Website](https://img.shields.io/badge/invite-website-9147ff.svg)](https://bobotinho.vercel.app) [![Discord](https://img.shields.io/discord/785177386638901250?color=%237289DA&label=discord&logo=discord&logoColor=white)](https://discord.gg/6Ue66Vs5eQ)
+[![build](https://github.com/leandcesar/bobotinho-bot/workflows/CI/badge.svg)](https://github.com/leandcesar/bobotinho-bot/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/leandcesar/bobotinho-bot/branch/master/graph/badge.svg)](https://codecov.io/gh/leandcesar/bobotinho-bot)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org)
+[![License](https://img.shields.io/badge/license-AGPL%20v3-lightgray.svg)](https://github.com/leandcesar/bobotinho/blob/master/LICENSE)
+[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Website](https://img.shields.io/badge/invite-website-9147ff.svg)](https://bobotinho.vercel.app)
+[![Discord](https://img.shields.io/discord/785177386638901250?color=%237289DA&label=discord&logo=discord&logoColor=white)](https://discord.gg/6Ue66Vs5eQ)
+[![Twitter](https://img.shields.io/twitter/follow/bobotinho?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=bobotinho)
 
 # Bobotinho
 Main repository for the chatbot Bobotinho.
@@ -7,13 +14,25 @@ Main repository for the chatbot Bobotinho.
 Twitch chatbot with entertainment commands.
 
 ### ‎💻 Technologies
-- [**asyncio**](https://docs.python.org/3/library/asyncio.html)
-- [**AIOHTTP**](https://docs.aiohttp.org/en/stable/)
-- [**PostgreSQL**](https://www.postgresql.org/)
-- [**Redis**](https://redis.io/)
-- [**TwitchIO 2**](https://twitchio.readthedocs.io/en/latest/index.html)
-- [**Tortoise ORM**](https://tortoise-orm.readthedocs.io/en/latest/)
+- Concurrent code with [**asyncio**](https://docs.python.org/3/library/asyncio.html)
+- Asynchronous HTTP Client/Server with [**AIOHTTP**](https://docs.aiohttp.org/en/stable/)
+- Relational Database with [**PostgreSQL**](https://www.postgresql.org/)
+- In-memory data structure store with [**Redis**](https://redis.io/)
+- Asynchronous ORM (Object Relational Mapper) with [**Tortoise**](https://tortoise-orm.readthedocs.io/)
+- Asynchronous wrapper around the Twitch API with [**TwitchIO 2**](https://twitchio.readthedocs.io/en/latest/index.html)
 
+### 📊 Services
+- Application stability monitor with [**Bugsnag**](https://www.bugsnag.com/)
+- Chatbot Analytics with [**Dashbot**](https://www.dashbot.io/)
+- Uptime monitoring service with [**UptimeRobot**](https://uptimerobot.com/)
+- Coverage reports with [**Codecov**](https://about.codecov.io/)
+
+### ‎🧰 Dev tools
+- Code formatter with [**Black**](https://github.com/psf/black)
+- Style guide with [**flake8**](https://flake8.pycqa.org/en/latest/)
+- Run containers with [**Docker**](https://www.docker.com/) and [**Docker Compose**](https://docs.docker.com/compose/)
+- Run GitHub Actions locally with [**act**](https://github.com/nektos/act)
+- Pre-commit hooks with [**pre-commit**](https://pre-commit.com/)
 
 ## 🏁 Getting Started
 It is assumed that you have:
