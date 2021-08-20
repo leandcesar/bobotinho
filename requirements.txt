@@ -1,21 +1,14 @@
-# bobotinho/
+# bot
 aiohttp==3.7.4
 bugsnag==4.0.3
 redis==3.5.3
 git+git://github.com/leandcesar/TwitchIO.git@master#egg=TwitchIO
-# bobotinho/apis/
+# apis
 pyowm==2.10.0
-# bobotinho/database/
+# database
 asyncpg==0.22.0
 tortoise-orm==0.17.2
-# bobotinho/utils/
+# utils
 emoji==1.2.0
 python-dateutil==2.8.1
 Unidecode==1.1.1
-# tests/
-asynctest==0.13.0
-pytest==6.2.2
-pytest-asyncio==0.14.0
-pytest-cov==2.11.1
-pytest-env==0.6.2
-pytest-mock==3.5.1
