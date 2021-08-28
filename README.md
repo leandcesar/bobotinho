@@ -1,13 +1,10 @@
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg?logo=python)](https://www.python.org)
+[![License](https://img.shields.io/badge/license-AGPL%20v3-yellow.svg)](https://github.com/leandcesar/bobotinho/blob/master/LICENSE)
+[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![build](https://github.com/leandcesar/bobotinho-bot/workflows/CI/badge.svg)](https://github.com/leandcesar/bobotinho-bot/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/leandcesar/bobotinho-bot/branch/master/graph/badge.svg)](https://codecov.io/gh/leandcesar/bobotinho-bot)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-AGPL%20v3-lightgray.svg)](https://github.com/leandcesar/bobotinho/blob/master/LICENSE)
-[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Website](https://img.shields.io/badge/invite-website-9147ff.svg)](https://bobotinho.vercel.app)
-[![Discord](https://img.shields.io/discord/785177386638901250?color=%237289DA&label=discord&logo=discord&logoColor=white)](https://discord.gg/6Ue66Vs5eQ)
-[![Twitter](https://img.shields.io/twitter/follow/bobotinho?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=bobotinho)
 
-# Bobotinho
+# Bobotinho Bot
 Main repository for the chatbot Bobotinho.
 
 ## ℹ️ Introduction
@@ -111,4 +108,4 @@ $ docker-compose up --build
 
 ### 🎉 Use
 
-Go to Twitch channel set on `OWNER_NAME` and send `%ping`.
+Go to twitch.tv/`OWNER_NAME` and send `%ping`.
