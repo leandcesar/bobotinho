@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
 
-from bobotinho.cogs.cookies import resetting_daily
 from bobotinho.database.models import Cookie
 
 description = "Aposte um cookie para ter x chance de ganhar outros"
@@ -9,9 +8,6 @@ aliases = ["sm"]
 
 
 async def command(ctx):
-    if resetting_daily():
-        ctx.response = "a fornada de cookies está sendo preparada, aguarde"
-        return
     cookie, _ = await Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
     if cookie.daily >= 1:
         x, y, z = random.choices("🍇🍊🍋🍒🍉🍐", k=3)

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from bobotinho.cogs.cookies import resetting_daily
 from bobotinho.database.models import Cookie
 from bobotinho.utils import convert
 
@@ -8,9 +7,6 @@ description = "Coma um biscoito da sorte e receba uma frase"
 
 
 async def command(ctx, arg: str = ""):
-    if resetting_daily():
-        ctx.response = "a fornada de cookies está sendo preparada, aguarde"
-        return
     amount = convert.str2int(arg) or 1
     cookie, _ = await Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
     if amount == 0:

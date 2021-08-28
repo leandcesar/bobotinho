@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from bobotinho.cogs.cookies import resetting_daily
 from bobotinho.database.models import Cookie, User
 from bobotinho.utils import convert
 
@@ -9,9 +8,6 @@ usage = "digite o comando e o nome de alguém para presenteá-lo com seu cookie"
 
 
 async def command(ctx, arg: str):
-    if resetting_daily():
-        ctx.response = "a fornada de cookies está sendo preparada, aguarde"
-        return
     name = convert.str2name(arg)
     cookie_from, _ = await Cookie.get_or_create(id=ctx.author.id, name=ctx.author.name)
     if name == ctx.bot.nick:
