@@ -3,7 +3,7 @@ from bobotinho import log
 from bobotinho.database.models import Channel, User
 from bobotinho.utils import convert
 
-delta = 30
+delta = 10
 
 
 async def routine(bot) -> None:
@@ -14,7 +14,7 @@ async def routine(bot) -> None:
         try:
             new_channel = convert.str2dict(new_channel)
             user, _ = await User.update_or_create(
-                id=new_channel["id"], defaults={"name": new_channel["name"]}
+                id=int(new_channel["id"]), defaults={"name": new_channel["name"]}
             )
             channel, _ = await Channel.update_or_create(
                 user_id=user.id, defaults={"followers": new_channel["followers"]}
