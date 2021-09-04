@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from bobotinho import log
 
-delta = 60
+delta = 30
 
 
 async def routine(bot) -> None:

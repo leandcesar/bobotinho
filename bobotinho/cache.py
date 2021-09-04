@@ -61,6 +61,11 @@ class TTLOrderedDict(OrderedDict):
         except KeyError:
             return default
 
+    def getset(self, key: str, value: Any) -> Any:
+        current_value = self.get(key)
+        self.set(key, value)
+        return current_value
+
     def delete(self, key: str) -> None:
         self.__delitem__(key)
 

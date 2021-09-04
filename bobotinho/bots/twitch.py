@@ -72,7 +72,7 @@ class TwitchBot(Bot):
 
     async def start(self) -> None:
         await self.connect()
-        await self.join_all_channels()
+        await self.add_all_channels()
         await self.fetch_blocked()
 
     async def stop(self) -> None:
@@ -156,20 +156,28 @@ class TwitchBot(Bot):
             if "routines" in paths:
                 self.load_routines(os.path.join(base, cog, "routines"))
 
-    async def join_all_channels(self) -> None:
-        self.channels = {
-            channel.user.name: {
-                "id": channel.user_id,
-                "banwords": list(channel.banwords.keys()),
-                "disabled": list(channel.disabled.keys()),
-                "online": channel.online,
+    def add_channel(self, name, id, banwords=[], disabled=[], online=True) -> None:
+        if name in self.channels:
+            log.warning(f"'{name}' already added")
+        else:
+            self.channels[name] = {
+                "id": id, "banwords": banwords, "disabled": disabled, "online": online
             }
-            for channel in await Channel.all().select_related("user")
-            if not channel.user.block
-        } or {
-            self.owner.lower(): {"id": 0, "banwords": [], "disabled": [], "online": True}
-        }
-        await self.join_channels(list(self.channels))
+
+    async def add_all_channels(self) -> None:
+        channels = await Channel.all().select_related("user")
+        if not channels:
+            self.add_channel(self.owner.lower(), 0)
+        for channel in channels:
+            if channel.user.block:
+                continue
+            self.add_channel(
+                channel.user.name,
+                channel.user_id,
+                list(channel.banwords.keys()),
+                list(channel.disabled.keys()),
+                channel.online,
+            )
 
     async def fetch_blocked(self) -> None:
         self.blocked = await User.filter(block=True).all().values_list("id", flat=True)

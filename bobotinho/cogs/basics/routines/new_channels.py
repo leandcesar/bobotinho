@@ -1,31 +1,30 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Channel
 from bobotinho import log
+from bobotinho.database.models import Channel, User
+from bobotinho.utils import convert
 
-delta = 60
+delta = 30
 
 
 async def routine(bot) -> None:
-    channels_id = [channel["id"] for channel in bot.channels.values()]
-    channels = await Channel.filter(user_id__not_in=channels_id).all()
-    for channel in channels:
-        await channel.fetch_related("user")
-        if channel.user.name in bot.channels:
-            log.warning(f"Channel already added: <{channel}>")
-            continue
+    new_channels = bot.cache.getset("new-channels", "")
+    if not new_channels:
+        return
+    for new_channel in new_channels.split("\n"):
         try:
-            await bot.join_channels([channel.user.name])
-            bot.channels[channel.user.name] = {
-                "id": channel.user_id,
-                "banwords": list(channel.banwords.keys()),
-                "disabled": list(channel.disabled.keys()),
-                "online": channel.online,
-            }
-            response = (
-                f"@{channel.user.name}, obrigado por me adicionar, "
-                f'veja meus comandos com "{bot._prefix}help"'
+            new_channel = convert.str2dict(new_channel)
+            user, _ = await User.update_or_create(
+                id=new_channel["id"], defaults={"name": new_channel["name"]}
             )
-            await bot.create_user(channel.user.id, channel.user.name).channel.send(response)
-            log.info(f"#{channel.user.name} @{bot.nick}: {response}")
+            channel, _ = await Channel.update_or_create(
+                user_id=user.id, defaults={"followers": new_channel["followers"]}
+            )
+            bot.add_channel(
+                user.name,
+                user.id,
+                list(channel.banwords.keys()),
+                list(channel.disabled.keys()),
+                channel.online,
+            )
         except Exception as e:
             log.exception(e, extra={"locals": locals()})
