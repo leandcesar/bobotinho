@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-description = "Receba o link das novidades de atualizações do bot"
+description = "Saiba as novidades e atualizações do bot"
 
 
 async def command(ctx):
-    ctx.response = f"veja as últimas atualizações: {ctx.bot.site}/blog/tags/news"
+    ctx.response = "para acompanhar todas as novidades, entre no servidor do Discord"

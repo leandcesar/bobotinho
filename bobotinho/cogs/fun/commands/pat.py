@@ -10,6 +10,6 @@ async def command(ctx, arg: str):
     if name == ctx.bot.nick:
         ctx.response = "😊"
     elif name == ctx.author.name:
-        ctx.response = "você tentou fazer cafuné em si memso... FeelsBadMan"
+        ctx.response = "você tentou fazer cafuné em si mesmo... FeelsBadMan"
     else:
         ctx.response = f"você fez cafuné em @{name} 😊"
