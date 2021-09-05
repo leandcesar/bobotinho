@@ -20,10 +20,10 @@ async def command(ctx, arg: str = ""):
     elif "is offline" in uptime:
         ctx.response = f"{mention} está offline"
     elif (game := await Twitch.game(name)) and title:
-        ctx.response = f"{mention} está streamando {game}: {title}"
+        ctx.response = f"{mention} está streamando {game}: {title} ({uptime})"
     elif title:
-        ctx.response = f"{mention} está online: {title}"
+        ctx.response = f"{mention} está online: {title} ({uptime})"
     elif game:
-        ctx.response = f"{mention} está streamando {game}"
+        ctx.response = f"{mention} está streamando {game} ({uptime})"
     else:
-        ctx.response = f"{mention} está online"
+        ctx.response = f"{mention} está online ({uptime})"
