@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-description = "Veja a lista de comandos"
+description = "Receba o link da lista de comandos ou veja como utilizar um comando específico"
 aliases = ["commands"]
 
 

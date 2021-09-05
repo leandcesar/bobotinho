@@ -3,7 +3,7 @@ import random
 
 from bobotinho.database.models import Cookie
 
-description = "Aposte um cookie para ter x chance de ganhar outros"
+description = "Aposte seu cookie diário para ter a chance de ganhar outros"
 aliases = ["sm"]
 
 

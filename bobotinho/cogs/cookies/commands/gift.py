@@ -2,7 +2,7 @@
 from bobotinho.database.models import Cookie, User
 from bobotinho.utils import convert
 
-description = "Presenteie algum usuário com seu cookie"
+description = "Presenteie algum usuário com seu cookie diário"
 aliases = ["give"]
 usage = "digite o comando e o nome de alguém para presenteá-lo com seu cookie"
 

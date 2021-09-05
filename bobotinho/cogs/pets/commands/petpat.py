@@ -2,7 +2,7 @@
 from bobotinho.cogs.pets import join_pets
 from bobotinho.database.models import Pet
 
-description = "Faça carinho no seu pet"
+description = "Faça carinho nos seus pets"
 
 
 async def command(ctx):

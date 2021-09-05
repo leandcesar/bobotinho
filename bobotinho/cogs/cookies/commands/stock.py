@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from bobotinho.database.models import Cookie
 
-description = "Estoque o seu cookie diário caso não queira comê-lo"
+description = "Estoque o seu cookie diário, caso não queira usá-lo"
 
 
 async def command(ctx):

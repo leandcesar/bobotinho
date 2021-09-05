@@ -2,7 +2,7 @@
 from bobotinho.database.models import User
 from bobotinho.utils import convert, timetools
 
-description = "Saiba a última vez que alguém foi visto"
+description = "Saiba a última vez que algum usuário foi visto"
 aliases = ["ls"]
 usage = "digite o comando e o nome de alguém para saber quando foi visto pela última vez"
 

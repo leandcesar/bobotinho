@@ -3,6 +3,7 @@ from bobotinho.apis import Twitch
 from bobotinho.utils import convert
 
 description = "Receba o link da foto de perfil de algum usuário"
+aliases = ["icon"]
 usage = "digite o comando e o nome de alguém para receber o link da foto de perfil"
 
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.cogs.status import afks
+from bobotinho.cogs.tools import afks
 from bobotinho.database.models import Afk
 from bobotinho.utils import convert
 

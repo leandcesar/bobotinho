@@ -3,7 +3,7 @@ from bobotinho.database.models import Cookie
 from bobotinho.utils import convert
 
 FILENAME = "bobotinho//data//cookies.txt"
-description = "Coma um biscoito da sorte e receba uma frase"
+description = "Coma um cookie e receba uma frase da sorte"
 
 
 async def command(ctx, arg: str = ""):
