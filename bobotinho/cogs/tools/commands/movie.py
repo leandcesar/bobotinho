@@ -3,7 +3,7 @@ import random
 
 from bobotinho.apis import Movie
 
-description = "Recebe informações ou sugestões de filme, e até onde assistí-lo"
+description = "Receba informações ou sugestões de filme, e até onde assistí-lo"
 usage = "digite o comando e alguma tag: top, trend, popular, ou o nome de um filme"
 
 

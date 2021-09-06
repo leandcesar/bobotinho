@@ -3,7 +3,7 @@ import random
 
 from bobotinho.apis import Tv
 
-description = "Recebe informações ou sugestões de uma série, e até onde assistí-la"
+description = "Receba informações ou sugestões de uma série, e até onde assistí-la"
 usage = "digite o comando e alguma tag: top, trend, popular, ou o nome de uma série"
 
 

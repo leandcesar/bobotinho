@@ -14,7 +14,7 @@ class Tv:
         16: "quer uma bela animação?",
         18: "drama sempre cai bem:",
         27: "é hora do terror:",
-        28: "experimetne um pouco de ação:",
+        28: "experimente um pouco de ação:",
         35: "relaxe com uma boa comédia:",
         36: "você gosta de História?",
         37: "bang bang! Reviva o faroeste:",
