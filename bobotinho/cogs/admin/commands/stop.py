@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from bobotinho.database.models import Channel
-from bobotinho.utils import roles
 
 description = "Pause o bot"
-extra_checks = [roles.mod]
+extra_checks = ["Role.admin"]
 
 
 async def command(ctx):

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from bobotinho.cogs.tools import afks
 from bobotinho.database.models import Afk
-from bobotinho.utils import checks
 
 description = "Informe que você está se ausentando do chat"
 aliases = list(afks.keys())[1:]
-extra_checks = [checks.allowed, checks.banword]
+extra_checks = ["Check.allowed", "Check.banword"]
 
 
 async def command(ctx, *, content: str = ""):

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from bobotinho.database.models import Channel
-from bobotinho.utils import checks, convert, roles
+from bobotinho.utils import convert
 
 aliases = ["bw"]
 description = "Adicione ou remova um termo banido"
 usage = 'digite o comando, "+" (para adicionar) ou "-" (para remover) e o termo'
-extra_checks = [checks.online, roles.mod]
+extra_checks = ["Check.online", "Role.admin"]
 no_global_checks = True
 
 
