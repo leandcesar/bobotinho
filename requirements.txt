@@ -1,15 +1,15 @@
 # bot
-aiocache[memcached]==0.11.1
+aiocache==0.11.1
 aiohttp==3.7.4
 bugsnag==4.0.3
 redis==3.5.3
-git+git://github.com/leandcesar/TwitchIO.git@master#egg=TwitchIO
+twitchio==2.0.6
 # apis
 pyowm==2.10.0
 # database
 asyncpg==0.22.0
 tortoise-orm==0.17.7
 # utils
-emoji==1.2.0
-python-dateutil==2.8.1
-Unidecode==1.1.1
+emoji==1.4.2
+python-dateutil==2.8.2
+Unidecode==1.3.0
