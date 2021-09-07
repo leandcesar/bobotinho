@@ -5,7 +5,7 @@ bugsnag==4.0.3
 redis==3.5.3
 twitchio==2.0.6
 # apis
-pyowm==2.10.0
+pyowm==3.2.0
 # database
 asyncpg==0.22.0
 tortoise-orm==0.17.7
