@@ -85,3 +85,7 @@ def str2name(target: str, default: Optional[str] = None) -> Optional[str]:
         if target.replace("_", "").isalnum() and unidecode(target) == target:
             return target.lower()
     raise InvalidName()
+
+
+def str2url(target: str) -> Optional[str]:
+    return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", target)

@@ -31,7 +31,7 @@ from bobotinho.exceptions import (
     InvalidName,
     UserIsNotAllowed,
 )
-from bobotinho.utils import checks
+from bobotinho.utils import convert
 
 DEFAULT_COOLDOWN_RATE = 2
 DEFAULT_COOLDOWN_PER = 5
@@ -51,6 +51,77 @@ class Ctx(Context):
         yield "user", getattr(self.user, "id", None)
         yield "message", getattr(self.message, "content", None)
         yield "response", self.response
+
+
+class Role:
+    @staticmethod
+    def master(ctx: Ctx) -> bool:
+        return ctx.author.name == ctx.bot.owner
+
+    @staticmethod
+    def owner(ctx: Ctx) -> bool:
+        return ctx.author.name == ctx.channel.name
+
+    @staticmethod
+    def admin(ctx: Ctx) -> bool:
+        return ctx.author.is_mod or Role.owner(ctx) or Role.master(ctx)
+
+    @staticmethod
+    def vip(ctx: Ctx) -> bool:
+        return bool(ctx.author.badges.get("vip"))
+
+    @staticmethod
+    def sub(ctx: Ctx) -> bool:
+        return ctx.author.is_subscriber
+
+    @staticmethod
+    def sponsor(ctx) -> bool:
+        return ctx.user and ctx.user.sponsor
+
+    @staticmethod
+    def any(ctx: Ctx) -> bool:
+        return any(
+            [
+                Role.sub(ctx),
+                Role.vip(ctx),
+                Role.admin(ctx),
+                Role.owner(ctx),
+                Role.master(ctx),
+                Role.sponsor(ctx),
+            ]
+        )
+
+
+class Check:
+    @staticmethod
+    def allowed(ctx: Ctx) -> bool:
+        if not Role.any(ctx) and convert.str2url(ctx.message.content) is not None:
+            raise UserIsNotAllowed(channel=ctx.channel.name, user=ctx.author.name)
+        return True
+
+    @staticmethod
+    def banword(ctx: Ctx) -> bool:
+        if any(word in ctx.message.content for word in ctx.bot.channels[ctx.channel.name]["banwords"]):
+            raise ContentHasBanword(channel=ctx.channel.name, content=ctx.message.content)
+        return True
+
+    @staticmethod
+    def enabled(ctx: Ctx) -> bool:
+        if ctx.command.name in ctx.bot.channels[ctx.channel.name]["disabled"]:
+            raise CommandIsDisabled(channel=ctx.channel.name, command=ctx.command.name)
+        return True
+
+    @staticmethod
+    def game(ctx: Ctx) -> bool:
+        if ctx.bot.cache.get(f"game-{ctx.channel.name}"):
+            raise GameIsAlreadyRunning(channel=ctx.channel.name, command=ctx.command.name)
+        return True
+
+    @staticmethod
+    def online(ctx: Ctx) -> bool:
+        if not ctx.bot.channels[ctx.channel.name]["online"]:
+            raise BotIsOffline(channel=ctx.channel.name)
+        return True
 
 
 class TwitchBot(Bot):
@@ -80,8 +151,8 @@ class TwitchBot(Bot):
         await self.close()
 
     def add_checks(self) -> None:
-        for check in [checks.online, checks.enabled, checks.banword]:
-            self.check(check)
+        global_checks = [Check.online, Check.enabled, Check.banword]
+        [self.check(check) for check in global_checks]
 
     def load_commands(self, path: str) -> None:
         for filename in os.listdir(path):
@@ -100,7 +171,8 @@ class TwitchBot(Bot):
                         cooldown.get("bucket", DEFAULT_COOLDOWN_BUCKET),
                     )
                 ]
-                module.command.__checks__: list = getattr(module, "extra_checks", [])
+                extra_checks: list = getattr(module, "extra_checks", [])
+                module.command.__checks__ = [eval(check) for check in extra_checks]
                 command: Command = Command(
                     name=getattr(module, "name", filename[:-3]),
                     func=module.command,

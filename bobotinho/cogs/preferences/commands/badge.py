@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from bobotinho.utils import convert, roles
+from bobotinho.utils import convert
 
 description = "Defina a sua badge de apoiador"
 usage = "digite o comando e um emoji que quiser usar como badge"
-extra_checks = [roles.sponsor]
+extra_checks = ["Role.sponsor"]
 
 
 async def command(ctx, arg: str):

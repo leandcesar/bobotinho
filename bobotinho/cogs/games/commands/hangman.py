@@ -2,11 +2,11 @@
 import re
 from asyncio.exceptions import TimeoutError
 
-from bobotinho.utils import checks, convert, roles
+from bobotinho.utils import convert
 
 aliases = ["hm"]
 description = "Jogo da forca, descubra a palavra em até 5 tentativas e 2 minutos"
-extra_checks = [roles.mod, checks.game]
+extra_checks = ["Role.admin", "Check.game"]
 
 
 async def command(ctx):

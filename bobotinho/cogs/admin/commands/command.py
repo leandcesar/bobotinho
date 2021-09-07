@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from bobotinho.database.models import Channel
-from bobotinho.utils import convert, roles
+from bobotinho.utils import convert
 
 aliases = ["cmd"]
 description = "Ative ou desative um comando"
 usage = 'digite o comando, "+" (para ativar) ou "-" (para desativar) e o nome de um comando'
-extra_checks = [roles.mod]
+extra_checks = ["Role.admin"]
 
 
 async def command(ctx, arg1: str, arg2: str):

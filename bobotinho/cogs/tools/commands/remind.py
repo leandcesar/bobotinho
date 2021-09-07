@@ -4,12 +4,12 @@ from dateutil.relativedelta import relativedelta
 
 from bobotinho.database.base import timezone
 from bobotinho.database.models import Reminder, User
-from bobotinho.utils import checks, convert, timetools
+from bobotinho.utils import convert, timetools
 
 aliases = ["remindme"]
 description = "Deixe um lembrete para algum usuário"
 usage = "digite o comando, o nome de alguém e uma mensagem para deixar um lembrete"
-extra_checks = [checks.allowed, checks.banword]
+extra_checks = ["Check.allowed", "Check.banword"]
 
 
 async def command(ctx, arg: str, *, content: str = ""):

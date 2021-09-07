@@ -2,11 +2,11 @@
 from asyncio.exceptions import TimeoutError
 
 from bobotinho.apis import Dicio
-from bobotinho.utils import checks, convert, roles
+from bobotinho.utils import convert
 
 aliases = ["mw"]
 description = "Jogo de mais palavras com determinada sílaba, dura 30 segundas"
-extra_checks = [roles.mod, checks.game]
+extra_checks = ["Role.admin", "Check.game"]
 
 
 async def command(ctx):
