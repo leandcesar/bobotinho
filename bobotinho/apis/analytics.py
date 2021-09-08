@@ -7,37 +7,43 @@ class Analytics:
     key = config.analytics_key
 
     @classmethod
-    async def request(cls, type: str, loop, **kwargs):
+    async def request(cls, type: str, **kwargs):
         url = f"{cls.base_url}?v=11.1.0-rest&platform=universal&apiKey={cls.key}&type={type}"
         data = {
-            "text": kwargs["text"],
+            "text": kwargs["content"],
             "userId": kwargs["id"],
-            "intent": {"name": kwargs.get("intent"), "confidence": kwargs.get("confidence")},
-            "platformUserJson": {"firstName": kwargs.get("name")},
-            "platformJson": {"source": "Twitch", "channel": kwargs.get("channel")},
+            "intent": {
+                "name": kwargs.get("intent"),
+                "confidence": kwargs.get("confidence"),
+            },
+            "platformUserJson": {
+                "firstName": kwargs.get("author"),
+                "locale": kwargs.get("source"),
+                "plataform": kwargs.get("plataform"),
+            },
         }
-        await aiorequests.post(url, json=data, wait_response=False, loop=loop)
+        await aiorequests.post(url, json=data, wait_response=False)
 
     @classmethod
-    async def received(cls, loop, ctx) -> None:
+    async def received(cls, ctx) -> None:
         await cls.request(
             "incoming",
-            loop,
             id=ctx.author.id,
-            text=ctx.message.content,
-            name=ctx.author.name,
-            channel=ctx.channel.name,
+            content=ctx.message.content,
+            author=ctx.author.name,
+            source=ctx.channel.name,
+            plataform=ctx.bot.plataform,
         )
 
     @classmethod
-    async def sent(cls, loop, ctx) -> None:
+    async def sent(cls, ctx) -> None:
         await cls.request(
             "outgoing",
-            loop,
             id=ctx.author.id,
-            text=ctx.response,
-            name=ctx.author.name,
-            channel=ctx.channel.name,
+            content=ctx.response,
+            author=ctx.author.name,
+            source=ctx.channel.name,
+            plataform=ctx.bot.plataform,
             intent=ctx.prediction.get("intent"),
             confidence=ctx.prediction.get("confidence"),
         )
