@@ -6,18 +6,15 @@ from bobotinho.exceptions import WebhookUrlNotDefined
 
 class Webhook:
     @classmethod
-    async def send(cls, url, resource: str, title: str, **kwargs) -> None:
-        if not url:
-            WebhookUrlNotDefined(resource)
+    async def send(cls, url, **kwargs) -> None:
         data: dict = discord.embed(
             {
-                "title": title,
+                "title": kwargs["title"],
                 "description": kwargs["content"],
                 "color": config.color_bot,
-                "author_name": "@{user}".format(user=kwargs["author"]),
-                "author_url": "https://twitch.tv/{user}".format(user=kwargs["author"]),
-                "footer_text": "@{user}".format(user=kwargs["channel"]),
-                "timestamp": kwargs["timestamp"].strftime(discord.timestamp_format),
+                "author_name": kwargs["author"],
+                "footer_text": kwargs["source"],
+                "timestamp": kwargs["timestamp"],
             }
         )
         await aiorequests.post(url, json=data, wait_response=False)
@@ -25,11 +22,17 @@ class Webhook:
     @classmethod
     async def suggestions(cls, **kwargs) -> None:
         url: str = config.suggestions_webhook_url
-        title: str = "Sugestão #{id:04}".format(id=kwargs.pop("id"))
-        await cls.send(url, resource="suggestions", title=title, **kwargs)
+        if not url:
+            raise WebhookUrlNotDefined("suggestions")
+        id: int = kwargs.pop("id")
+        title: str = f"Sugestão #{id:04}"
+        await cls.send(url, title=title, **kwargs)
 
     @classmethod
     async def bugs(cls, **kwargs) -> None:
         url: str = config.bugs_webhook_url
-        title: str = "Bug #{id:04}".format(id=kwargs.pop("id"))
-        await cls.send(url, resource="bugs", title=title, **kwargs)
+        if not url:
+            raise WebhookUrlNotDefined("bugs")
+        id: int = kwargs.pop("id")
+        title: str = f"Bug #{id:04}"
+        await cls.send(url, title=title, **kwargs)

@@ -6,8 +6,8 @@ from bobotinho.webhook import Webhook
 
 
 class Bug(Base, TimestampMixin, ContentMixin):
-    name = fields.CharField(max_length=64, description="Twitch username")
-    channel = fields.CharField(max_length=64, description="Twitch username")
+    author = fields.CharField(max_length=64)
+    source = fields.CharField(max_length=64)
 
     class Meta:
         table = "bug"
@@ -18,7 +18,7 @@ async def new_bug(sender, instance, created, using_db, update_fields):
     await Webhook.bugs(
         id=instance.id,
         content=instance.content,
-        author=instance.name,
-        channel=instance.channel,
+        author=instance.author,
+        source=instance.source,
         timestamp=instance.updated_at,
     )

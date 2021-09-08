@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-timestamp_format: str = "%Y-%m-%dT%H:%M:%SZ"
-
 
 def embed(data: dict) -> dict:
     return {
@@ -21,7 +19,11 @@ def embed(data: dict) -> dict:
                     "text": data.get("footer_text"),
                     "icon_url": data.get("footer_icon_url"),
                 },
-                "timestamp": data.get("timestamp"),
+                "timestamp": (
+                    data["timestamp"].strftime("%Y-%m-%dT%H:%M:%SZ")
+                    if data.get("timestamp")
+                    else None
+                ),
             }
         ]
     }
