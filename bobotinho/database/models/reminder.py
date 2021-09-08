@@ -12,5 +12,5 @@ class Reminder(Base, TimestampMixin, ContentMixin):
         table = "reminder"
 
     @property
-    def scheduled_ago(self):
+    def scheduled_to(self):
         return self.scheduled_for - timezone.now()

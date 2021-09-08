@@ -17,7 +17,7 @@ async def command(ctx, arg: str = ""):
         ctx.response = "esse usuário optou por não permitir mencioná-lo"
     elif (weddings := await Wedding.find_all(user.id)):
         users = [await wedding.spouse(name) for wedding in weddings]
-        timeago = [timetools.timeago(wedding.created_at) for wedding in weddings]
+        timeago = [timetools.date_in_full(wedding.created_ago) for wedding in weddings]
         if len(weddings) == 1:
             ctx.response = f"{mention} está casado com @{users[0].name} há {timeago[0]}"
         else:
