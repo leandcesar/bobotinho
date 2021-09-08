@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
 from bobotinho.database.base import timezone
@@ -26,7 +25,7 @@ async def command(ctx, arg: str, *, content: str = ""):
         await remind.fetch_related("to_user")
         mention = "você" if remind.to_user.name == ctx.author.name else f"@{remind.to_user.name}"
         if remind.scheduled_for:
-            timestamp = (remind.scheduled_for - timedelta(hours=3)).strftime("%d/%m/%Y às %H:%M:%S")
+            timestamp = timetools.format(remind.scheduled_for)
             ctx.response = f"seu lembrete de ID {remind.id} é para {mention} em {timestamp}: {remind.content}"
         else:
             ctx.response = f"seu lembrete de ID {remind.id} é para {mention}: {remind.content}"
@@ -71,14 +70,14 @@ async def command(ctx, arg: str, *, content: str = ""):
                 content=content,
                 scheduled_for=scheduled_for,
             )
-            if remind.scheduled_ago.total_seconds() < 0:
+            if remind.scheduled_to.total_seconds() < 0:
                 ctx.response = "eu ainda não inventei a máquina do tempo"
-            elif remind.scheduled_ago.total_seconds() < 59:
+            elif remind.scheduled_to.total_seconds() < 59:
                 ctx.response = "o tempo mínimo para lembretes cronometrados é 1 minuto"
             else:
                 await remind.save()
                 mention = "você" if name == ctx.author.name else f"@{name}"
-                timeago = timetools.timeago(timezone.now(), now=scheduled_for)
+                timeago = timetools.date_in_full(remind.scheduled_to)
                 ctx.response = f"{mention} será lembrado disso daqui {timeago} ⏲️ (ID {remind.id})"
     elif match := timetools.find_absolute_time(content):
         match_dict = match.groupdict()
@@ -101,14 +100,14 @@ async def command(ctx, arg: str, *, content: str = ""):
                 content=content,
                 scheduled_for=scheduled_for,
             )
-            if remind.scheduled_ago.total_seconds() < 0:
+            if remind.scheduled_to.total_seconds() < 0:
                 ctx.response = "eu ainda não inventei a máquina do tempo"
-            elif remind.scheduled_ago.total_seconds() < 59:
+            elif remind.scheduled_to.total_seconds() < 59:
                 ctx.response = "o tempo mínimo para lembretes cronometrados é 1 minuto"
             else:
                 await remind.save()
                 mention = "você" if name == ctx.author.name else f"@{name}"
-                timestamp = (scheduled_for - timedelta(hours=3)).strftime("%d/%m/%Y às %H:%M:%S")
+                timestamp = timetools.format(remind.scheduled_for)
                 ctx.response = f"{mention} será lembrado disso em {timestamp} 📅 (ID {remind.id})"
     else:
         remind = await Reminder.create(

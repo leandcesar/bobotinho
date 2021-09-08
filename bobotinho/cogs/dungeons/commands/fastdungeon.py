@@ -17,7 +17,7 @@ async def command(ctx):
             ctx.response = (
                 f'antes de continuar, digite "{ctx.prefix}ed" e sua nova classe: {option1} ou {option2}'
             )
-        elif cooldown := timetools.on_cooldown(player.updated_at, now=ctx.message.timestamp, s=10800):
+        elif cooldown := timetools.on_cooldown(player.updated_ago, s=10800):
             ctx.response = f"aguarde {cooldown} para entrar em outra dungeon ⌛"
         else:
             multiplier = 2 if ctx.user.sponsor else 1

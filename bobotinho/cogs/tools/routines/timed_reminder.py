@@ -26,7 +26,7 @@ async def routine(bot) -> None:
             and bot.channels[channel]["online"]
             and not any(x in content for x in bot.channels[channel]["banwords"])
         ):
-            if (delta := remind.scheduled_ago.total_seconds()) > 0:
+            if (delta := remind.scheduled_to.total_seconds()) > 0:
                 await asyncio.sleep(delta, loop=bot.loop)
             timeago = timetools.date_in_full(remind.created_ago)
             response = f"{remind.to_user}, {mention} deixou um lembrete cronometrado: {content} ({timeago})"

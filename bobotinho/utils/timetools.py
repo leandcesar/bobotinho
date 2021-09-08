@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
-from datetime import datetime, timedelta, timezone
-from typing import Union, Optional
+from datetime import datetime, timedelta
+from typing import Optional
 
 pattern_relative_time = re.compile(
     r"""
@@ -43,13 +43,6 @@ def birthday(target: str) -> Optional[str]:
         return " ".join(target.split()[:2])
 
 
-def clean(target: Union[datetime, timedelta]) -> Union[datetime, str]:
-    if isinstance(target, timedelta):
-        return str(target).split(".")[0]
-    if isinstance(target, datetime):
-        return target.replace(tzinfo=timezone.utc).replace(microsecond=0)
-
-
 def date_in_full(delta: timedelta) -> str:
     y, d = divmod(delta.days, 365)
     M, d = divmod(d, 30)
@@ -80,16 +73,6 @@ def format(target: datetime) -> str:
     return (target - timedelta(hours=3)).strftime("%d/%m/%y às %H:%M:%S")
 
 
-def on_cooldown(target: datetime, now: datetime = None, s: int = 0) -> Optional[timedelta]:
-    now = now or datetime.utcnow()
-    delta = clean(now) - clean(target)
+def on_cooldown(delta: timedelta, s: int = 0) -> Optional[timedelta]:
     if delta.total_seconds() <= s:
         return timedelta(seconds=s) - delta
-
-
-def timeago(target: datetime, now: datetime = None, full: bool = True) -> Union[str, timedelta]:
-    now = now or datetime.utcnow()
-    delta = clean(now) - clean(target)
-    if full:
-        return date_in_full(delta)
-    return delta

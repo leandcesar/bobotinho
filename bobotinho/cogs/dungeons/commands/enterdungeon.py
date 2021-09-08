@@ -36,7 +36,7 @@ async def command(ctx, *, content: str = ""):
                 ctx.response = response
             else:
                 ctx.response = generate_dungeon(player.dungeon)[0]["quote"]
-        elif cooldown := timetools.on_cooldown(player.updated_at, now=ctx.message.timestamp, s=10800):
+        elif cooldown := timetools.on_cooldown(player.updated_ago, s=10800):
             ctx.response = f"aguarde {cooldown} para entrar em outra dungeon ⌛"
         else:
             d, player.dungeon = generate_dungeon()
