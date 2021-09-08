@@ -132,6 +132,7 @@ class TwitchBot(Bot):
             prefix=config.prefix,
             case_insensitive=True,
         )
+        self.plataform = "Twitch"
         self.mentions: bool = config.ai_url and config.ai_key
         self.owner: str = config.owner
         self.site: str = config.site_url
@@ -264,7 +265,7 @@ class TwitchBot(Bot):
             log.error(e, extra={"ctx": dict(ctx)})
         else:
             log.info(f"#{ctx.channel.name} @{self.nick}: {ctx.response}")
-            await Analytics.sent(self.loop, ctx)
+            await Analytics.sent(ctx)
             return True
         return False
 
@@ -277,7 +278,7 @@ class TwitchBot(Bot):
             return False
         if not ctx.prediction:
             log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
-            await Analytics.received(self.loop, ctx)
+            await Analytics.received(ctx)
         if not ctx.user:
             ctx.user, _ = await User.get_or_create(
                 id=ctx.author.id,
@@ -304,7 +305,7 @@ class TwitchBot(Bot):
         if not ctx.message.content.startswith((self.nick, f"@{self.nick}")):
             return False
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
-        await Analytics.received(self.loop, ctx)
+        await Analytics.received(ctx)
         content: str = ctx.message.content.partition(" ")[2]
         prediction: dict = await AI.predict(content)
         intent: str = prediction["intent"]
