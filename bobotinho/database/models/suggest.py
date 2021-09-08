@@ -6,8 +6,8 @@ from bobotinho.webhook import Webhook
 
 
 class Suggest(Base, TimestampMixin, ContentMixin):
-    name = fields.CharField(max_length=64, description="Twitch username")
-    channel = fields.CharField(max_length=64, description="Twitch username")
+    author = fields.CharField(max_length=64)
+    source = fields.CharField(max_length=64)
 
     class Meta:
         table = "suggest"
@@ -18,7 +18,7 @@ async def new_suggest(sender, instance, created, using_db, update_fields):
     await Webhook.suggestions(
         id=instance.id,
         content=instance.content,
-        author=instance.name,
-        channel=instance.channel,
+        author=instance.author,
+        source=instance.source,
         timestamp=instance.updated_at,
     )

@@ -7,8 +7,8 @@ usage = "digite o comando e o bug que você encontrou"
 
 async def command(ctx, *, content: str):
     bug = await Bug.create(
-        name=ctx.author.name,
-        channel=ctx.channel.name,
+        author=ctx.author.name,
+        source=ctx.channel.name,
         content=content,
     )
     ctx.response = f"seu bug foi reportado 🐛 (ID {bug.id})"
