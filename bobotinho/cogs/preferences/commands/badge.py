@@ -11,7 +11,7 @@ async def command(ctx, arg: str):
         ctx.user.badge = ""
         await ctx.user.save()
         ctx.response = "você removeu sua badge de apoiador"
-    elif badge := convert.emoji2str(arg):
-        ctx.user.badge = badge
+    elif convert.emoji2str(arg):
+        ctx.user.badge = arg
         await ctx.user.save()
         ctx.response = "você alterou sua badge de apoiador"
