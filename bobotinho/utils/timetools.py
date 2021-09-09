@@ -5,33 +5,31 @@ from typing import Optional
 
 pattern_relative_time = re.compile(
     r"""
-    (?:in|daqui)\s
-    (\b(?P<years>\d+)\s?(?:anos|ano|a)\b\s?)?
-    (\b(?P<months>\d+)\s?(?:meses|mês|mes)\b\s?)?
-    (\b(?P<weeks>\d+)\s?(?:semanas|semana)\b\s?)?
-    (\b(?P<days>\d+)\s?(?:dias|dia|d)\b\s?)?
-    (\b(?P<hours>\d+)\s?(?:horas|hora|h)\b\s?)?
-    (\b(?P<minutes>\d+)\s?(?:minutos|minuto|min|m)\b\s?)?
-    (\b(?P<seconds>\d+)\s?(?:segundos|segundo|seg|s)\b\s?)?
+    (\b(?P<years>\d+)\s?(?:anos|ano|a|years|year|y)\b\s?)?
+    (\b(?P<months>\d+)\s?(?:meses|mês|mes|months|month|mo)\b\s?)?
+    (\b(?P<weeks>\d+)\s?(?:semanas|semana|weeks|week|w)\b\s?)?
+    (\b(?P<days>\d+)\s?(?:dias|dia|d|days|day)\b\s?)?
+    (\b(?P<hours>\d+)\s?(?:horas|hora|h|hours|hour)\b\s?)?
+    (\b(?P<minutes>\d+)\s?(?:minutos|minuto|min|m|minutes|minute)\b\s?)?
+    (\b(?P<seconds>\d+)\s?(?:segundos|segundo|seg|s|seconds|second|secs|sec)\b\s?)?
     """,
     re.VERBOSE,
 )
 
 pattern_absolute_time_and_date = re.compile(
     r"""
-    (?:on|em)\s
+    (?:\b
+        (?P<day>0?[1-9]|[12][0-9]|3[01])
+        [\/-]
+        (?P<month>0?[1-9]|1[012])
+        (?:[\/-](?P<year>[0-9]{4}))?
+    \b\s?)?
     (?:\b
         (?P<hour>[01]?[0-9]|2[0-3])
         [h:]
         (?P<minute>[0-5][0-9])?
         :?
         (?P<second>[0-5][0-9])?
-    \b\s?)?
-    (?:\b
-        (?P<day>0?[1-9]|[12][0-9]|3[01])
-        [\/-]
-        (?P<month>0?[1-9]|1[012])
-        (?:[\/-](?P<year>[0-9]{4}))?
     \b\s?)?
     """,
     re.VERBOSE,
@@ -59,13 +57,13 @@ def date_in_full(delta: timedelta) -> str:
 
 def find_relative_time(target: str) -> Optional[re.Match]:
     match = pattern_relative_time.match(target)
-    if match and any(match.groups()[1:]):
+    if match and any(match.groups()):
         return match
 
 
 def find_absolute_time(target: str) -> Optional[re.Match]:
     match = pattern_absolute_time_and_date.match(target)
-    if match and any(match.groups()[1:]):
+    if match and any(match.groups()):
         return match
 
 

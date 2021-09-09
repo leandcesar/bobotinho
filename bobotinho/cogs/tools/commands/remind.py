@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
 from bobotinho.database.base import timezone
@@ -54,10 +55,10 @@ async def command(ctx, arg: str, *, content: str = ""):
         ctx.response = "deixe alguma mensagem no lembrete"
     elif len(content) > 400:
         ctx.response = "essa mensagem é muito comprida"
-    elif match := timetools.find_relative_time(content):
+    elif content.startswith("in ") and (match := timetools.find_relative_time(content[3:])):
         match_dict = match.groupdict()
         match_dict = {k: int(v) if v else 0 for k, v in match_dict.items()}
-        content = content.replace(match.group(0), "")
+        content = content[3:].replace(match.group(0), "")
         try:
             scheduled_for = timezone.now() + relativedelta(**match_dict)
         except Exception:
@@ -79,7 +80,7 @@ async def command(ctx, arg: str, *, content: str = ""):
                 mention = "você" if name == ctx.author.name else f"@{name}"
                 timeago = timetools.date_in_full(remind.scheduled_to)
                 ctx.response = f"{mention} será lembrado disso daqui {timeago} ⏲️ (ID {remind.id})"
-    elif match := timetools.find_absolute_time(content):
+    elif content.startswith(("on ", "at ")) and (match := timetools.find_absolute_time(content[3:])):
         match_dict = match.groupdict()
         match_dict = {
             k: int(v)
@@ -87,9 +88,9 @@ async def command(ctx, arg: str, *, content: str = ""):
             else getattr(timezone.now(), k)
             for k, v in match_dict.items()
         }
-        content = content.replace(match.group(0), "")
+        content = content[3:].replace(match.group(0), "")
         try:
-            scheduled_for = timezone.now() + relativedelta(**match_dict)
+            scheduled_for = timezone.now() + relativedelta(**match_dict) + timedelta(hours=3)  # time zones suck
         except Exception:
             ctx.response = "essa não é uma data válida"
         else:
