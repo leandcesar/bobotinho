@@ -7,8 +7,11 @@ extra_checks = ["Role.sponsor"]
 
 
 async def command(ctx, arg: str):
-    emoji = convert.emoji2str(arg)
-    if emoji != arg and emoji.count(":") == 2:
-        ctx.user.badge = arg
+    if arg == "remove":
+        ctx.user.badge = ""
+        await ctx.user.save()
+        ctx.response = "você removeu sua badge de apoiador"
+    elif badge := convert.emoji2str(arg):
+        ctx.user.badge = badge
         await ctx.user.save()
         ctx.response = "você alterou sua badge de apoiador"

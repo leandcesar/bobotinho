@@ -21,8 +21,10 @@ def dict2str(target: Optional[dict]) -> str:
         return ""
 
 
-def emoji2str(target: str) -> str:
-    return demojize(target)
+def emoji2str(target: str) -> Optional[str]:
+    emoji = demojize(target)
+    if emoji != target and emoji.count(":") == 2:
+        return emoji
 
 
 def txt2randomline(target: str) -> str:
