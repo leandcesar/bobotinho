@@ -6,7 +6,11 @@ usage = "digite o comando e uma expressão matemática (ex: 1+1)"
 
 
 async def command(ctx, *, content: str):
-    response = await Math.calculate(content)
-    if response:
-        result = response.replace("Infinity", "infinito").replace("NaN", "🤯")
-        ctx.response = result
+    try:
+        response = await Math.calculate(content)
+        ctx.response = response.replace("Infinity", "infinito").replace("NaN", "🤯")
+    except Exception:
+        ctx.response = (
+            "não consegui calcular isso... lembre-se: use * para multiplicação, "
+            "use / para divisão, e use ponto em vez de vírgula para números decimais"
+        )
