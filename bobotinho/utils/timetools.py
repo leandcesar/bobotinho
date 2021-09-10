@@ -73,4 +73,4 @@ def format(target: datetime) -> str:
 
 def on_cooldown(delta: timedelta, s: int = 0) -> Optional[timedelta]:
     if delta.total_seconds() <= s:
-        return timedelta(seconds=s) - delta
+        return date_in_full(timedelta(seconds=s) - delta)
