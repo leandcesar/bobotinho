@@ -46,8 +46,8 @@ class Ctx(Context):
         self.user: User = None
 
     def __iter__(self):
-        yield "author", getattr(self.author, "id", None)
-        yield "channel", getattr(self.channel, "id", None)
+        yield "author", getattr(self.author, "name", None)
+        yield "channel", getattr(self.channel, "name", None)
         yield "user", getattr(self.user, "id", None)
         yield "message", getattr(self.message, "content", None)
         yield "response", self.response
@@ -354,7 +354,7 @@ class TwitchBot(Bot):
             log.info(e)
         else:
             ctx.response = "ocorreu um erro inesperado"
-            log.error(e, extra={"ctx": dict(ctx)})
+            log.exception(e, extra={"ctx": dict(ctx)})
         await self.reply(ctx)
 
     async def event_message(self, message: Message) -> None:
