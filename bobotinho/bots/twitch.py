@@ -55,8 +55,8 @@ class Ctx(Context):
 
 class Role:
     @staticmethod
-    def master(ctx: Ctx) -> bool:
-        return ctx.author.name == ctx.bot.owner
+    def dev(ctx: Ctx) -> bool:
+        return ctx.author.name == ctx.bot.dev
 
     @staticmethod
     def owner(ctx: Ctx) -> bool:
@@ -64,11 +64,11 @@ class Role:
 
     @staticmethod
     def admin(ctx: Ctx) -> bool:
-        return ctx.author.is_mod or Role.owner(ctx) or Role.master(ctx)
+        return ctx.author.is_mod or Role.owner(ctx) or Role.dev(ctx)
 
     @staticmethod
     def vip(ctx: Ctx) -> bool:
-        return bool(ctx.author.badges.get("vip"))
+        return ctx.author.badges and bool(ctx.author.badges.get("vip"))
 
     @staticmethod
     def sub(ctx: Ctx) -> bool:
@@ -80,15 +80,13 @@ class Role:
 
     @staticmethod
     def any(ctx: Ctx) -> bool:
-        return any(
-            [
-                Role.sub(ctx),
-                Role.vip(ctx),
-                Role.admin(ctx),
-                Role.owner(ctx),
-                Role.master(ctx),
-                Role.sponsor(ctx),
-            ]
+        return (
+            Role.sub(ctx)
+            or Role.vip(ctx)
+            or Role.admin(ctx)
+            or Role.owner(ctx)
+            or Role.dev(ctx)
+            or Role.sponsor(ctx)
         )
 
 
@@ -134,7 +132,7 @@ class TwitchBot(Bot):
         )
         self.plataform = "Twitch"
         self.mentions: bool = config.ai_url and config.ai_key
-        self.owner: str = config.owner
+        self.dev: str = config.dev
         self.site: str = config.site_url
         self.blocked: list = []
         self.listeners: list = []
@@ -240,7 +238,7 @@ class TwitchBot(Bot):
     async def add_all_channels(self) -> None:
         channels = await Channel.all().select_related("user")
         if not channels:
-            self.add_channel(self.owner.lower(), 0)
+            self.add_channel(self.dev.lower(), 0)
         for channel in channels:
             if channel.user.block:
                 continue
@@ -354,7 +352,7 @@ class TwitchBot(Bot):
             log.info(e)
         else:
             ctx.response = "ocorreu um erro inesperado"
-            log.exception(e, extra={"ctx": dict(ctx)})
+            log.error(e, extra={"ctx": dict(ctx)}, exc_info=e)
         await self.reply(ctx)
 
     async def event_message(self, message: Message) -> None:

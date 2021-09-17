@@ -10,7 +10,7 @@ class Config:
     access_token: str = os.environ.get("ACCESS_TOKEN")
     client_secret: Optional[str] = os.environ.get("CLIENT_SECRET")
     prefix: Optional[str] = os.environ.get("BOT_PREFIX", "%")
-    owner: Optional[str] = os.environ.get("OWNER_NICK")
+    dev: Optional[str] = os.environ.get("DEV_NICK")
     site_url: Optional[str] = os.environ.get("BOT_SITE_URL")
     ai_url: Optional[str] = os.environ.get("BOT_AI_URL")
     ai_key: Optional[str] = os.environ.get("BOT_AI_KEY")

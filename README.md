@@ -49,11 +49,11 @@ Visit [**Token Generator**](https://twitchtokengenerator.com/) and select the "B
 
 ### ⚙️ Configuring
 
-After clone this repo, create `.env` file in your `/bobotinho-bot` directory. Add the access token from above and owner nick after the `=`. Optionally add and fill other env vars (see `.env.template`).
+After clone this repo, create `.env` file in your `/bobotinho-bot` directory. Add the access token from above and dev nick after the `=`. Optionally add and fill other env vars (see `.env.template`).
 
 ```
 ACCESS_TOKEN=your-token-here
-OWNER_NAME=your-twitch-nick
+DEV_NICK=your-twitch-nick
 ```
 
 ### ▶️ Run 
@@ -109,4 +109,4 @@ $ docker-compose up --build
 
 ### 🎉 Use
 
-Go to [twitch.tv/`OWNER_NAME`](https://twitch.tv/) and send `%ping`.
+Go to [twitch.tv/`DEV_NICK`](https://twitch.tv/) and send `%ping`.
