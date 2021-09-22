@@ -256,8 +256,6 @@ class TwitchBot(Bot):
     async def reply(self, ctx: Ctx) -> bool:
         if not ctx.response:
             return False
-        if not self.channels[ctx.channel.name]["online"]:
-            return False
         try:
             ctx.response = f"{ctx.user or ctx.author.name}, {ctx.response}"
             await ctx.send(ctx.response)
@@ -362,9 +360,10 @@ class TwitchBot(Bot):
             return
         if message.author.id in self.blocked:
             return
+        if not self.channels[message.channel.name]["online"] and message.content != f"{self._prefix}start":
+            return
         ctx: Ctx = await self.get_context(message, cls=Ctx)
-        if self.channels[ctx.channel.name]["online"]:
-            ctx.user = await User.update_or_none(ctx)
-            await self.handle_listeners(ctx)
-            await self.handle_mentions(ctx)
+        ctx.user = await User.update_or_none(ctx)
+        await self.handle_listeners(ctx)
+        await self.handle_mentions(ctx)
         await self.handle_commands(ctx)
