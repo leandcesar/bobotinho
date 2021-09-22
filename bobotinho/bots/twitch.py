@@ -256,6 +256,8 @@ class TwitchBot(Bot):
     async def reply(self, ctx: Ctx) -> bool:
         if not ctx.response:
             return False
+        if not self.channels[ctx.channel.name]["online"]:
+            return False
         try:
             ctx.response = f"{ctx.user or ctx.author.name}, {ctx.response}"
             await ctx.send(ctx.response)
