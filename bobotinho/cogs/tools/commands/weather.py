@@ -6,28 +6,26 @@ aliases = ["wt"]
 usage = "digite o comando e o nome de um local para saber o clima"
 
 
-async def command(ctx, *, content: str = None):
-    if not content:
-        place = ctx.user.city
-    else:
-        place = content
+async def command(ctx, *, content: str = ""):
+    place = content or ctx.user.city
     if place in ("salvador", "socorro", "santiago"):
         place = f"{place}, br"
-    try:
-        observation = Weather.weather_at_place(place)
-        city = observation.location.name
-        country = observation.location.country
-        status = observation.weather.detailed_status
-        temperature = observation.weather.temperature("celsius")
-        temp = temperature["temp"]
-        feels_like = temperature["feels_like"]
-        wind = observation.weather.wind()["speed"]
-        humidiy = observation.weather.humidity
-        ctx.response = (
-            f"em {city} ({country}): {status}, {temp}°C (sensação de "
-            f"{feels_like}°C), ventos a {wind}m/s e {humidiy}% de umidade"
-        )
-    except AssertionError:
+    if place:
+        try:
+            weather = Weather.predict(place)
+            city = weather["city"]
+            country = weather["country"]
+            status = weather["status"]
+            temperature = weather["temperature"]
+            feels_like = weather["feels_like"]
+            wind = weather["wind"]
+            humidiy = weather["humidiy"]
+            ctx.response = (
+                f"em {city} ({country}): {status}, {temperature}°C (sensação de "
+                f"{feels_like}°C), ventos a {wind}m/s e {humidiy}% de umidade"
+            )
+        except Exception as e:
+            print(e)
+            ctx.response = "não há nenhuma previsão para esse local"
+    else:
         ctx.response = "digite o comando e o nome de um local para saber o clima"
-    except Exception:
-        ctx.response = "não há nenhuma previsão para esse local"

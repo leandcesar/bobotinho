@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
-from typing import Optional
+from coinapi_rest_v1.restapi import CoinAPIv1
 
-from bobotinho import aiorequests, config
+from bobotinho import config
 
 
 class Currency:
-    base_url = config.currency_url
-    key = config.currency_key
-
-    @classmethod
-    async def conversion(cls, base: str, target: str) -> Optional[float]:
-        url = f"{cls.base_url}/{cls.key}/latest/{base.upper()}"
-        response = await aiorequests.get(url)
-        rates = response.get("conversion_rates", {})
-        rate = rates.get(target.upper())
-        return rate
+    @staticmethod
+    def convert(base: str, target: str) -> float:
+        return (
+            CoinAPIv1(config.currency_key)
+            .exchange_rates_get_specific_rate(base.upper(), target.upper())
+            .get("rate")
+        )
