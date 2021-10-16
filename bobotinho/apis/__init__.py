@@ -2,7 +2,6 @@
 from .ai import AI  # NOQA
 from .analytics import Analytics  # NOQA
 from .color import Color  # NOQA
-from .crypto import Crypto  # NOQA
 from .currency import Currency  # NOQA
 from .dicio import Dicio  # NOQA
 from .math import Math  # NOQA

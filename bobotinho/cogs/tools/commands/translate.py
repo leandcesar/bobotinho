@@ -9,19 +9,17 @@ usage = "digite o comando e um texto para ser traduzido"
 
 
 async def command(ctx, arg: str, *, content: str = ""):
-    src = dest = None
-    if match := re.match(r"(\w{2})?->(\w{2})?", arg):  # scr->dest or scr-> or ->dest
-        src, dest = match.groups()
+    if match := re.match(r"(\w{2})?->(\w{2})?", arg):  # source->target or source-> or ->target
+        source, target = match.groups()
     else:
         content = f"{arg} {content}"
-    src = src if src else "auto"
-    dest = dest if dest else "en" if Translator.detect(content) == "pt" else "pt"
+        source = target = None
     try:
-        translation = Translator.translate(content, dest, src)
+        ctx.response = Translator.translate(
+            text=content,
+            source=source if source else "auto",
+            target=target if target else "pt",
+        )
     except Exception as e:
         log.exception(e)
-        translation = None
-    if translation and translation != content:
-        ctx.response = f"{src}->{dest}: {translation}"
-    else:
         ctx.response = "não foi possível traduzir isso"
