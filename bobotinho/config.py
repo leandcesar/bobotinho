@@ -31,7 +31,6 @@ class ApiConfig:
     currency_key: Optional[str] = os.environ.get("API_CURRENCY_KEY")
     dicio_url: Optional[str] = os.environ.get("API_DICIO_URL", "http://www.dicio.com.br")
     math_url: Optional[str] = os.environ.get("API_MATH_URL", "https://api.mathjs.org/v4")
-    tmdb_url: Optional[str] = os.environ.get("API_TMDB_URL", "https://api.themoviedb.org/3")
     tmdb_key: Optional[str] = os.environ.get("API_TMDB_KEY")
     twitch_url: Optional[str] = os.environ.get("API_TWITCH_URL", "http://decapi.me/twitch")
     weather_key: Optional[str] = os.environ.get("API_WEATHER_KEY")

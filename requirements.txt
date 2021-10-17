@@ -5,6 +5,7 @@ bugsnag==4.0.3
 redis==3.5.3
 twitchio==2.0.6
 # apis
+git+git://github.com/leandcesar/tmdb-py.git@master#egg=tmdb-py
 coinapi.rest.v1==1.3
 deep-translator==1.5.4
 pyowm==3.2.0
