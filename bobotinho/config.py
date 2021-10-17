@@ -56,8 +56,9 @@ class LocalConfig(Config, ApiConfig):
 class TestConfig(Config, ApiConfig):
     mode: str = "test"
     database_url: str = "sqlite://:memory:"
-    redis_url: None = None
-    bugsnag_key: None = None
+    redis_url = None
+    bugsnag_key = None
+    tmdb_key = "KEY"
 
 
 config_options: dict = {"prod": ProdConfig, "local": LocalConfig, "test": TestConfig}
