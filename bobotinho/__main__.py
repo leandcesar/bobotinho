@@ -37,10 +37,8 @@ if __name__ == "__main__":
         bot.loop.run_forever()
     except BaseException as e:
         log.exception(e, extra={"locals": locals()})
-        bot.loop.run_until_complete(db.close(e))
-    else:
-        bot.loop.run_until_complete(db.close())
     finally:
+        bot.loop.run_until_complete(db.close())
         bot.cache.close()
         bot.loop.run_until_complete(bot.stop())
         bot.loop.close()

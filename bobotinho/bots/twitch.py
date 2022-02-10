@@ -2,6 +2,7 @@
 import inspect
 import os
 from importlib import import_module, types
+from tortoise import timezone
 from typing import Optional
 
 from twitchio.ext.commands import (
@@ -131,6 +132,7 @@ class TwitchBot(Bot):
             case_insensitive=True,
         )
         self.plataform = "Twitch"
+        self.boot_timestamp = timezone.now()
         self.mentions: bool = config.ai_url and config.ai_key
         self.dev: str = config.dev
         self.site: str = config.site_url
@@ -139,6 +141,10 @@ class TwitchBot(Bot):
         self.routines: list = []
         self.channels: dict = {}
         self.cache: object = None
+
+    @property
+    def boot_ago(self):
+        return timezone.now() - self.boot_timestamp
 
     async def start(self) -> None:
         await self.connect()
