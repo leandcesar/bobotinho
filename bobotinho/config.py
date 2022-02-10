@@ -53,9 +53,9 @@ class TestConfig(Config, ApiConfig):
 
 
 try:
-    config_options: dict = {"prod": ProdConfig, "local": LocalConfig, "test": TestConfig}
+    config_options = {"prod": ProdConfig, "local": LocalConfig, "test": TestConfig}
     config_mode = os.environ.get("CONFIG_MODE", "local")
-    config: Union[ProdConfig, LocalConfig, TestConfig] = config_options[config_mode]
+    config = config_options[config_mode]
 except KeyError:
     sys.exit(f"[CRITICAL] Invalid <CONFIG_MODE>. Expected 'local', 'test' or 'prod', not '{config_mode}'.")
 else:
