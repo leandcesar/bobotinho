@@ -1,7 +1,11 @@
 -r requirements.txt
-# code quality
-black==21.7b0
-flake8==3.9.2
-interrogate==1.4.0
-isort==5.9.3
-pre-commit==2.14.0
+brunette
+flake8
+interrogate
+gitchangelog
+isort
+mkdocs
+mypy
+pre-commit
+vulture
+watchgod
