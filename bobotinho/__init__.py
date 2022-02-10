@@ -1,6 +1,10 @@
-# -*- coding: utf-8 -*-
-from bobotinho.config import config  # NOQA
-from bobotinho.logger import log  # NOQA
+from bobotinho.config import config
+from bobotinho.logger import Log
+
+log = Log(
+    filename=config.log_filename,
+    bugsnag={"key": config.bugsnag_key, "version": __version__, "stage": config.mode},
+)
 
 __title__ = "bobotinho-bot"
 __author__ = "Leandro César"

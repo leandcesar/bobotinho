@@ -6,6 +6,7 @@ import sys
 class Config:
     version = os.environ.get("VERSION", "0.1.0")
     log_level = os.environ.get("LOG_LEVEL", "INFO")
+    log_filename = os.environ.get("LOG_FILE_CONFIG", "logging_config.ini")
     access_token = os.environ.get("ACCESS_TOKEN")
     client_secret = os.environ.get("CLIENT_SECRET")
     prefix = os.environ.get("BOT_PREFIX", "%")
