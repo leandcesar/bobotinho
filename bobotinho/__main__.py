@@ -20,7 +20,7 @@ if __name__ == "__main__":
         log.warning(e)
         bot.cache = TTLOrderedDict()
     try:
-        bot.loop.run_until_complete(database.init(config.database.url))
+        bot.loop.run_until_complete(database.init(config.database_url))
         bot.loop.run_until_complete(bot.start())
         bot.loop.run_forever()
     except BaseException as e:
