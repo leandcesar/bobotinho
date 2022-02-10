@@ -2,14 +2,11 @@
 from tortoise import Tortoise
 
 
-class Database:
-    def __init__(self, url: str):
-        self.url = url
+async def init(database_url: str, *, models_path: str = "bobotinho.database.models") -> None:
+    models = [models_path]
+    await Tortoise.init(db_url=database_url, modules={"models": models})
+    await Tortoise.generate_schemas(safe=True)
 
-    async def init(self):
-        models = ["bobotinho.database.models"]
-        await Tortoise.init(db_url=self.url, modules={"models": models})
-        await Tortoise.generate_schemas(safe=True)
 
-    async def close(self):
-        await Tortoise.close_connections()
+async def close() -> None:
+    await Tortoise.close_connections()
