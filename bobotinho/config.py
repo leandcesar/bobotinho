@@ -12,9 +12,9 @@ class Config:
     prefix = os.environ.get("BOT_PREFIX", "%")
     dev = os.environ.get("DEV_NICK")
     site_url = os.environ.get("BOT_SITE_URL")
-    bugs_webhook_url = os.environ.get("DISCORD_WEBHOOK_BUGS")
-    suggestions_webhook_url = os.environ.get("DISCORD_WEBHOOK_SUGGESTIONS")
-    color_bot = os.environ.get("COLOR_BOT", 0x9147FF)
+    bugs_url = os.environ.get("DISCORD_WEBHOOK_BUGS")
+    suggestions_url = os.environ.get("DISCORD_WEBHOOK_SUGGESTIONS")
+    bot_color = os.environ.get("COLOR_BOT", 0x9147FF)
 
 
 class ApiConfig:

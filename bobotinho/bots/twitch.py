@@ -130,6 +130,7 @@ class TwitchBot(Bot):
             prefix=config.prefix,
             case_insensitive=True,
         )
+        self.config = config
         self.plataform = "Twitch"
         self.boot_timestamp = timezone.now()
         self.dev: str = config.dev
