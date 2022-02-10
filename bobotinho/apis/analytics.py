@@ -44,6 +44,4 @@ class Analytics:
             author=ctx.author.name,
             source=ctx.channel.name,
             plataform=ctx.bot.plataform,
-            intent=ctx.prediction.get("intent"),
-            confidence=ctx.prediction.get("confidence"),
         )

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from .ai import AI  # NOQA
 from .analytics import Analytics  # NOQA
 from .color import Color  # NOQA
 from .currency import Currency  # NOQA
