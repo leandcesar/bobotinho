@@ -32,7 +32,6 @@ class Analytics:
             content=ctx.message.content,
             author=ctx.author.name,
             source=ctx.channel.name,
-            plataform=ctx.bot.plataform,
         )
 
     @classmethod
@@ -43,5 +42,4 @@ class Analytics:
             content=ctx.response,
             author=ctx.author.name,
             source=ctx.channel.name,
-            plataform=ctx.bot.plataform,
         )

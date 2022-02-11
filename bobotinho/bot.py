@@ -131,7 +131,6 @@ class TwitchBot(Bot):
             case_insensitive=True,
         )
         self.config = config
-        self.plataform = "Twitch"
         self.boot_timestamp = timezone.now()
         self.dev: str = config.dev
         self.site: str = config.site_url
