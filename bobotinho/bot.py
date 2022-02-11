@@ -2,6 +2,7 @@
 import inspect
 import os
 from importlib import import_module, types
+from redis import Redis
 from tortoise import timezone
 from typing import Optional
 
@@ -21,8 +22,9 @@ from twitchio.ext.commands.errors import (
 from twitchio.ext.routines import Routine
 from twitchio.message import Message
 
-from bobotinho import log
+from bobotinho import database, log
 from bobotinho.apis import Analytics
+from bobotinho.cache import TTLOrderedDict
 from bobotinho.database.models import Channel, User
 from bobotinho.exceptions import (
     BotIsOffline,
@@ -94,31 +96,31 @@ class Check:
     @staticmethod
     def allowed(ctx: Ctx) -> bool:
         if not Role.any(ctx) and convert.str2url(ctx.message.content) is not None:
-            raise UserIsNotAllowed(channel=ctx.channel.name, user=ctx.author.name)
+            raise UserIsNotAllowed()
         return True
 
     @staticmethod
     def banword(ctx: Ctx) -> bool:
         if any(word in ctx.message.content for word in ctx.bot.channels[ctx.channel.name]["banwords"]):
-            raise ContentHasBanword(channel=ctx.channel.name, content=ctx.message.content)
+            raise ContentHasBanword()
         return True
 
     @staticmethod
     def enabled(ctx: Ctx) -> bool:
         if ctx.command.name in ctx.bot.channels[ctx.channel.name]["disabled"]:
-            raise CommandIsDisabled(channel=ctx.channel.name, command=ctx.command.name)
+            raise CommandIsDisabled()
         return True
 
     @staticmethod
     def game(ctx: Ctx) -> bool:
         if ctx.bot.cache.get(f"game-{ctx.channel.name}"):
-            raise GameIsAlreadyRunning(channel=ctx.channel.name, command=ctx.command.name)
+            raise GameIsAlreadyRunning()
         return True
 
     @staticmethod
     def online(ctx: Ctx) -> bool:
         if not ctx.bot.channels[ctx.channel.name]["online"]:
-            raise BotIsOffline(channel=ctx.channel.name)
+            raise BotIsOffline()
         return True
 
 
@@ -145,12 +147,21 @@ class TwitchBot(Bot):
         return timezone.now() - self.boot_timestamp
 
     async def start(self) -> None:
+        self.load_cogs()
+        try:
+            self.cache = Redis.from_url(self.config.redis_url, encoding="utf-8", decode_responses=True)
+        except Exception as e:
+            log.warning(e)
+            self.cache = TTLOrderedDict()
+        await database.init(self.config.database_url)
         await self.connect()
         await self.add_all_channels()
         await self.fetch_blocked()
 
     async def stop(self) -> None:
         [routine.stop() for routine in self.routines]
+        self.cache.close()
+        await database.close()
         await self.close()
 
     def add_checks(self) -> None:
@@ -262,7 +273,7 @@ class TwitchBot(Bot):
             return False
         try:
             ctx.response = f"{ctx.user or ctx.author.name}, {ctx.response}"
-            await ctx.send(ctx.response)
+            await ctx.reply(ctx.response)
         except Exception as e:
             log.error(e, extra={"ctx": dict(ctx)})
         else:
@@ -272,11 +283,7 @@ class TwitchBot(Bot):
         return False
 
     async def handle_commands(self, ctx: Ctx) -> bool:
-        if ctx.response:
-            return False
-        if not ctx.prefix:
-            return False
-        if not ctx.is_valid:
+        if ctx.response or not ctx.prefix or not ctx.is_valid:
             return False
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
         await Analytics.received(ctx)
@@ -338,12 +345,12 @@ class TwitchBot(Bot):
         await self.reply(ctx)
 
     async def event_message(self, message: Message) -> None:
-        if message.echo:
-            return
-        if message.author.id in self.blocked:
-            return
-        if not self.channels[message.channel.name]["online"] and message.content != f"{self._prefix}start":
-            return
+        if (
+            message.echo
+            or message.author.id in self.blocked
+            or not self.channels[message.channel.name]["online"] and message.content != f"{self._prefix}start"
+        ):
+            return None
         ctx: Ctx = await self.get_context(message, cls=Ctx)
         ctx.user = await User.update_or_none(ctx)
         await self.handle_listeners(ctx)

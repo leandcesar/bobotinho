@@ -39,10 +39,12 @@ class TTLOrderedDict(OrderedDict):
                 self.__delitem__(key)
                 raise KeyError
             return super().__getitem__(key)[1]
+
     def keys(self, pattern: str = None) -> list:
         with self._lock:
             self._purge()
             return super().keys()
+
     def set(self, key: str, value: str, ex: int = None, nx: bool = None) -> bool:
         if nx and self.get(key):
             return False
