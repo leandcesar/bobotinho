@@ -18,14 +18,9 @@ class Config:
 
 
 class ApiConfig:
-    analytics_url = os.environ.get("API_ANALYTICS_URL", "https://tracker.dashbot.io/track")
     analytics_key = os.environ.get("API_ANALYTICS_KEY")
     bugsnag_key = os.environ.get("API_BUGSNAG_KEY")
-    color_url = os.environ.get("API_COLOR_URL", "https://www.thecolorapi.com")
     currency_key = os.environ.get("API_CURRENCY_KEY")
-    dicio_url = os.environ.get("API_DICIO_URL", "http://www.dicio.com.br")
-    math_url = os.environ.get("API_MATH_URL", "https://api.mathjs.org/v4")
-    twitch_url = os.environ.get("API_TWITCH_URL", "http://decapi.me/twitch")
     weather_key = os.environ.get("API_WEATHER_KEY")
 
 

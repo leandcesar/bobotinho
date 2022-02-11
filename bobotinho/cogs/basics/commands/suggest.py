@@ -16,7 +16,7 @@ async def command(ctx, *, content: str):
     ctx.response = f"sua sugestão foi anotada 📝 (ID {suggest.id})"
 
     if url := ctx.bot.config.suggestions_url:
-        data = {
+        payload = {
             "title": f"Sugestão #{suggest.id:04}",
             "description": suggest.content,
             "color": ctx.bot.config.bot_color,
@@ -24,4 +24,4 @@ async def command(ctx, *, content: str):
             "footer_text": suggest.source,
             "timestamp": suggest.updated_at,
         }
-        await Discord.webhook(url, data)
+        await Discord.webhook(url, payload=payload)

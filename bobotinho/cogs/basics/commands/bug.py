@@ -15,7 +15,7 @@ async def command(ctx, *, content: str):
     ctx.response = f"seu bug foi reportado 🐛 (ID {bug.id})"
 
     if url := ctx.bot.config.bugs_url:
-        data = {
+        payload = {
             "title": f"Bug #{bug.id:04}",
             "description": bug.content,
             "color": ctx.bot.config.bot_color,
@@ -23,4 +23,4 @@ async def command(ctx, *, content: str):
             "footer_text": bug.source,
             "timestamp": bug.updated_at,
         }
-        await Discord.webhook(url, data)
+        await Discord.webhook(url, payload=payload)
