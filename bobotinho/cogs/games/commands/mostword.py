@@ -10,7 +10,7 @@ extra_checks = ["Role.admin", "Check.game"]
 
 
 async def command(ctx):
-    pattern: str = convert.txt2randomline("bobotinho//data//syllables.txt")
+    pattern: str = convert.txt2randomline("bobotinho//cogs//games//syllables.txt")
     users: dict = {}
     words: list = []
 

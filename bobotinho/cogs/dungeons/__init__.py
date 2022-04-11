@@ -3,7 +3,7 @@ import json
 import random
 from typing import Optional
 
-FILENAME = "bobotinho//data//dungeons.json"
+FILENAME = "bobotinho//cogs//dungeons//dungeons.json"
 
 
 def create_classes():

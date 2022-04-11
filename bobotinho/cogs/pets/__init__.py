@@ -4,7 +4,7 @@ import random
 from collections import namedtuple
 from datetime import datetime
 
-FILENAME = "bobotinho//data//pets.json"
+FILENAME = "bobotinho//cogs//pets//pets.json"
 
 
 def create_pet(pet: dict) -> object:

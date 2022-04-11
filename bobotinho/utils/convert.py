@@ -4,7 +4,7 @@ import random
 import re
 from datetime import datetime
 from emoji import demojize
-from typing import Union, Optional
+from typing import List, Optional, Union
 from unidecode import unidecode
 
 from bobotinho.exceptions import InvalidName
@@ -31,6 +31,10 @@ def txt2randomline(target: str) -> str:
     with open(target, "r", encoding="utf-8") as f:
         lines = f.read().splitlines()
     return random.choice(lines)
+
+
+def list2randomline(target: List[str]) -> str:
+    return random.choice(target)
 
 
 def number2str(target: Union[int, float]) -> Optional[str]:
