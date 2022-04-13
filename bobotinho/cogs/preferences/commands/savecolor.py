@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import User
+from bobotinho.database import User
 from bobotinho.utils import convert
 
 description = "Salve um código hexadecimal de cor"

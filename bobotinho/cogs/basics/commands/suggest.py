@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.apis import Discord
-from bobotinho.database.models import Suggest
+from bobotinho.database import Suggest
 
 description = "Faça uma sugestão de recurso para o bot"
 aliases = ["suggestion"]

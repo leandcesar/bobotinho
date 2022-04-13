@@ -7,7 +7,7 @@ from bobotinho.cogs.dungeons import (
     options_sub_class,
     resume_dungeon,
 )
-from bobotinho.database.models import Player
+from bobotinho.database import Player
 from bobotinho.utils import timetools
 
 description = "Entre na dungeon, faça sua escolha e adquira experiência"

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Cookie, User, Wedding
+from bobotinho.database import Cookie, User, Wedding
 from bobotinho.utils import convert
 
 description = "Case-se e seja feliz para sempre, mas isso custará cookies"

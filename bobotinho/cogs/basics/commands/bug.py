@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.apis import Discord
-from bobotinho.database.models import Bug
+from bobotinho.database import Bug
 
 description = "Reporte um bug que está ocorrendo no Bot"
 usage = "digite o comando e o bug que você encontrou"

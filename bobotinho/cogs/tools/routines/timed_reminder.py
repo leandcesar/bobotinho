@@ -2,7 +2,7 @@
 import asyncio
 from datetime import timedelta
 
-from bobotinho.database.models import Reminder
+from bobotinho.database import Reminder
 from bobotinho.database.base import timezone
 from bobotinho import log
 from bobotinho.utils import timetools

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Cookie, User
+from bobotinho.database import Cookie, User
 from bobotinho.utils import convert
 
 description = "Presenteie algum usuário com seu cookie diário"

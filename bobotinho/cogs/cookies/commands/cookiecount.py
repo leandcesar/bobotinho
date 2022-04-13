@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Cookie
+from bobotinho.database import Cookie
 from bobotinho.utils import convert
 
 description = "Veja quantos cookies algum usuário já comeu"

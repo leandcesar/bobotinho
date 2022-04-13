@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.apis import Color
-from bobotinho.database.models import User
+from bobotinho.database import User
 from bobotinho.utils import convert
 
 description = "Saiba o código hexadecimal da cor de algum usuário"

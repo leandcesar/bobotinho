@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.cogs.tools import afks
-from bobotinho.database.models import Afk, User
+from bobotinho.database import Afk, User
 from bobotinho.utils import convert, timetools
 
 description = "Verifique se alguém está AFK"

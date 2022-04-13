@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.cogs.tools import afks
-from bobotinho.database.models import Afk
+from bobotinho.database import Afk
 
 description = "Informe que você está se ausentando do chat"
 aliases = list(afks.keys())[1:]

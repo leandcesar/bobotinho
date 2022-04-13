@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 
-from bobotinho.database.models import Cookie
+from bobotinho.database import Cookie
 
 description = "Aposte seu cookie diário para ter a chance de ganhar outros"
 aliases = ["sm"]

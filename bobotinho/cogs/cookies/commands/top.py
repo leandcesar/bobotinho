@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Cookie
+from bobotinho.database import Cookie
 
 description = "Veja quais são os maiores comedores ou doadores de cookies"
 

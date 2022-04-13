@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Reminder
+from bobotinho.database import Reminder
 
 description = "Veja os IDs dos lembretes que você deixou"
 

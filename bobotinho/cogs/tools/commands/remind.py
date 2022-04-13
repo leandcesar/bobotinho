@@ -3,7 +3,7 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
 from bobotinho.database.base import timezone
-from bobotinho.database.models import Reminder, User
+from bobotinho.database import Reminder, User
 from bobotinho.utils import convert, timetools
 
 aliases = ["remindme"]

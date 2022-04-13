@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import User
+from bobotinho.database import User
 
 description = "Salve sua cidade para agilizar a previsão do tempo"
 usage = "digite o comando e o nome da sua cidade para agilizar a previsão do tempo"

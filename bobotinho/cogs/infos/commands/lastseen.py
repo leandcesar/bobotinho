@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import User
+from bobotinho.database import User
 from bobotinho.utils import convert, timetools
 
 description = "Saiba a última vez que algum usuário foi visto"

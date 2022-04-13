@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Reminder, User
+from bobotinho.database import Reminder, User
 from bobotinho.utils import timetools
 
 

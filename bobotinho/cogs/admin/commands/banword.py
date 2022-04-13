@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import Channel
+from bobotinho.database import Channel
 from bobotinho.utils import convert
 
 aliases = ["bw"]

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho import log
-from bobotinho.database.models import Channel, User
+from bobotinho.database import Channel, User
 from bobotinho.utils import convert
 
 delta = 10

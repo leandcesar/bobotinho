@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.database.models import User
+from bobotinho.database import User
 
 description = "Permita que outros usuários utilizem comandos direcionados a você"
 
