@@ -1,5 +1,7 @@
-from bobotinho.config import config
+from bobotinho.config import Config
 from bobotinho.logger import Log
+
+config = Config()
 
 __title__ = "bobotinho-bot"
 __author__ = "Leandro César"

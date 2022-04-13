@@ -23,9 +23,9 @@ from twitchio.ext.routines import Routine
 from twitchio.message import Message
 
 from bobotinho import database, log
-from bobotinho.apis import Analytics
-from bobotinho.cache import TTLOrderedDict
-from bobotinho.database.models import Channel, User
+from bobotinho.api import Api
+from bobotinho.analytics import Analytics
+from bobotinho.database import Channel, User
 from bobotinho.exceptions import (
     BotIsOffline,
     CommandIsDisabled,
@@ -134,25 +134,22 @@ class TwitchBot(Bot):
         )
         self.config = config
         self.boot_timestamp = timezone.now()
-        self.dev: str = config.dev
-        self.site: str = config.site_url
-        self.blocked: list = []
-        self.listeners: list = []
-        self.routines: list = []
-        self.channels: dict = {}
-        self.cache: object = None
+        self.dev = config.dev
+        self.site = config.site_url
+        self.api = Api(config.api_token)
+        self.blocked = []
+        self.listeners = []
+        self.routines = []
+        self.channels = {}
+        self.cache = None
 
     @property
     def boot_ago(self):
         return timezone.now() - self.boot_timestamp
 
     async def start(self) -> None:
+        self.cache = Redis.from_url(self.config.redis_url, encoding="utf-8", decode_responses=True)
         self.load_cogs()
-        try:
-            self.cache = Redis.from_url(self.config.redis_url, encoding="utf-8", decode_responses=True)
-        except Exception as e:
-            log.warning(e)
-            self.cache = TTLOrderedDict()
         await database.init(self.config.database_url)
         await self.connect()
         await self.add_all_channels()
