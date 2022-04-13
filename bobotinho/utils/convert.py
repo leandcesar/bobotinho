@@ -33,10 +33,6 @@ def txt2randomline(target: str) -> str:
     return random.choice(lines)
 
 
-def list2randomline(target: List[str]) -> str:
-    return random.choice(target)
-
-
 def number2str(target: Union[int, float]) -> Optional[str]:
     if isinstance(target, int):
         return f"{target:,d}".replace(",", ".")

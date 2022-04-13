@@ -11,6 +11,7 @@ if __name__ == "__main__":
     except Exception as e:
         log.critical(e, exc_info=1)
         sys.exit("[CRITICAL] Twitch Bot constructor failure")
+
     try:
         bot.loop.run_until_complete(bot.start())
         bot.loop.run_forever()

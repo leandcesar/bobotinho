@@ -9,5 +9,6 @@ __version__ = config.version
 
 log = Log(
     filename=config.log_filename,
-    bugsnag={"key": config.bugsnag_key, "version": __version__, "stage": config.mode},
+    level=config.log_level,
+    bugsnag={"key": config.bugsnag_key, "version": __version__, "stage": config.stage},
 )
