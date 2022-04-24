@@ -6,12 +6,12 @@ usage = "digite o comando e o bug que você encontrou"
 
 
 async def command(ctx, *, content: str):
-    payload = {
-        "title": "Bug",
-        "description": content,
-        "color": ctx.bot.config.color,
-        "author_name": ctx.author.name,
-        "footer_text": ctx.channel.name,
-    }
-    await Webhook.discord(ctx.bot.config.bugs_url, payload=payload)
-    ctx.response = f"seu bug foi reportado 🐛"
+    data = await ctx.bot.api.twitch("avatar", ctx.author.name)
+    avatar_url = data["avatar"] if data and data.get("avatar") else None
+    if await Webhook().discord(
+        ctx.bot.config.bugs_url,
+        content=content,
+        user_name=ctx.author.name,
+        user_avatar_url=avatar_url,
+    ):
+        ctx.response = f"seu bug foi reportado 🐛"
