@@ -137,6 +137,7 @@ class TwitchBot(Bot):
         self.dev = config.dev
         self.site = config.site_url
         self.api = Api(config.api_token)
+        self.analytics = Analytics(config.analytics_key)
         self.blocked = []
         self.listeners = []
         self.routines = []
@@ -275,15 +276,24 @@ class TwitchBot(Bot):
             log.error(e, extra={"ctx": dict(ctx)})
         else:
             log.info(f"#{ctx.channel.name} @{self.nick}: {ctx.response}")
-            await Analytics.sent(ctx)
+            await self.analytics.sent(
+                user_id=ctx.author.id,
+                user_name=ctx.author.name,
+                channel_name=ctx.channel.name,
+                content=ctx.response,
+            )
             return True
         return False
 
     async def handle_commands(self, ctx: Ctx) -> bool:
-        if ctx.response or not ctx.prefix or not ctx.is_valid:
-            return False
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
-        await Analytics.received(ctx)
+        await self.analytics.received(
+            user_id=ctx.author.id,
+            user_name=ctx.author.name,
+            channel_name=ctx.channel.name,
+            content=ctx.message.content,
+        )
+
         if not ctx.user:
             ctx.user, _ = await User.get_or_create(
                 id=ctx.author.id,
@@ -294,12 +304,14 @@ class TwitchBot(Bot):
                     "content": ctx.message.content.replace("ACTION", "", 1),
                 },
             )
+
         try:
             await self.invoke(ctx)
         except MissingRequiredArgument:
             ctx.response = ctx.command.usage
         except Exception as e:
             log.error(e, extra={"ctx": dict(ctx)})
+
         return await self.reply(ctx)
 
     async def handle_listeners(self, ctx: Ctx) -> bool:
@@ -310,6 +322,7 @@ class TwitchBot(Bot):
                 await listener(ctx)
             else:
                 listener(ctx)
+
         return await self.reply(ctx)
 
     async def event_ready(self) -> None:
@@ -339,6 +352,7 @@ class TwitchBot(Bot):
         else:
             ctx.response = "ocorreu um erro inesperado"
             log.error(e, extra={"ctx": dict(ctx)}, exc_info=e)
+
         await self.reply(ctx)
 
     async def event_message(self, message: Message) -> None:
@@ -348,7 +362,12 @@ class TwitchBot(Bot):
             or not self.channels[message.channel.name]["online"] and message.content != f"{self._prefix}start"
         ):
             return None
+
         ctx: Ctx = await self.get_context(message, cls=Ctx)
         ctx.user = await User.update_or_none(ctx)
-        await self.handle_listeners(ctx)
-        await self.handle_commands(ctx)
+
+        if ctx.user:
+            await self.handle_listeners(ctx)
+
+        if ctx.response or not ctx.prefix or not ctx.is_valid:
+            await self.handle_commands(ctx)

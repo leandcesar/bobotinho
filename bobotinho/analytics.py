@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from bobotinho import aiorequests
+from aiohttp import ClientSession
 
 
 class Analytics:
-    url = "https://tracker.dashbot.io/track"
+    url: str = "https://tracker.dashbot.io/track"
+    session: ClientSession = ClientSession()
 
     def __init__(self, key: str) -> None:
         self.key = key
 
-    async def track(self, type: str, id: int, text: str, **kwargs):
+    async def track(self, type: str, user_id: int, text: str, **kwargs) -> bool:
         params = {
             "v": "11.1.0-rest",
             "platform": "universal",
@@ -16,7 +17,7 @@ class Analytics:
             "type": type,
         }
         data = {
-            "userId": id,
+            "userId": user_id,
             "text": text,
             "intent": {
                 "name": kwargs.get("intent"),
@@ -26,29 +27,19 @@ class Analytics:
             # "buttons": [{"id": 1, "label": "text 1"}],
             "platformUserJson": {
                 "firstName": kwargs.get("author"),
-                "locale": kwargs.get("source"),
+                "locale": kwargs.get("locale"),
                 "plataform": kwargs.get("plataform"),
                 "timezone": kwargs.pop("timezone", "-3"),
                 "gender": kwargs.pop("gender", None),
             },
             "platformJson": kwargs.pop("extra", {}),
         }
-        await aiorequests.post(self.url, params=params, json=data, wait_response=False)
+        async with self.session.request("post", self.url, params=params, json=data) as response:
+            return response.ok
+        return False
 
-    async def received(self, ctx) -> None:
-        await self.track(
-            "incoming",
-            id=ctx.author.id,
-            text=ctx.message.content,
-            author=ctx.author.name,
-            source=ctx.channel.name,
-        )
+    async def received(self, *, user_id: int, user_name: str, channel_name: str, content: str, **kwargs) -> bool:
+        return await self.track("incoming", user_id, content, author=user_name, locale=channel_name, **kwargs)
 
-    async def sent(self, ctx) -> None:
-        await self.track(
-            "outgoing",
-            id=ctx.author.id,
-            text=ctx.response,
-            author=ctx.author.name,
-            source=ctx.channel.name,
-        )
+    async def sent(self, *, user_id: int, user_name: str, channel_name: str, content: str, **kwargs) -> bool:
+        return await self.track("outgoing", user_id, content, author=user_name, locale=channel_name, **kwargs)
