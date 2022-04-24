@@ -3,4 +3,4 @@ description = "Saiba as novidades e atualizações do bot"
 
 
 async def command(ctx):
-    ctx.response = "para acompanhar todas as novidades, entre no servidor do Discord"
+    ctx.response = f"para acompanhar as novidades, entre no servidor do Discord: {ctx.bot.site}/"

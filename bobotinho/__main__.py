@@ -15,6 +15,8 @@ if __name__ == "__main__":
     try:
         bot.loop.run_until_complete(bot.start())
         bot.loop.run_forever()
+    except KeyboardInterrupt:
+        pass
     except BaseException as e:
         log.exception(e, extra={"locals": locals()})
     finally:

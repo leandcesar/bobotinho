@@ -10,6 +10,9 @@ class Analytics:
         self.key = key
 
     async def track(self, type: str, user_id: int, text: str, **kwargs) -> bool:
+        if not self.key:
+            return False
+
         params = {
             "v": "11.1.0-rest",
             "platform": "universal",
@@ -34,6 +37,7 @@ class Analytics:
             },
             "platformJson": kwargs.pop("extra", {}),
         }
+
         async with self.session.request("post", self.url, params=params, json=data) as response:
             return response.ok
         return False

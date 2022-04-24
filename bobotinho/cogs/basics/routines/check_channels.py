@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from bobotinho import log
 
-delta = 10
+delta = 20
 
 
 async def routine(bot) -> None:
-    try:
-        connected_channels = [channel.name for channel in bot.connected_channels]
-        disconnected_channels = [channel for channel in bot.channels.keys() if channel not in connected_channels]
-        await bot.join_channels(disconnected_channels)
-    except Exception as e:
-        log.exception(e, extra={"locals": locals()})
+    connected_channels = [channel.name for channel in bot.connected_channels]
+    disconnected_channels = [channel for channel in bot.channels.keys() if channel not in connected_channels]
+    for channel in disconnected_channels:
+        try:
+            await bot.join_channels([channel])
+        except Exception as e:
+            log.error(e, extra={"locals": locals()})
+    log.info(f"{bot.nick} | #({len(bot.connected_channels)}/{len(bot.channels)}) | {bot._prefix}{len(bot.commands)}")

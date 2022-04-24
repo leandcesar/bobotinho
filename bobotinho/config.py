@@ -7,10 +7,10 @@ class Config:
     version: str = os.environ.get("VERSION", "0.1.0")
     access_token: str = os.environ["ACCESS_TOKEN"]
     client_secret: str = os.environ["CLIENT_SECRET"]
-    prefix: str = os.environ.get("BOT_PREFIX", "%")
+    prefix: str = os.environ.get("PREFIX", "%")
     dev: str = os.environ.get("DEV_NICK")
-    color = int(os.environ.get("COLOR_BOT", "9147FF"), base=16)
-    site_url: str = os.environ.get("BOT_SITE_URL")
+    color = int(os.environ.get("COLOR", "9147FF"), base=16)
+    site_url: str = os.environ.get("SITE_URL")
     bugs_url: str = os.environ.get("DISCORD_WEBHOOK_BUGS")
     suggestions_url: str = os.environ.get("DISCORD_WEBHOOK_SUGGESTIONS")
     log_level: str = os.environ.get("LOG_LEVEL", "INFO")

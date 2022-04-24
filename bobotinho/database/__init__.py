@@ -14,7 +14,7 @@ from bobotinho.database.wedding import Wedding  # NOQA
 async def init(database_url: str, *, models_path: str = "bobotinho.database") -> None:
     models = [models_path]
     await Tortoise.init(db_url=database_url, modules={"models": models})
-    await Tortoise.generate_schemas(safe=True)
+    await Tortoise.generate_schemas()
 
 
 async def close() -> None:

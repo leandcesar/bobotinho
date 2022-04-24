@@ -2,7 +2,7 @@ VENV = venv
 PYTHON = $(VENV)/bin/python3
 PIP = $(VENV)/bin/pip
 PROJECT = bobotinho
-.PHONY = help setup test run clean
+.PHONY = help install version format lint test run clear uninstall
 .DEFAULT_GOAL = help
 
 $(VENV)/bin/activate: requirements.txt requirements-dev.txt
@@ -32,24 +32,13 @@ format: $(VENV)/bin/activate  ## ✍  Format code.
 lint: $(VENV)/bin/activate  ## 🔎 Lint code.
 	@$(VENV)/bin/brunette ${PROJECT}/ --config=setup.cfg --check
 	@$(VENV)/bin/flake8 ${PROJECT}/ --config=setup.cfg --count --show-source --statistics --benchmark
-	@$(VENV)/bin/interrogate ${PROJECT}/ --config=setup.cfg
-	@$(VENV)/bin/vulture ${PROJECT}/ --ignore-names on_* --min-confidence 80
-	@$(VENV)/bin/mypy ${PROJECT}/ --ignore-missing-imports
 
 .PHONY: run
 run: $(VENV)/bin/activate  ## 🏃 Run the project.
 	@$(PYTHON) -m ${PROJECT}
 
-.PHONY: test
-test: $(VENV)/bin/activate  ## 🧪 Run tests and generate coverage report.
-	@$(VENV)/bin/pytest -v --cov=${PROJECT}/ --cov-report=xml -l --tb=short --maxfail=1
-
-.PHONY: watch
-watch: $(VENV)/bin/activate  ## 👁️  Run tests on every change.
-	ls **/**.py | entr pytest -s -vvv -l --tb=long --maxfail=1 tests/
-
-.PHONY: clean
-clean:  ## 🧹 Clean unused files.
+.PHONY: clear
+clear:  ## 🧹 Clean unused files.
 	@$(PYTHON) -Bc "for p in __import__('pathlib').Path('.').rglob('*.py[co]'): p.unlink()"
 	@$(PYTHON) -Bc "for p in __import__('pathlib').Path('.').rglob('__pycache__'): p.rmdir()"
 	@rm -rf .cache

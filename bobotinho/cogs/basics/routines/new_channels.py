@@ -3,7 +3,7 @@ from bobotinho import log
 from bobotinho.database import Channel, User
 from bobotinho.utils import convert
 
-delta = 10
+delta = 20
 
 
 async def routine(bot) -> None:
@@ -27,4 +27,5 @@ async def routine(bot) -> None:
                 channel.online,
             )
         except Exception as e:
-            log.exception(e, extra={"locals": locals()})
+            log.error(e, extra={"locals": locals()})
+    log.info(f"{bot.nick} | #({len(bot.connected_channels)}/{len(bot.channels)}) | {bot._prefix}{len(bot.commands)}")

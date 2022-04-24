@@ -25,6 +25,7 @@ from twitchio.message import Message
 from bobotinho import database, log
 from bobotinho.api import Api
 from bobotinho.analytics import Analytics
+from bobotinho.cache import TTLOrderedDict
 from bobotinho.database import Channel, User
 from bobotinho.exceptions import (
     BotIsOffline,
@@ -131,27 +132,27 @@ class TwitchBot(Bot):
             client_secret=config.client_secret,
             prefix=config.prefix,
             case_insensitive=True,
+            initial_channels=[config.dev]
         )
         self.config = config
         self.boot_timestamp = timezone.now()
         self.dev = config.dev
         self.site = config.site_url
-        self.api = Api(config.api_token)
-        self.analytics = Analytics(config.analytics_key)
         self.blocked = []
         self.listeners = []
         self.routines = []
         self.channels = {}
-        self.cache = None
+        self.api = Api(config.api_key)
+        self.analytics = Analytics(config.analytics_key)
+        self.cache = Redis.from_url(config.redis_url, encoding="utf-8", decode_responses=True) if config.redis_url else TTLOrderedDict()
 
     @property
     def boot_ago(self):
         return timezone.now() - self.boot_timestamp
 
     async def start(self) -> None:
-        self.cache = Redis.from_url(self.config.redis_url, encoding="utf-8", decode_responses=True)
-        self.load_cogs()
         await database.init(self.config.database_url)
+        self.load_cogs()
         await self.connect()
         await self.add_all_channels()
         await self.fetch_blocked()
@@ -225,7 +226,6 @@ class TwitchBot(Bot):
                     delta=getattr(module, "delta", None),
                 )
                 self.routines.append(routine)
-                log.info(f"Routine '{filename[:-3]}' loaded with time/delta '{routine._time or routine._delta}'")
             except Exception as e:
                 log.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
@@ -250,8 +250,6 @@ class TwitchBot(Bot):
 
     async def add_all_channels(self) -> None:
         channels = await Channel.all().select_related("user")
-        if not channels:
-            self.add_channel(self.dev.lower(), 0)
         for channel in channels:
             if channel.user.block:
                 continue
@@ -269,6 +267,7 @@ class TwitchBot(Bot):
     async def reply(self, ctx: Ctx) -> bool:
         if not ctx.response:
             return False
+
         try:
             ctx.response = f"{ctx.user or ctx.author.name}, {ctx.response}"
             await ctx.reply(ctx.response)
@@ -286,6 +285,9 @@ class TwitchBot(Bot):
         return False
 
     async def handle_commands(self, ctx: Ctx) -> bool:
+        if ctx.response or not ctx.prefix or not ctx.is_valid:
+            return False
+
         log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
         await self.analytics.received(
             user_id=ctx.author.id,
@@ -315,6 +317,9 @@ class TwitchBot(Bot):
         return await self.reply(ctx)
 
     async def handle_listeners(self, ctx: Ctx) -> bool:
+        if not ctx.user:
+            return False
+
         for listener in self.listeners:
             if ctx.response:
                 break
@@ -327,7 +332,7 @@ class TwitchBot(Bot):
 
     async def event_ready(self) -> None:
         [routine.start(self) for routine in self.routines]
-        log.info(f"{self.nick} | #{len(self.channels)} | {self._prefix}{len(self.commands)}")
+        log.info(f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {self._prefix}{len(self.commands)}")
 
     async def event_raw_data(self, data) -> None:
         bot_part_prefix = f":{self.nick}!{self.nick}@{self.nick}.tmi.twitch.tv PART"
@@ -366,8 +371,5 @@ class TwitchBot(Bot):
         ctx: Ctx = await self.get_context(message, cls=Ctx)
         ctx.user = await User.update_or_none(ctx)
 
-        if ctx.user:
-            await self.handle_listeners(ctx)
-
-        if ctx.response or not ctx.prefix or not ctx.is_valid:
-            await self.handle_commands(ctx)
+        await self.handle_listeners(ctx)
+        await self.handle_commands(ctx)
