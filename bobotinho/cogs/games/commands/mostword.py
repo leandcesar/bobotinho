@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from asyncio.exceptions import TimeoutError
 
-from bobotinho.apis import Dicio
 from bobotinho.utils import convert
 
 aliases = ["mw"]
@@ -23,7 +22,7 @@ async def command(ctx):
         if pattern not in word or word in words:
             return False
         words.append(word)
-        if not Dicio.exists(word):
+        if not ctx.bot.loop.run_until_complete(ctx.bot.api.dictionary(word)):
             return False
         if users.get(message.author.name):
             users[message.author.name] += 1

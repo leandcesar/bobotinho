@@ -6,6 +6,5 @@ aliases = ["rcg"]
 
 
 async def command(ctx):
-    hex = random.randint(0, 0xFFFFFF)
-    color = f"#{hex:06X}"
+    color = f"#{random.randint(0, 0xFFFFFF):06X}"
     ctx.response = f"aqui está uma cor aleatória: {color}"

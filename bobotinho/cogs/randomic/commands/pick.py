@@ -6,4 +6,6 @@ usage = "digite o comando e opções separadas por espaço"
 
 
 async def command(ctx, *, content: str):
-    ctx.response = random.choice(content.replace(",", "").split())
+    delimiter = "," if "," in content else " "
+    options = content.split(delimiter)
+    ctx.response = random.choice(options)

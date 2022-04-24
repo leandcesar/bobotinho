@@ -2,18 +2,16 @@
 import re
 from asyncio.exceptions import TimeoutError
 
-from bobotinho.utils import convert
-
 aliases = ["hm"]
 description = "Jogo da forca, descubra a palavra em até 5 tentativas e 2 minutos"
 extra_checks = ["Role.admin", "Check.game"]
 
 
 async def command(ctx):
-    word: str = convert.txt2randomline("bobotinho//data//words.txt")
-    hidden_word: str = re.sub(r"\w", "_", word)
-    wrongs: dict = {}
-    corrects: dict = {}
+    word = await ctx.bot.api.word()
+    hidden_word = re.sub(r"\w", "_", word)
+    wrongs = {}
+    corrects = {}
 
     def play(message) -> bool:
         if len(message.content) != 1:

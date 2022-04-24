@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from bobotinho.apis import Twitch
 from bobotinho.utils import convert
 
 description = "Saiba quando algum usuário criou sua conta"
@@ -12,11 +11,10 @@ async def command(ctx, arg: str = ""):
     if name == ctx.bot.nick:
         ctx.response = "eu sempre existi..."
     else:
-        creation = await Twitch.creation(name)
-        mention = "você" if name == ctx.author.name else f"@{name}"
-        if not creation:
-            ctx.response = "não foi possível verificar isso"
-        elif "não existe" in creation:
-            ctx.response = creation
-        else:
+        data = await ctx.bot.api.twitch("creation", name)
+        if data and data["creation"]:
+            creation = data["creation"]
+            mention = "você" if name == ctx.author.name else f"@{name}"
             ctx.response = f"{mention} criou a conta em {creation}"
+        else:
+            ctx.response = f"{mention} não existe"

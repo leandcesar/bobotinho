@@ -1,61 +1,65 @@
 # -*- coding: utf-8 -*-
-from bobotinho import aiorequests
+from typing import Optional, Union
+
+from aiohttp import ClientSession
 
 
 class Api:
-    url = "https://bobotinho.herokuapp.com"
+    url: str = "https://bobotinho.herokuapp.com"
+    session: ClientSession = ClientSession()
 
-    def __init__(self, token: str) -> None:
-        self.token = token
+    def __init__(self, key: str) -> None:
+        self.key = key
 
     @property
     def headers(self) -> dict:
-        return {"Authorization": f"Bearer {self.token}"}
+        return {"Authorization": f"Bearer {self.key}"}
 
-    async def ping(self) -> bool:
-        response = await aiorequests.get(f"{self.url}/ping", headers=self.headers)
-        return response.status == 204
+    async def request(self, endpoint: str, method: str = "get", params: dict = {}) -> Optional[Union[bool, dict, str]]:
+        async with self.session.request(
+            method,
+            f"{self.url}/{endpoint}",
+            headers=self.headers,
+            params={k: v for k, v in params.items() if v is not None},
+        ) as response:
+            if response.status == 204:
+                return True
+            if response.ok:
+                data = await response.json()
+                return data["data"].get("response") or data["data"]
 
-    async def color(self, hex_color: str) -> dict:
-        response = await aiorequests.get(f"{self.url}/tools/color", params={"hex": hex_color}, headers=self.headers)
-        return response["data"]
+    async def ping(self) -> Optional[bool]:
+        return await self.request(f"ping")
 
-    async def currency(self, base: str, quote: str) -> float:
-        response = await aiorequests.get(f"{self.url}/tools/currency", params={"base": base, "quote": quote}, headers=self.headers)
-        return float(response["data"]["response"])
+    async def color(self, hex_color: str) -> Optional[dict]:
+        return await self.request("tools/color", params={"hex": hex_color})
 
-    async def dictionary(self, word: str) -> dict:
-        response = await aiorequests.get(f"{self.url}/tools/dictionary", params={"word": word}, headers=self.headers)
-        return response["data"]
+    async def currency(self, base: str, quote: str) -> Optional[str]:
+        return await self.request("tools/currency", params={"base": base, "quote": quote})
 
-    async def math(self, expression: str) -> str:
-        response = await aiorequests.get(f"{self.url}/tools/math", params={"expression": expression}, headers=self.headers)
-        return response["data"]["response"]
+    async def dictionary(self, word: str) -> Optional[dict]:
+        return await self.request("tools/dictionary", params={"word": word})
 
-    async def translate(self, text: str, source: str, target: str) -> str:
-        response = await aiorequests.get(f"{self.url}/tools/translate", params={"text": text, "source": source, "target": target}, headers=self.headers)
-        return response["data"]["response"]
+    async def math(self, expression: str) -> Optional[str]:
+        return await self.request("tools/math", params={"expression": expression})
 
-    async def twitch(self, infos: str, channel: str, user: str = None) -> dict:
-        response = await aiorequests.get(f"{self.url}/tools/twitch", params={"infos": infos, "channel": channel, "user": user}, headers=self.headers)
-        return response["data"]
+    async def translate(self, text: str, source: str, target: str) -> Optional[str]:
+        return await self.request("tools/translate", params={"text": text, "source": source, "target": target})
 
-    async def weather(self, location: str) -> dict:
-        response = await aiorequests.get(f"{self.url}/tools/weather", params={"location": location}, headers=self.headers)
-        return response["data"]
+    async def twitch(self, infos: str, channel: str, user: str = None) -> Optional[dict]:
+        return await self.request("tools/twitch", params={"infos": infos, "channel": channel, "user": user})
 
-    async def joke(self) -> str:
-        response = await aiorequests.get(f"{self.url}/random/joke", headers=self.headers)
-        return response["data"]["response"]
+    async def weather(self, location: str) -> Optional[dict]:
+        return await self.request("tools/weather", params={"location": location})
 
-    async def quote(self) -> str:
-        response = await aiorequests.get(f"{self.url}/random/quote", headers=self.headers)
-        return response["data"]["response"]
+    async def joke(self) -> Optional[str]:
+        return await self.request("random/joke")
 
-    async def sadcat(self) -> str:
-        response = await aiorequests.get(f"{self.url}/random/sadcat", headers=self.headers)
-        return response["data"]["response"]
+    async def quote(self) -> Optional[str]:
+        return await self.request("random/quote")
 
-    async def word(self) -> str:
-        response = await aiorequests.get(f"{self.url}/random/word", headers=self.headers)
-        return response["data"]["response"]
+    async def sadcat(self) -> Optional[str]:
+        return await self.request("random/sadcat")
+
+    async def word(self) -> Optional[str]:
+        return await self.request("random/word")

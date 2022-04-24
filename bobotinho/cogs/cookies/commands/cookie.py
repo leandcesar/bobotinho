@@ -18,7 +18,7 @@ async def command(ctx, arg: str = ""):
         if amount > 1:
             ctx.response = f"você comeu {amount} cookies de uma só vez 🥠"
         else:
-            quote = convert.txt2randomline(FILENAME)
+            quote = await ctx.bot.api.quote()
             ctx.response = f"{quote} 🥠"
     elif amount > 1:
         ctx.response = f"você não tem {amount} cookies estocados para comer"

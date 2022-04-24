@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from bobotinho.utils import convert
+import random
 
 aliases = ["8ball"]
 description = "Tenha sua pergunta respondida por uma previsão"
@@ -7,7 +7,7 @@ usage = "digite o comando e uma pergunta para receber uma previsão"
 
 
 async def command(ctx, *, content: str):
-    predict = convert.list2randomline(
+    predict = random.choice(
         [
             "ao meu ver, sim",
             "com certeza",

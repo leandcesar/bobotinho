@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from bobotinho.apis import Color
 from bobotinho.database import User
 from bobotinho.utils import convert
 
@@ -18,7 +17,11 @@ async def command(ctx, arg: str = ""):
     else:
         mention = "você" if name == ctx.author.name else f"@{name}"
         ctx.response = f"{mention} usa a cor {user.color}"
-        if color_name := await Color.name(user.color[1:]):
+        try:
+            color = await ctx.bot.api.color(user.color)
+            color_name = color["name"]
             ctx.response += f" ({color_name})"
+        except Exception:
+            pass
         if user.saved_color:
             ctx.response += f" e salvou a cor {user.saved_color}"

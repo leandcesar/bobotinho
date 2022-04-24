@@ -7,5 +7,6 @@ description = "Receba uma piada ou trocadilho aleatório"
 
 
 async def command(ctx):
-    joke = convert.txt2randomline(FILENAME)
-    ctx.response = f"{joke} 4Head"
+    joke = await ctx.bot.api.joke()
+    if joke:
+        ctx.response = f"{joke} 4Head"

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from bobotinho.apis import Twitch
 from bobotinho.utils import convert, timetools
 
 description = "Saiba há quanto tempo algum usuário criou sua conta"
@@ -12,13 +11,10 @@ async def command(ctx, arg: str = ""):
     if name == ctx.bot.nick:
         ctx.response = "eu sempre existi..."
     else:
-        accountage = await Twitch.account_age(name)
-        mention = "você" if name == ctx.author.name else f"@{name}"
-        if not accountage:
-            ctx.response = "não foi possível verificar isso"
-        elif "não existe" in accountage:
-            ctx.response = accountage
-        elif age := timetools.birthday(accountage):
-            ctx.response = f"hoje completa {age} que {mention} criou a conta 🎂"
+        data = await ctx.bot.api.twitch("account_age", name)
+        if data and data["account_age"]:
+            account_age = data["account_age"]
+            mention = "você" if name == ctx.author.name else f"@{name}"
+            ctx.response = f"{mention} criou a conta há {account_age}"
         else:
-            ctx.response = f"{mention} criou a conta há {accountage}"
+            ctx.response = f"{mention} não existe"

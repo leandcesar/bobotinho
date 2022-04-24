@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from asyncio.exceptions import TimeoutError
 
-from bobotinho.apis import Dicio
 from bobotinho.utils import convert
 
 aliases = ["lw"]
@@ -10,9 +9,9 @@ extra_checks = ["Role.admin", "Check.game"]
 
 
 async def command(ctx):
-    pattern: str = convert.txt2randomline("bobotinho//cogs//games//syllables.txt")
-    users: dict = {}
-    words: list = []
+    pattern = convert.txt2randomline("bobotinho//cogs//games//syllables.txt")
+    users = {}
+    words = []
 
     def play(message) -> bool:
         if len(message.content.split(" ")) != 1:
@@ -23,7 +22,7 @@ async def command(ctx):
         if pattern not in word or word in words:
             return False
         words.append(word)
-        if not Dicio.exists(word):
+        if not ctx.bot.loop.run_until_complete(ctx.bot.api.dictionary(word)):
             return False
         if not users.values() or len(word) > len(list(users.values())[0]):
             users[message.author.name] = word

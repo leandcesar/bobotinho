@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from bobotinho.apis import Currency
 from bobotinho.utils import convert
 
 description = "Saiba o valor da conversão de uma criptomoeda em reais"
@@ -13,9 +12,8 @@ async def command(ctx, arg1: str = "", arg2: str = ""):
     target = "BRL"
     base = translate.get(invoke_by) or arg1.upper()
     amount = convert.str2float(arg1) or convert.str2float(arg2) or 1.0
-    conversion = Currency.convert(base, target)
-    total = amount * conversion
+    conversion = await ctx.bot.api.currency(base, target)
+    total = amount * float(conversion)
     amount = convert.number2str(amount)
     total = convert.number2str(total)
     ctx.response = f"{amount} {base} = {total} {target}"
-    ctx.response = "a conversão ultrapassou um valor extremamente alto"
