@@ -269,7 +269,6 @@ class TwitchBot(Bot):
             return False
 
         try:
-            ctx.response = f"{ctx.user or ctx.author.name}, {ctx.response}"
             await ctx.reply(ctx.response)
         except Exception as e:
             log.error(e, extra={"ctx": dict(ctx)})
