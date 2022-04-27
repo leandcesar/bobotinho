@@ -10,6 +10,6 @@ async def routine(bot) -> None:
     for channel in disconnected_channels:
         try:
             await bot.join_channels([channel])
-        except Exception as e:
-            log.error(e, extra={"locals": locals()})
+        except Exception:
+            bot.channels.pop(channel, None)
     log.info(f"{bot.nick} | #({len(bot.connected_channels)}/{len(bot.channels)}) | {bot._prefix}{len(bot.commands)}")

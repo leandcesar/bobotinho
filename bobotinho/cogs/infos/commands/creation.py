@@ -11,10 +11,10 @@ async def command(ctx, arg: str = ""):
     if name == ctx.bot.nick:
         ctx.response = "eu sempre existi..."
     else:
+        mention = "você" if name == ctx.author.name else f"@{name}"
         data = await ctx.bot.api.twitch("creation", name)
         if data and data["creation"]:
             creation = data["creation"]
-            mention = "você" if name == ctx.author.name else f"@{name}"
             ctx.response = f"{mention} criou a conta em {creation}"
         else:
             ctx.response = f"{mention} não existe"
