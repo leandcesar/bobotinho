@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-import time
 from collections import OrderedDict
 from threading import RLock
+from time import time
+from typing import Union
+
+from redis import Redis
 
 
 class TTLOrderedDict(OrderedDict):
@@ -15,13 +18,9 @@ class TTLOrderedDict(OrderedDict):
             return expire and expire < now
 
     def _purge(self) -> None:
-        now = time.time()
-        [
+        now = time()
+        for key in (key for key in list(super().__iter__()) if self._expired(key, now)):
             self.__delitem__(key)
-            for key in [
-                key for key in list(super().__iter__()) if self._expired(key, now)
-            ]
-        ]
 
     def __setitem__(self, key: str, value: str) -> None:
         with self._lock:
@@ -34,7 +33,7 @@ class TTLOrderedDict(OrderedDict):
 
     def __getitem__(self, key: str) -> str:
         with self._lock:
-            now = time.time()
+            now = time()
             if self._expired(key, now):
                 self.__delitem__(key)
                 raise KeyError
@@ -50,7 +49,7 @@ class TTLOrderedDict(OrderedDict):
             return False
         with self._lock:
             self._purge()
-            expire = time.time() + ex if ex else None
+            expire = time() + ex if ex else None
             super().__setitem__(key, (expire, value))
             return True
 
@@ -70,3 +69,10 @@ class TTLOrderedDict(OrderedDict):
 
     def close(self) -> None:
         pass
+
+
+class Cache(TTLOrderedDict):
+    def __new__(cls, *, redis_url: str = None) -> Union[Redis, TTLOrderedDict]:
+        if redis_url:
+            return Redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
+        return TTLOrderedDict()

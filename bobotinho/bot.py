@@ -2,9 +2,8 @@
 import inspect
 import os
 from importlib import import_module, types
-from redis import Redis
 from tortoise import timezone
-from typing import Optional
+from typing import List, Optional
 
 from twitchio.ext.commands import (
     Bot,
@@ -25,7 +24,7 @@ from twitchio.message import Message
 from bobotinho import database, log
 from bobotinho.api import Api
 from bobotinho.analytics import Analytics
-from bobotinho.cache import TTLOrderedDict
+from bobotinho.cache import Cache
 from bobotinho.database import Channel, User
 from bobotinho.exceptions import (
     BotIsOffline,
@@ -125,43 +124,47 @@ class Check:
         return True
 
 
-class TwitchBot(Bot):
-    def __init__(self, config):
+class Bobotinho(Bot):
+    def __init__(self, config, *, instance: int, channels: List[Channel], cache: Cache):
+        self.instance = instance
+        self.boot = timezone.now()
+
+        self.config = config
+        self.dev = config.dev
+        self.site = config.site_url
+
+        self.blocked = []
+        self.listeners = []
+        self.routines = []
+
+        self.api = Api(config.api_key)
+        self.analytics = Analytics(config.analytics_key)
+        self.cache = cache
+
+        self.channels = {
+            channel.user.name: {
+                "id": channel.user_id,
+                "banwords": list(channel.banwords.keys()),
+                "disabled": list(channel.disabled.keys()),
+                "online": channel.online,
+            }
+            for channel in channels
+            if not channel.user.block
+        }
+
         super().__init__(
             token=config.access_token,
             client_secret=config.client_secret,
             prefix=config.prefix,
             case_insensitive=True,
-            initial_channels=[config.dev]
+            initial_channels=list(self.channels.keys()),
         )
-        self.config = config
-        self.boot_timestamp = timezone.now()
-        self.dev = config.dev
-        self.site = config.site_url
-        self.blocked = []
-        self.listeners = []
-        self.routines = []
-        self.channels = {}
-        self.api = Api(config.api_key)
-        self.analytics = Analytics(config.analytics_key)
-        self.cache = Redis.from_url(config.redis_url, encoding="utf-8", decode_responses=True) if config.redis_url else TTLOrderedDict()
+
+        self.load_cogs()
 
     @property
     def boot_ago(self):
-        return timezone.now() - self.boot_timestamp
-
-    async def start(self) -> None:
-        await database.init(self.config.database_url)
-        self.load_cogs()
-        await self.connect()
-        await self.add_all_channels()
-        await self.fetch_blocked()
-
-    async def stop(self) -> None:
-        [routine.stop() for routine in self.routines]
-        self.cache.close()
-        await database.close()
-        await self.close()
+        return timezone.now() - self.boot
 
     def add_checks(self) -> None:
         global_checks = [Check.online, Check.enabled, Check.banword]
@@ -240,30 +243,6 @@ class TwitchBot(Bot):
             if "routines" in paths:
                 self.load_routines(os.path.join(base, cog, "routines"))
 
-    def add_channel(self, name, id, banwords=[], disabled=[], online=True) -> None:
-        if name in self.channels:
-            log.warning(f"'{name}' already added")
-        else:
-            self.channels[name] = {
-                "id": id, "banwords": banwords, "disabled": disabled, "online": online
-            }
-
-    async def add_all_channels(self) -> None:
-        channels = await Channel.all().select_related("user")
-        for channel in channels:
-            if channel.user.block:
-                continue
-            self.add_channel(
-                channel.user.name,
-                channel.user_id,
-                list(channel.banwords.keys()),
-                list(channel.disabled.keys()),
-                channel.online,
-            )
-
-    async def fetch_blocked(self) -> None:
-        self.blocked = await User.filter(block=True).all().values_list("id", flat=True)
-
     async def reply(self, ctx: Ctx) -> bool:
         if not ctx.response:
             return False
@@ -306,6 +285,9 @@ class TwitchBot(Bot):
                 },
             )
 
+        if ctx.user.block:
+            return False
+
         try:
             await self.invoke(ctx)
         except MissingRequiredArgument:
@@ -316,7 +298,7 @@ class TwitchBot(Bot):
         return await self.reply(ctx)
 
     async def handle_listeners(self, ctx: Ctx) -> bool:
-        if not ctx.user:
+        if not ctx.user or ctx.user.block:
             return False
 
         for listener in self.listeners:
@@ -330,15 +312,9 @@ class TwitchBot(Bot):
         return await self.reply(ctx)
 
     async def event_ready(self) -> None:
-        [routine.start(self) for routine in self.routines]
         log.info(f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {self._prefix}{len(self.commands)}")
-
-    async def event_raw_data(self, data) -> None:
-        bot_part_prefix = f":{self.nick}!{self.nick}@{self.nick}.tmi.twitch.tv PART"
-        if data.startswith(f"{bot_part_prefix} #"):
-            i = len(f"{bot_part_prefix} #")
-            channel = data[i:].strip("\r\n")
-            self._connection._cache.pop(channel)
+        for routine in self.routines:
+            routine.start(self)
 
     async def event_command_error(self, ctx: Ctx, e: Exception) -> None:
         if isinstance(e, CommandIsDisabled):
