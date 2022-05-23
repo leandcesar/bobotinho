@@ -29,7 +29,7 @@ class Api:
                 return data["data"].get("response") or data["data"]
 
     async def ping(self) -> Optional[bool]:
-        return await self.request(f"ping")
+        return await self.request("ping")
 
     async def color(self, hex_color: str) -> Optional[dict]:
         return await self.request("tools/color", params={"hex": hex_color})

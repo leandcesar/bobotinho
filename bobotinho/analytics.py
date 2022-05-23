@@ -26,8 +26,6 @@ class Analytics:
                 "name": kwargs.get("intent"),
                 "confidence": kwargs.get("confidence"),
             },
-            # "images": [],
-            # "buttons": [{"id": 1, "label": "text 1"}],
             "platformUserJson": {
                 "firstName": kwargs.get("author"),
                 "locale": kwargs.get("locale"),
