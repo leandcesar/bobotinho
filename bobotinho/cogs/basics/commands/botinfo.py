@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+from bobotinho.database import Channel
+
 description = "Veja as principais informações sobre o bot"
 aliases = ["bot", "info"]
 
 
 async def command(ctx):
+    num_channels = await Channel.count()
+    num_instances = (num_channels // 50) + 1
+    num_commands = len(ctx.bot.commands)
     ctx.response = (
-        f"estou conectado à {len(ctx.bot.channels)} canais, "
-        f"com {len(ctx.bot.commands)} comandos, "
-        f"feito por @{ctx.bot.dev} em Python e hospedado em Heroku"
+        f"estou conectado à {num_channels} canais, com {num_commands} comandos, "
+        f"rodando em {num_instances} instâncias, feito por @{ctx.bot.dev}"
     )
