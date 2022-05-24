@@ -24,7 +24,11 @@ def main():
         exit("[CRITICAL] Database connection failure")
 
     try:
-        bots = [Bobotinho(config, instance=i + 1, channels=channels[i: i + 50], cache=cache) for i in range(0, len(channels), 50)]
+        per = 50
+        bots = [
+            Bobotinho(config, instance=int(i / 50) + 1, channels=channels[i: i + per], cache=cache)
+            for i in range(0, len(channels), per)
+        ]
     except Exception as e:
         log.critical(e, exc_info=1)
         cache.close()

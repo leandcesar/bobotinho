@@ -6,7 +6,7 @@ aliases = ["bot", "info"]
 
 
 async def command(ctx):
-    num_channels = await Channel.count()
+    num_channels = await Channel.all().count()
     num_instances = (num_channels // 50) + 1
     num_commands = len(ctx.bot.commands)
     ctx.response = (
