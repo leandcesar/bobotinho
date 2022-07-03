@@ -4,4 +4,4 @@ aliases = ["pong"]
 
 
 async def command(ctx):
-    ctx.response = f"ping 🏓 (instância {ctx.bot.instance})"
+    ctx.response = f"ping 🏓"

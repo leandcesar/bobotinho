@@ -125,8 +125,7 @@ class Check:
 
 
 class Bobotinho(Bot):
-    def __init__(self, config, *, instance: int, channels: List[Channel], cache: Cache):
-        self.instance = instance
+    def __init__(self, config, *, channels: List[Channel], cache: Cache):
         self.boot = timezone.now()
 
         self.config = config
@@ -160,18 +159,9 @@ class Bobotinho(Bot):
             initial_channels=list(self.channels.keys()),
         )
 
-        self.load_cogs()
-
-        for routine in self.routines:
-            routine.start(self)
-
     @property
     def boot_ago(self):
         return timezone.now() - self.boot
-
-    def add_checks(self) -> None:
-        global_checks = [Check.online, Check.enabled, Check.banword]
-        [self.check(check) for check in global_checks]
 
     def load_commands(self, path: str) -> None:
         for filename in os.listdir(path):
@@ -236,7 +226,8 @@ class Bobotinho(Bot):
                 log.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
 
     def load_cogs(self, base: str = "bobotinho/cogs") -> None:
-        self.add_checks()
+        global_checks = [Check.online, Check.enabled, Check.banword]
+        [self.check(check) for check in global_checks]
         for cog in os.listdir(base):
             paths: str = os.listdir(os.path.join(base, cog))
             if "commands" in paths:
@@ -315,7 +306,10 @@ class Bobotinho(Bot):
         return await self.reply(ctx)
 
     async def event_ready(self) -> None:
-        log.info(f"{self.nick} [{self.instance}] | #({len(self.connected_channels)}/{len(self.channels)}) | {self._prefix}{len(self.commands)}")
+        self.load_cogs()
+        for routine in self.routines:
+            routine.start(self)
+        log.info(f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {self._prefix}{len(self.commands)}")
 
     async def event_command_error(self, ctx: Ctx, e: Exception) -> None:
         if isinstance(e, CommandIsDisabled):

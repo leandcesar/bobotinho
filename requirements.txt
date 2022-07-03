@@ -3,7 +3,7 @@ aiocache==0.11.1
 aiohttp==3.8.1
 bugsnag==4.2.0
 redis==4.2.2
-twitchio==2.2.0
+twitchio==2.3.0
 # database
 asyncpg==0.25.0
 tortoise-orm==0.19.0

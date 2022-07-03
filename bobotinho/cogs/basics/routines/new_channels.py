@@ -7,7 +7,7 @@ delta = 15
 
 
 async def routine(bot) -> None:
-    log.info(f"{bot.nick} [{bot.instance}] | #({len(bot.connected_channels)}/{len(bot.channels)}) | {bot._prefix}{len(bot.commands)}")
+    log.info(f"{bot.nick} | #({len(bot.connected_channels)}/{len(bot.channels)}) | {bot._prefix}{len(bot.commands)}")
 
     connected_channels = [channel.name for channel in bot.connected_channels]
     disconnected_channels = [channel for channel in bot.channels.keys() if channel not in connected_channels]
