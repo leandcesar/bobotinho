@@ -159,6 +159,10 @@ class Bobotinho(Bot):
             initial_channels=list(self.channels.keys()),
         )
 
+        self.load_cogs()
+        for routine in self.routines:
+            routine.start(self)
+
     @property
     def boot_ago(self):
         return timezone.now() - self.boot
@@ -306,9 +310,6 @@ class Bobotinho(Bot):
         return await self.reply(ctx)
 
     async def event_ready(self) -> None:
-        self.load_cogs()
-        for routine in self.routines:
-            routine.start(self)
         log.info(f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {self._prefix}{len(self.commands)}")
 
     async def event_command_error(self, ctx: Ctx, e: Exception) -> None:
