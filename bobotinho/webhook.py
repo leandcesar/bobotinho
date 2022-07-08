@@ -3,7 +3,7 @@ from aiohttp import ClientSession
 
 
 class Webhook:
-    session: ClientSession = ClientSession()
+    session = ClientSession()
 
     async def discord(self, url: str, *, content: str, user_name: str = None, user_avatar_url: str = None) -> bool:
         data = {

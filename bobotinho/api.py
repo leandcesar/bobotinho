@@ -5,8 +5,8 @@ from aiohttp import ClientSession
 
 
 class Api:
-    url: str = "https://bobotinho.herokuapp.com"
-    session: ClientSession = ClientSession()
+    site_url = "https://bobotinho.herokuapp.com"
+    session = ClientSession()
 
     def __init__(self, key: str) -> None:
         self.key = key

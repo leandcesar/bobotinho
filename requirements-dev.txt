@@ -1,8 +1,8 @@
 -r requirements.txt
 brunette
 flake8
-interrogate
 gitchangelog
+interrogate
 isort
 mkdocs
 mypy

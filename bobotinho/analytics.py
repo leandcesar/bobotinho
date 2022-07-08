@@ -3,8 +3,8 @@ from aiohttp import ClientSession
 
 
 class Analytics:
-    url: str = "https://tracker.dashbot.io/track"
-    session: ClientSession = ClientSession()
+    url = "https://tracker.dashbot.io/track"
+    session = ClientSession()
 
     def __init__(self, key: str) -> None:
         self.key = key
