@@ -1,11 +1,8 @@
 -r requirements.txt
-brunette
-flake8
-gitchangelog
-interrogate
-isort
-mkdocs
 mypy
 pre-commit
-vulture
-watchgod
+pytest
+pytest-aiohttp
+pytest-asyncio
+pytest-cov
+types-redis

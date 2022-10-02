@@ -1,16 +1,19 @@
-from bobotinho.config import Config
-from bobotinho.logger import Log
+# -*- coding: utf-8 -*-
+from bobotinho.ext.config import config
+from bobotinho.ext.logger import logger
+from bobotinho.services.bugsnag import bugsnag_handler
 
-config = Config()
-
-__title__ = "bobotinho-bot"
+__title__ = "bobotinho"
 __author__ = "Leandro César"
 __license__ = "GNU"
 __copyright__ = "Copyright 2020 bobotinho"
 __version__ = config.version
 
-log = Log(
-    filename=config.log_filename,
-    level=config.log_level,
-    bugsnag={"key": config.bugsnag_key, "version": __version__, "stage": config.stage},
-)
+try:
+    if config.bugsnag_key is None:
+        raise KeyError("'BUGSNAG_KEY' env var not set, couldn't notify")
+    handler = bugsnag_handler(key=config.bugsnag_key, version=config.version, stage=config.stage)
+except Exception as error:
+    logger.warning(error)
+else:
+    logger.addHandler(handler)

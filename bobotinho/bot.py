@@ -1,346 +1,141 @@
 # -*- coding: utf-8 -*-
-import inspect
-import os
-from importlib import import_module, types
-from tortoise import timezone
-from typing import List, Optional
-
-from twitchio.ext.commands import (
+from bobotinho import config, logger
+from bobotinho.ext.cache import cache
+from bobotinho.ext.commands import (
+    Any,
     Bot,
-    Bucket,
-    Command,
+    Callable,
     Context,
-    Cooldown,
+    Coroutine,
+    Message,
+    routine,
 )
-from twitchio.ext.commands.errors import (
+from bobotinho.ext.exceptions import (
     CheckFailure,
     CommandNotFound,
     CommandOnCooldown,
-    MissingRequiredArgument,
+    InvalidArgument,
 )
-from twitchio.ext.routines import Routine
-from twitchio.message import Message
-
-from bobotinho import database, log
-from bobotinho.api import Api
-from bobotinho.analytics import Analytics
-from bobotinho.cache import Cache
-from bobotinho.database import Channel, User
-from bobotinho.exceptions import (
-    BotIsOffline,
-    CommandIsDisabled,
-    ContentHasBanword,
-    GameIsAlreadyRunning,
-    InvalidName,
-    UserIsNotAllowed,
-)
-from bobotinho.utils import convert
-
-DEFAULT_COOLDOWN_RATE = 2
-DEFAULT_COOLDOWN_PER = 5
-DEFAULT_COOLDOWN_BUCKET = Bucket.user
-
-
-class Ctx(Context):
-    def __init__(self, message: Message, bot: Bot, **kwargs) -> None:
-        super().__init__(message, bot, **kwargs)
-        self.response: Optional[str] = None
-        self.user: User = None
-
-    def __iter__(self):
-        yield "author", getattr(self.author, "name", None)
-        yield "channel", getattr(self.channel, "name", None)
-        yield "user", getattr(self.user, "id", None)
-        yield "message", getattr(self.message, "content", None)
-        yield "response", self.response
-
-
-class Role:
-    @staticmethod
-    def dev(ctx: Ctx) -> bool:
-        return ctx.author.name == ctx.bot.dev
-
-    @staticmethod
-    def owner(ctx: Ctx) -> bool:
-        return ctx.author.name == ctx.channel.name
-
-    @staticmethod
-    def admin(ctx: Ctx) -> bool:
-        return ctx.author.is_mod or Role.owner(ctx) or Role.dev(ctx)
-
-    @staticmethod
-    def vip(ctx: Ctx) -> bool:
-        return ctx.author.badges and bool(ctx.author.badges.get("vip"))
-
-    @staticmethod
-    def sub(ctx: Ctx) -> bool:
-        return ctx.author.is_subscriber
-
-    @staticmethod
-    def sponsor(ctx) -> bool:
-        return ctx.user and ctx.user.sponsor
-
-    @staticmethod
-    def any(ctx: Ctx) -> bool:
-        return (
-            Role.sub(ctx)
-            or Role.vip(ctx)
-            or Role.admin(ctx)
-            or Role.owner(ctx)
-            or Role.dev(ctx)
-            or Role.sponsor(ctx)
-        )
-
-
-class Check:
-    @staticmethod
-    def allowed(ctx: Ctx) -> bool:
-        if not Role.any(ctx) and convert.str2url(ctx.message.content) is not None:
-            raise UserIsNotAllowed()
-        return True
-
-    @staticmethod
-    def banword(ctx: Ctx) -> bool:
-        if any(word in ctx.message.content for word in ctx.bot.channels[ctx.channel.name]["banwords"]):
-            raise ContentHasBanword()
-        return True
-
-    @staticmethod
-    def enabled(ctx: Ctx) -> bool:
-        if ctx.command.name in ctx.bot.channels[ctx.channel.name]["disabled"]:
-            raise CommandIsDisabled()
-        return True
-
-    @staticmethod
-    def game(ctx: Ctx) -> bool:
-        if ctx.bot.cache.get(f"game-{ctx.channel.name}"):
-            raise GameIsAlreadyRunning()
-        return True
-
-    @staticmethod
-    def online(ctx: Ctx) -> bool:
-        if not ctx.bot.channels[ctx.channel.name]["online"]:
-            raise BotIsOffline()
-        return True
+from bobotinho.models.channel import ChannelModel
+from bobotinho.models.user import UserModel
+from bobotinho.services.dashbot import Dashbot
 
 
 class Bobotinho(Bot):
-    def __init__(self, config, *, channels: List[Channel], cache: Cache):
-        self.boot = timezone.now()
+    listeners: list[Callable[[Context,], Coroutine[Any, Any, bool]]] = []
+    channels: dict[str, ChannelModel] = {}
+    dashbot: Dashbot
 
-        self.config = config
-        self.dev = config.dev
-        self.site = config.site_url
+    def load_modules(self, cogs: list[str]) -> None:
+        for cog in cogs:
+            module = cog.replace("/", ".")
+            self.load_module(module)
 
-        self.blocked = []
-        self.listeners = []
-        self.routines = []
+    def is_online(self, message: Message) -> bool:
+        return self.channels[message.channel.name].online is True
 
-        self.api = Api(config.api_key)
-        self.analytics = Analytics(config.analytics_key)
-        self.cache = cache
+    def is_enabled(self, ctx: Context, command: str = "") -> bool:
+        command_name = command or ctx.command.name
+        return command_name.lower() not in self.channels[ctx.channel.name].commands_disabled
 
-        self.channels = {
-            channel.user.name: {
-                "id": channel.user_id,
-                "banwords": list(channel.banwords.keys()),
-                "disabled": list(channel.disabled.keys()),
-                "online": channel.online,
-            }
-            for channel in channels
-            if not channel.user.block
-        }
+    async def before_connect(self) -> None:
+        self.check(self.is_enabled)
+        self.dashbot = Dashbot(key=config.dashbot_key)
 
-        super().__init__(
-            token=config.access_token,
-            client_secret=config.client_secret,
-            prefix=config.prefix,
-            case_insensitive=True,
-            initial_channels=list(self.channels.keys()),
-        )
+    async def after_connect(self) -> None:
+        self.new_channels.start()
+        self.check_channels.start()
 
-        self.load_cogs()
-        for routine in self.routines:
-            routine.start(self)
+    async def before_close(self) -> None:
+        self.new_channels.cancel()
+        self.check_channels.cancel()
 
-    @property
-    def boot_ago(self):
-        return timezone.now() - self.boot
+    async def after_close(self) -> None:
+        await self.dashbot.close()
 
-    def load_commands(self, path: str) -> None:
-        for filename in os.listdir(path):
-            if not filename.endswith(".py") or filename.startswith("__"):
-                continue
-            try:
-                local: str = os.path.join(path, filename)
-                name: str = local[:-3].replace("/", ".")
-                package: str = path.replace("/", ".")
-                module: types.ModuleType = import_module(name, package=package)
-                cooldown: dict = getattr(module, "cooldown", {})
-                module.command.__cooldowns__: list = [
-                    Cooldown(
-                        cooldown.get("rate", DEFAULT_COOLDOWN_RATE),
-                        cooldown.get("per", DEFAULT_COOLDOWN_PER),
-                        cooldown.get("bucket", DEFAULT_COOLDOWN_BUCKET),
-                    )
-                ]
-                extra_checks: list = getattr(module, "extra_checks", [])
-                module.command.__checks__ = [eval(check) for check in extra_checks]
-                command: Command = Command(
-                    name=getattr(module, "name", filename[:-3]),
-                    func=module.command,
-                    aliases=getattr(module, "aliases", None),
-                    no_global_checks=getattr(module, "no_global_checks", False),
-                )
-                command.description: str = module.description
-                command.usage: Optional[str] = getattr(module, "usage", None)
-                self.add_command(command)
-            except Exception as e:
-                log.error(f"Command '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
+    def start(self) -> None:
+        self.loop.run_until_complete(self.before_connect())
+        self.loop.create_task(self.connect())
+        self.loop.run_until_complete(self.after_connect())
+        self.loop.run_forever()
 
-    def load_listeners(self, path: str) -> None:
-        for filename in os.listdir(path):
-            if not filename.endswith(".py") or filename.startswith("__"):
-                continue
-            try:
-                local: str = os.path.join(path, filename)
-                name: str = local[:-3].replace("/", ".")
-                package: str = path.replace("/", ".")
-                module: types.ModuleType = import_module(name, package=package)
-                self.listeners.append(module.listener)
-            except Exception as e:
-                log.error(f"Listener '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
-
-    def load_routines(self, path: str) -> None:
-        for filename in os.listdir(path):
-            if not filename.endswith(".py") or filename.startswith("__"):
-                continue
-            try:
-                local: str = os.path.join(path, filename)
-                name: str = local[:-3].replace("/", ".")
-                package: str = path.replace("/", ".")
-                module: types.ModuleType = import_module(name, package=package)
-                routine: Routine = Routine(
-                    coro=module.routine,
-                    time=getattr(module, "time", None),
-                    delta=getattr(module, "delta", None),
-                )
-                self.routines.append(routine)
-            except Exception as e:
-                log.error(f"Routine '{filename[:-3]}' failed to load: {e}", extra={"locals": locals()})
-
-    def load_cogs(self, base: str = "bobotinho/cogs") -> None:
-        global_checks = [Check.online, Check.enabled, Check.banword]
-        [self.check(check) for check in global_checks]
-        for cog in os.listdir(base):
-            paths: str = os.listdir(os.path.join(base, cog))
-            if "commands" in paths:
-                self.load_commands(os.path.join(base, cog, "commands"))
-            if "listeners" in paths:
-                self.load_listeners(os.path.join(base, cog, "listeners"))
-            if "routines" in paths:
-                self.load_routines(os.path.join(base, cog, "routines"))
-
-    async def reply(self, ctx: Ctx) -> bool:
-        if not ctx.response:
-            return False
-
-        try:
-            await ctx.reply(ctx.response)
-        except Exception as e:
-            log.error(e, extra={"ctx": dict(ctx)})
-        else:
-            log.info(f"#{ctx.channel.name} @{self.nick}: {ctx.response}")
-            await self.analytics.sent(
-                user_id=ctx.author.id,
-                user_name=ctx.author.name,
-                channel_name=ctx.channel.name,
-                content=ctx.response,
-            )
-            return True
-        return False
-
-    async def handle_commands(self, ctx: Ctx) -> bool:
-        if ctx.response or not ctx.prefix or not ctx.is_valid:
-            return False
-
-        log.info(f"#{ctx.channel.name} @{ctx.author.name}: {ctx.message.content}")
-        await self.analytics.received(
-            user_id=ctx.author.id,
-            user_name=ctx.author.name,
-            channel_name=ctx.channel.name,
-            content=ctx.message.content,
-        )
-
-        if not ctx.user:
-            ctx.user, _ = await User.get_or_create(
-                id=ctx.author.id,
-                defaults={
-                    "channel": ctx.channel.name,
-                    "name": ctx.author.name,
-                    "color": ctx.author.colour,
-                    "content": ctx.message.content.replace("ACTION", "", 1),
-                },
-            )
-
-        if ctx.user.block:
-            return False
-
-        try:
-            await self.invoke(ctx)
-        except MissingRequiredArgument:
-            ctx.response = ctx.command.usage
-        except Exception as e:
-            log.error(e, extra={"ctx": dict(ctx)})
-
-        return await self.reply(ctx)
-
-    async def handle_listeners(self, ctx: Ctx) -> bool:
-        if not ctx.user or ctx.user.block:
-            return False
-
-        for listener in self.listeners:
-            if ctx.response:
-                break
-            if inspect.iscoroutinefunction(listener):
-                await listener(ctx)
-            else:
-                listener(ctx)
-
-        return await self.reply(ctx)
+    def stop(self) -> None:
+        self.loop.run_until_complete(self.before_close())
+        self.loop.run_until_complete(self.close())
+        self.loop.run_until_complete(self.after_close())
+        self.loop.close()
 
     async def event_ready(self) -> None:
-        log.info(f"{self.nick} | #({len(self.connected_channels)}/{len(self.channels)}) | {self._prefix}{len(self.commands)}")
+        ...
 
-    async def event_command_error(self, ctx: Ctx, e: Exception) -> None:
-        if isinstance(e, CommandIsDisabled):
-            ctx.response = "esse comando está desativado nesse canal"
-        elif isinstance(e, ContentHasBanword):
-            ctx.response = "sua mensagem contém um termo banido"
-        elif isinstance(e, UserIsNotAllowed):
-            ctx.response = "apenas inscritos, VIPs e MODs podem enviar links"
-        elif isinstance(e, InvalidName):
-            ctx.response = "nome de usuário inválido"
-        elif isinstance(e, GameIsAlreadyRunning):
-            ctx.response = "um jogo já está em andamento nesse canal"
-        elif isinstance(e, (BotIsOffline, CommandOnCooldown, CommandNotFound, CheckFailure)):
-            log.info(e)
-        else:
-            ctx.response = "ocorreu um erro inesperado"
-            log.error(e, extra={"ctx": dict(ctx)}, exc_info=e)
+    async def global_before_invoke(self, ctx: Context) -> None:
+        if not ctx.user:
+            ctx.user = UserModel.set_or_new(
+                ctx.author.id,
+                name=ctx.author.name,
+                last_message=ctx.message.content,
+                last_channel=ctx.channel.name,
+                last_color=ctx.author.color,
+            )
 
-        await self.reply(ctx)
+    async def global_after_invoke(self, ctx: Context) -> None:
+        # TODO
+        # await self.dashbot.received(id=ctx.author.id, name=ctx.author.name, message=ctx.message.content, locale=ctx.channel.name)
+        ...
 
     async def event_message(self, message: Message) -> None:
-        if (
-            message.echo
-            or message.author.id in self.blocked
-            or not self.channels[message.channel.name]["online"] and message.content != f"{self._prefix}start"
-        ):
+        if message.echo:
+            # TODO
+            # await self.dashbot.received(id=message.author.id, name=message.author.name, message=message.content, locale=message.channel.name)
             return None
+        if not self.is_online(message):
+            return None
+        ctx = await self.get_context(message, cls=Context)
+        # TODO
+        # ctx.user = UserModel.set_or_none(
+        #     ctx.author.id,
+        #     name=ctx.author.name,
+        #     last_message=ctx.message.content,
+        #     last_channel=ctx.channel.name,
+        #     last_color=ctx.author.color,
+        # )
+        for listener in self.listeners:
+            if await listener(ctx):
+                return None
+        try:
+            await self.invoke(ctx)
+        except InvalidArgument:
+            if ctx.command and hasattr(ctx.command, "usage"):
+                return await ctx.reply(ctx.command.usage)
+            return await ctx.reply("ocorreu um erro inesperado")
+        except Exception as error:
+            logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
 
-        ctx: Ctx = await self.get_context(message, cls=Ctx)
-        ctx.user = await User.update_or_none(ctx)
+    async def event_error(self, error: Exception, data: str = None) -> None:
+        logger.error(error, exc_info=error)
 
-        await self.handle_listeners(ctx)
-        await self.handle_commands(ctx)
+    async def event_command_error(self, ctx: Context, error: Exception) -> None:
+        if isinstance(error, CommandNotFound):
+            return None
+        if isinstance(error, CheckFailure):
+            return None
+        if isinstance(error, CommandOnCooldown):
+            return None
+        if isinstance(error, InvalidArgument):
+            if ctx.command and hasattr(ctx.command, "usage"):
+                return await ctx.reply(ctx.command.usage)
+        logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
+        return await ctx.reply("ocorreu um erro inesperado")
+
+    @routine(seconds=30, wait_first=True)
+    async def check_channels(self) -> None:
+        connected_channels = [channel.name for channel in self.connected_channels]
+        disconnected_channels = [channel for channel in self.channels if channel not in connected_channels]
+        await self.join_channels(disconnected_channels)
+
+    @routine(seconds=600)
+    async def new_channels(self) -> None:
+        channels_id = [channel.id for channel in self.channels.values()]
+        condition = ~ChannelModel.id.is_in(*channels_id) if channels_id else None
+        for channel in ChannelModel.all(condition):
+            self.channels[channel.name] = channel

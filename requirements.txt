@@ -1,10 +1,5 @@
-aiocache==0.11.1
-aiohttp==3.8.1
-asyncpg==0.25.0
-bugsnag==4.2.0
-emoji==1.7.0
-python-dateutil==2.8.2
-redis==4.2.2
-tortoise-orm==0.19.0
-twitchio==2.3.0
-unidecode==1.3.4
+aiohttp==3.8.3
+bugsnag==4.2.1
+deep-translator==1.9.0
+pynamodb==5.2.1
+twitchio==2.4.0
