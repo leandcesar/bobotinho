@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  bot:
+    container_name: bot
+    stdin_open: true
+    tty: true
+    build: 
+      context:
+        .
+    image: bobotinho
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    networks:
+      - bobotinho-net
+
+networks:
+  bobotinho-net:
