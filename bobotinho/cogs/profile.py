@@ -17,7 +17,7 @@ class Profile(Cog):
     @command(aliases=["setbadge"])
     async def savebadge(self, ctx: Context, *, emoji: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("defina sua cidade para facilitar a consulta da sua previsão do tempo")
     @usage("digite o comando e o nome da sua cidade para agilizar a previsão do tempo")
@@ -25,7 +25,7 @@ class Profile(Cog):
     @command(aliases=["setcity"])
     async def savecity(self, ctx: Context, *, content: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("salve um código hexadecimal de cor")
     @usage("digite o comando e o nome da sua cidade para agilizar a previsão do tempo")
@@ -33,7 +33,7 @@ class Profile(Cog):
     @command(aliases=["setcolor"])
     async def savecolor(self, ctx: Context, *, content: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
 
 def prepare(bot: Bobotinho) -> None:

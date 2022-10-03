@@ -107,7 +107,7 @@ class Tools(Cog):
     @command(aliases=["r" + afk["alias"] for afk in AFKs if afk["alias"] != "afk"])
     async def rafk(self, ctx: Context) -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("deixe um lembrete para algum usuário")
     @usage("digite o comando, o nome de alguém e uma mensagem para deixar um lembrete")
@@ -115,7 +115,7 @@ class Tools(Cog):
     @command(aliases=["remindme"])
     async def remind(self, ctx: Context, name: str = "", *, content: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("deixe um lembrete cronometrado para algum usuário")
     @usage("digite o comando, o nome de alguém, a data (ou daqui quanto tempo) e uma mensagem para deixar um lembrete")
@@ -123,7 +123,7 @@ class Tools(Cog):
     @command(aliases=["timerme"])
     async def timer(self, ctx: Context, name: str = "", *, content: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("saiba a tradução de alguma mensagem")
     @usage("digite o comando e um texto para ser traduzido")

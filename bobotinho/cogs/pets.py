@@ -13,7 +13,7 @@ class Pet(Cog):
     @command(aliases=["pets"])
     async def pet(self, ctx: Context, name: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("adquira um dos pets disponíveis na loja")
     @usage("digite o comando e um dos pets disponíveis na loja para adquirí-lo")
@@ -21,7 +21,7 @@ class Pet(Cog):
     @command()
     async def petbuy(self, ctx: Context) -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("dê um nome para o seu pet")
     @usage("digite o comando e o nome que desejar para seu pet")
@@ -29,14 +29,14 @@ class Pet(Cog):
     @command()
     async def petname(self, ctx: Context) -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("faça carinho nos seus pets")
     @cooldown(rate=3, per=10)
     @command()
     async def petpat(self, ctx: Context) -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("devolva um pet em troca de parte da quantia que gastou")
     @usage("digite o comando e o nome ou espécie do pet que quer devolver")
@@ -44,14 +44,14 @@ class Pet(Cog):
     @command()
     async def petsell(self, ctx: Context) -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("veja os pets disponíveis para adquirir")
     @cooldown(rate=3, per=10)
     @command(aliases=["petlist"])
     async def petshop(self, ctx: Context) -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
 
 def prepare(bot: Bobotinho) -> None:

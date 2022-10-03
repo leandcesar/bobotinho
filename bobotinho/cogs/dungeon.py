@@ -13,28 +13,28 @@ class Dungeon(Cog):
     @command(aliases=["ed"])
     async def enterdungeon(self, ctx: Context, *, content: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("entre na dungeon e adquira experiência sem precisar tomar uma escolha")
     @cooldown(rate=3, per=10)
     @command(aliases=["fed", "fd"])
     async def fastdungeon(self, ctx: Context) -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("veja qual o seu level (ou de alguém) e outras estatísticas da dungeon")
     @cooldown(rate=3, per=10)
     @command(aliases=["lvl"])
     async def level(self, ctx: Context, name: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
     @helper("saiba quais são os melhores jogadores da dungeon")
     @cooldown(rate=3, per=10)
     @command()
     async def rank(self, ctx: Context, order_by: str = "") -> None:
         # TODO
-        ...
+        raise NotImplementedError()
 
 
 def prepare(bot: Bobotinho) -> None:

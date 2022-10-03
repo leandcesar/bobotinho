@@ -121,6 +121,8 @@ class Bobotinho(Bot):
             return None
         if isinstance(error, CommandOnCooldown):
             return None
+        if isinstance(error, NotImplementedError):
+            return await ctx.reply("temporariamente desativado")
         if isinstance(error, InvalidArgument):
             if ctx.command and hasattr(ctx.command, "usage"):
                 return await ctx.reply(ctx.command.usage)
