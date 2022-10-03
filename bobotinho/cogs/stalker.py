@@ -32,7 +32,7 @@ class Stalker(Cog):
         try:
             data = await self.bot.fetch_users([name])
             user = data[0]
-        except Exception as error:
+        except Exception:
             return await ctx.reply(f"@{name} é um usuário inválido")
 
         mention = "você" if user.name == ctx.author.name else f"@{user.name}"
@@ -49,7 +49,7 @@ class Stalker(Cog):
         try:
             data = await self.bot.fetch_users([name])
             user = data[0]
-        except Exception as error:
+        except Exception:
             return await ctx.reply(f"@{name} é um usuário inválido")
 
         if user.name == ctx.author.name:
@@ -76,6 +76,13 @@ class Stalker(Cog):
             return await ctx.reply(f"{mention} usa a cor {user.last_color} ({color_name}) e salvou as cores {colors}")
         return await ctx.reply(f"{mention} usa a cor {user.last_color} ({color_name})")
 
+    @helper("saiba qual canal alguém seguiu primeiro e por quem ele foi seguido primeiro")
+    @cooldown(rate=3, per=10)
+    @command(aliases=["ff"])
+    async def firstfollow(self, ctx: Context, name: str = "", channel: str = "") -> None:
+        # TODO
+        raise NotImplementedError()
+
     @helper("saiba há quanto tempo alguém segue um canal")
     @cooldown(rate=3, per=10)
     @command(aliases=["fa", "followed", "follow"])
@@ -86,13 +93,13 @@ class Stalker(Cog):
         try:
             data = await self.bot.fetch_users([name])
             user = data[0]
-        except Exception as error:
+        except Exception:
             return await ctx.reply(f"@{name} é um usuário inválido")
 
         try:
             data = await self.bot.fetch_users([channel])
             broadcaster = data[0]
-        except Exception as error:
+        except Exception:
             return await ctx.reply(f"@{channel} é um canal inválido")
 
         mention = "você" if user.name == ctx.author.name else f"@{user.name}"
@@ -105,7 +112,7 @@ class Stalker(Cog):
             delta = timeago(follow.followed_at).humanize(precision=2)
             date = follow.followed_at.strftime("%d/%m/%Y")
             return await ctx.reply(f"{mention} seguiu {mention_channel} em {date} (há {delta})")
-        except Exception as error:
+        except Exception:
             return await ctx.reply(f"{mention} não segue {mention_channel}")
 
     @helper("verifique se alguém está AFK")
@@ -154,13 +161,13 @@ class Stalker(Cog):
         try:
             data = await self.bot.fetch_users([channel])
             broadcaster = data[0]
-        except Exception as error:
+        except Exception:
             return await ctx.reply(f"@{channel} é um canal inválido")
 
         try:
             data = await self.bot.fetch_streams([broadcaster.id])
             stream = data[0]
-        except Exception as error:
+        except Exception:
             return await ctx.reply(f"@{channel} está offline")
 
         mention = "você" if broadcaster.name == ctx.author.name else f"@{broadcaster.name}"
