@@ -11,6 +11,8 @@ services:
     image: bobotinho
     env_file:
       - .env
+    ports:
+      - 5003:5003
     volumes:
       - ./:/app
     networks:
