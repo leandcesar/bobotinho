@@ -34,21 +34,6 @@ class ChannelModel(Model, DateTimeMixin):
     def __str__(self) -> str:
         return f"@{self.name}"
 
-    @classmethod
-    def all(cls, where: Condition = None, limit: int = 100) -> list[ChannelModel]:
-        return [instance for instance in cls.scan(where, limit=limit)]
-
-    @classmethod
-    def one(cls, where: Condition = None) -> Optional[ChannelModel]:
-        instances = cls.all(where, limit=1)
-        return instances[0] if instances else None
-
-    @classmethod
-    def new(cls, pk: int, rk: str = None, **attrs) -> ChannelModel:
-        instance = cls(pk, rk, **attrs)
-        instance.save()
-        return instance
-
     def enable_command(self, command: str) -> bool:
         if command not in self.commands_disabled:
             return False

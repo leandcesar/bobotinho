@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from typing import Optional
+
 from bobotinho import config, logger
 from bobotinho.ext.cache import cache
 from bobotinho.ext.commands import (
@@ -8,6 +10,7 @@ from bobotinho.ext.commands import (
     Context,
     Coroutine,
     Message,
+    User,
     routine,
 )
 from bobotinho.ext.exceptions import (
@@ -23,8 +26,18 @@ from bobotinho.services.dashbot import Dashbot
 
 class Bobotinho(Bot):
     listeners: list[Callable[[Context,], Coroutine[Any, Any, bool]]] = []
-    channels: dict[str, ChannelModel] = {}
+    channels: dict[str, ChannelModel] = {channel.name: channel for channel in ChannelModel.scan()}
     dashbot: Dashbot
+
+    async def fetch_user(self, name: str) -> Optional[User]:
+        try:
+            data = await self.fetch_users([name])
+            user = data[0]
+            assert user.id is not None
+        except Exception:
+            return None
+        else:
+            return user
 
     def load_modules(self, cogs: list[str]) -> None:
         for cog in cogs:
@@ -43,11 +56,9 @@ class Bobotinho(Bot):
         self.dashbot = Dashbot(key=config.dashbot_key)
 
     async def after_connect(self) -> None:
-        self.new_channels.start()
         self.check_channels.start()
 
     async def before_close(self) -> None:
-        self.new_channels.cancel()
         self.check_channels.cancel()
 
     async def after_close(self) -> None:
@@ -70,35 +81,27 @@ class Bobotinho(Bot):
 
     async def global_before_invoke(self, ctx: Context) -> None:
         if not ctx.user:
-            ctx.user = UserModel.set_or_new(
+            ctx.user = UserModel.update_or_create(
                 ctx.author.id,
                 name=ctx.author.name,
                 last_message=ctx.message.content,
                 last_channel=ctx.channel.name,
                 last_color=ctx.author.color,
+                updated_on=ctx.message.timestamp,
             )
 
     async def global_after_invoke(self, ctx: Context) -> None:
-        # TODO
-        # await self.dashbot.received(id=ctx.author.id, name=ctx.author.name, message=ctx.message.content, locale=ctx.channel.name)
+        # TODO: salvar mensagem recebida no Dashbot
         ...
 
     async def event_message(self, message: Message) -> None:
         if message.echo:
-            # TODO
-            # await self.dashbot.received(id=message.author.id, name=message.author.name, message=message.content, locale=message.channel.name)
+            # TODO: salvar mensagem enviada no Dashbot
             return None
         if not self.is_online(message):
             return None
         ctx = await self.get_context(message, cls=Context)
-        # TODO
-        # ctx.user = UserModel.set_or_none(
-        #     ctx.author.id,
-        #     name=ctx.author.name,
-        #     last_message=ctx.message.content,
-        #     last_channel=ctx.channel.name,
-        #     last_color=ctx.author.color,
-        # )
+        # TODO: atualizar mensagem pro %lastseen
         for listener in self.listeners:
             if await listener(ctx):
                 return None
@@ -134,10 +137,3 @@ class Bobotinho(Bot):
         connected_channels = [channel.name for channel in self.connected_channels]
         disconnected_channels = [channel for channel in self.channels if channel not in connected_channels]
         await self.join_channels(disconnected_channels)
-
-    @routine(seconds=600)
-    async def new_channels(self) -> None:
-        channels_id = [channel.id for channel in self.channels.values()]
-        condition = ~ChannelModel.id.is_in(*channels_id) if channels_id else None
-        for channel in ChannelModel.all(condition):
-            self.channels[channel.name] = channel

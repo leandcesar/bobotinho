@@ -17,4 +17,3 @@ class Math:
         ) as response:
             data = await response.json()
             return data["result"]
-        return None

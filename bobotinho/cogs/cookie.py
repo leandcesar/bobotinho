@@ -9,6 +9,11 @@ class Cookie(Cog):
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
+    async def cog_check(self, ctx: Context) -> bool:
+        if ctx.args and isinstance(ctx.args[0], str):
+            ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
+        return True
+
     @helper("coma um cookie e receba uma frase da sorte")
     @usage("digite o comando e a quantidade de cookies que quer comer (opcional)")
     @cooldown(rate=3, per=10)
@@ -18,7 +23,7 @@ class Cookie(Cog):
             return await ctx.reply("você não comeu nenhum cookie, uau!")
         if amount < 0:
             return await ctx.reply(f"para comer {amount} cookies, você antes precisa reverter a entropia")
-        user = UserModel.get(ctx.author.id)
+        user = UserModel.get_or_raise(ctx.author.id)
         if amount > 1 and user.update_cookie(eat=amount):
             return await ctx.reply(f"você comeu {amount} cookies de uma só vez 🥠")
         if amount > 1:
@@ -33,10 +38,13 @@ class Cookie(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["cc"])
     async def cookiecount(self, ctx: Context, name: str = "") -> None:
-        name = name.lstrip("@").rstrip(",").lower() or ctx.author.name
+        name = name or ctx.author.name
         if name == self.bot.nick:
             return await ctx.reply("eu tenho cookies infinitos, e distribuo uma fração deles para vocês")
-        user = UserModel.one(UserModel.name == name)
+        twitch_user = await self.bot.fetch_user(name)
+        if not twitch_user:
+            return await ctx.reply(f"@{name} é um usuário inválido")
+        user = UserModel.get_or_raise(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         mention = "você" if name == ctx.author.name else f"@{name}"
@@ -52,15 +60,18 @@ class Cookie(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["give"])
     async def gift(self, ctx: Context, name: str = "") -> None:
-        name = name.lstrip("@").rstrip(",").lower() or ctx.author.name
+        name = name or ctx.author.name
         if name == self.bot.nick:
             return await ctx.reply("eu não quero seu cookie")
         if name == ctx.author.name:
             return await ctx.reply("você presenteou você mesmo, uau!")
-        user_to = UserModel.one(UserModel.name == name)
+        twitch_user = await self.bot.fetch_user(name)
+        if not twitch_user:
+            return await ctx.reply(f"@{name} é um usuário inválido")
+        user_to = UserModel.get_or_raise(twitch_user.id)
         if not user_to:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
-        user_from = UserModel.get(ctx.author.id)
+        user_from = UserModel.get_or_raise(ctx.author.id)
         if user_from.update_cookie(daily=True, donate=1):
             user_to.update_cookie(receive=1)
             return await ctx.reply(f"você presenteou @{name} com um cookie 🎁")
@@ -70,7 +81,7 @@ class Cookie(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["sm"])
     async def slotmachine(self, ctx: Context) -> None:
-        user = UserModel.get(ctx.author.id)
+        user = UserModel.get_or_raise(ctx.author.id)
         if user.update_cookie(daily=True):
             x, y, z = random_choices("🍇🍊🍋🍒🍉🍐", k=3)
             if x == y == z:
@@ -87,7 +98,7 @@ class Cookie(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def stock(self, ctx: Context) -> None:
-        user = UserModel.get(ctx.author.id)
+        user = UserModel.get_or_raise(ctx.author.id)
         if user.update_cookie(daily=True):
             return await ctx.reply("você estocou seu cookie diário")
         return await ctx.reply("você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛")
@@ -96,16 +107,8 @@ class Cookie(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def top(self, ctx: Context, order_by: str = "count") -> None:
-        if order_by in ["gift", "gifts", "give", "gives", "giver", "givers"]:
-            attr, title = "donated", "givers"
-        else:
-            attr, title = "count", "cookiers"
-        users = UserModel.all(UserModel.cookies[attr] >= 500)
-        users = sorted(users, key=lambda user: getattr(user, attr), reverse=True)[:5]
-        emojis = "🏆🥈🥉🏅🏅"
-        tops = [f"{emoji} @{cookie.name} ({getattr(cookie, attr)})" for emoji, cookie in zip(emojis, users)]
-        top = " ".join(tops)
-        return await ctx.reply(f"top {len(users)} {title}: {top}")
+        # TODO
+        raise NotImplementedError()
 
 
 def prepare(bot: Bobotinho) -> None:

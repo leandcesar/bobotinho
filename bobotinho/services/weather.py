@@ -53,4 +53,3 @@ class Weather:
             if "icon" in new_data:
                 new_data["emoji"] = CODE_EMOJI.get(new_data.pop("icon"), "🌤")
             return new_data
-        return {}

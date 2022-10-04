@@ -29,10 +29,8 @@ class Stalker(Cog):
     async def accountage(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
 
-        try:
-            data = await self.bot.fetch_users([name])
-            user = data[0]
-        except Exception:
+        user = await self.bot.fetch_user(name)
+        if not user:
             return await ctx.reply(f"@{name} é um usuário inválido")
 
         mention = "você" if user.name == ctx.author.name else f"@{user.name}"
@@ -46,10 +44,8 @@ class Stalker(Cog):
     async def avatar(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
 
-        try:
-            data = await self.bot.fetch_users([name])
-            user = data[0]
-        except Exception:
+        user = await self.bot.fetch_user(name)
+        if not user:
             return await ctx.reply(f"@{name} é um usuário inválido")
 
         if user.name == ctx.author.name:
@@ -63,7 +59,10 @@ class Stalker(Cog):
     @command(aliases=["colour", "colors"])
     async def color(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
-        user = UserModel.one(UserModel.name == name)
+        twitch_user = await self.bot.fetch_user(name)
+        if not twitch_user:
+            return await ctx.reply(f"@{name} é um usuário inválido")
+        user = UserModel.get_or_raise(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         try:
@@ -90,16 +89,12 @@ class Stalker(Cog):
         name = name or ctx.author.name
         channel = channel or ctx.channel.name
 
-        try:
-            data = await self.bot.fetch_users([name])
-            user = data[0]
-        except Exception:
+        user = await self.bot.fetch_user(name)
+        if not user:
             return await ctx.reply(f"@{name} é um usuário inválido")
 
-        try:
-            data = await self.bot.fetch_users([channel])
-            broadcaster = data[0]
-        except Exception:
+        broadcaster = await self.bot.fetch_user(name)
+        if not broadcaster:
             return await ctx.reply(f"@{channel} é um canal inválido")
 
         mention = "você" if user.name == ctx.author.name else f"@{user.name}"
@@ -125,7 +120,10 @@ class Stalker(Cog):
             return await ctx.reply("eu sempre estou aqui... observando")
         if name == ctx.author.name:
             return await ctx.reply("você não está AFK... obviamente")
-        user = UserModel.one(UserModel.name == name)
+        twitch_user = await self.bot.fetch_user(name)
+        if not twitch_user:
+            return await ctx.reply(f"@{name} é um usuário inválido")
+        user = UserModel.get_or_raise(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.status and not user.status.online:
@@ -144,7 +142,10 @@ class Stalker(Cog):
             return await ctx.reply("eu estou em todos os lugares, a todo momento...")
         if name == ctx.author.name:
             return await ctx.reply("você foi visto pela última vez aqui ☝️")
-        user = UserModel.one(UserModel.name == name)
+        twitch_user = await self.bot.fetch_user(name)
+        if not twitch_user:
+            return await ctx.reply(f"@{name} é um usuário inválido")
+        user = UserModel.get_or_raise(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         delta = timeago(user.updated_on).humanize(precision=2)
@@ -158,10 +159,8 @@ class Stalker(Cog):
         if channel == self.bot.nick:
             return await ctx.reply("eu sou um bot, não um streamer")
 
-        try:
-            data = await self.bot.fetch_users([channel])
-            broadcaster = data[0]
-        except Exception:
+        broadcaster = await self.bot.fetch_user(name)
+        if not broadcaster:
             return await ctx.reply(f"@{channel} é um canal inválido")
 
         try:

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from typing import Any, Callable, Coroutine
 
+from twitchio.channel import Channel
 from twitchio.ext.commands import Context as TwitchioContext
 from twitchio.ext.commands import Bot, Cog, Command, cooldown, command
 from twitchio.ext.routines import routine
 from twitchio.message import Message
-
+from twitchio.user import User
 
 
 class Context(TwitchioContext):

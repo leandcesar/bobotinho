@@ -113,55 +113,49 @@ class UserModel(Model, DateTimeMixin):
         return f"@{self.name}"
 
     @classmethod
-    def all(cls, where: Condition = None, limit: int = 100) -> list[UserModel]:
-        return [instance for instance in cls.scan(where, limit=limit)]
+    def create(cls, id: str, **attrs) -> UserModel:
+        instance = cls(str(id), **attrs)
+        instance.save()
+        return instance
 
     @classmethod
-    def one(cls, where: Condition = None) -> Optional[UserModel]:
-        instances = cls.all(where, limit=1)
-        return instances[0] if instances else None
+    def get_or_raise(cls, id: str, **attrs) -> UserModel:
+        return cls.get(str(id))
 
     @classmethod
-    def set(cls, pk: int, rk: str = None, **attrs) -> UserModel:
-        instance = cls.get(pk, rk)
+    def get_or_none(cls, id: str, **attrs) -> Optional[UserModel]:
+        try:
+            return cls.get(str(id))
+        except DoesNotExist:
+            return None
+
+    @classmethod
+    def get_or_create(cls, id: str, **attrs) -> UserModel:
+        return cls.get_or_none(str(id)) or cls.create(pk, **attrs)
+
+    @classmethod
+    def update_or_none(cls, id: str, **attrs) -> Optional[UserModel]:
+        try:
+            instance = cls.get(str(id))
+            instance.update_user(**attrs)
+            return instance
+        except DoesNotExist:
+            return None
+
+    @classmethod
+    def update_or_create(cls, id: str, **attrs) -> UserModel:
+        try:
+            instance = cls.get(str(id))
+            instance.update_user(**attrs)
+            return instance
+        except DoesNotExist:
+            return cls.create(str(id), **attrs)
+
+    def update_user(self, **attrs) -> bool:
         for attr, value in attrs.items():
-            setattr(instance, attr, value)
-        instance.save()
-        return instance
-
-    @classmethod
-    def new(cls, pk: int, rk: str = None, **attrs) -> UserModel:
-        instance = cls(pk, rk, **attrs)
-        instance.save()
-        return instance
-
-    @classmethod
-    def get_or_new(cls, pk: int, rk: str = None, **attrs) -> UserModel:
-        try:
-            return cls.get(pk, rk)
-        except DoesNotExist:
-            return cls.new(pk, **attrs)
-
-    @classmethod
-    def get_or_none(cls, pk: int, rk: str = None, **attrs) -> Optional[UserModel]:
-        try:
-            return cls.get(pk, rk)
-        except DoesNotExist:
-            return None
-
-    @classmethod
-    def set_or_new(cls, pk: int, rk: str = None, **attrs) -> UserModel:
-        try:
-            return cls.set(pk, rk, **attrs)
-        except DoesNotExist:
-            return cls.new(pk, rk, **attrs)
-
-    @classmethod
-    def set_or_none(cls, pk: int, rk: str = None, **attrs) -> Optional[UserModel]:
-        try:
-            return cls.set(pk, rk, **attrs)
-        except DoesNotExist:
-            return None
+            setattr(self, attr, value)
+        self.save()
+        return True
 
     def update_status(self, *, online: bool, alias: str = "", message: str = "") -> bool:
         if online and not self.status:

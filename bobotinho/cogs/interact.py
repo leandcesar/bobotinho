@@ -70,7 +70,7 @@ class Interact(Cog):
             elif message.content.lower() in ("não", "nao", "n"):
                 await ctx.send(f"@{name} recusou o desafio contra @{ctx.author.name} LUL")
         except TimeoutError:
-            pass
+            await ctx.reply(f"@{name} não respondeu ao seu desafio a tempo")
         finally:
             self.fights.pop(name)
 

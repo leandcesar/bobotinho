@@ -42,11 +42,8 @@ class Misc(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def bug(self, ctx: Context, *, content: str) -> None:
-        try:
-            user = await ctx.author.user()
-            avatar = user.profile_image
-        except Exception:
-            avatar = None
+        user = self.bot.fetch_user(ctx.author.name)
+        avatar = user.profile_image if user else None
         if await self.discord.webhook(name=ctx.author.name, content=content, avatar=avatar):
             return await ctx.reply("seu bug foi reportado 🐛")
         return await ctx.reply("houve um erro pra registrar seu bug, tente mais tarde")
@@ -86,11 +83,8 @@ class Misc(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["suggestion"])
     async def suggest(self, ctx: Context, *, content: str) -> None:
-        try:
-            user = await ctx.author.user()
-            avatar = user.profile_image
-        except Exception:
-            avatar = None
+        user = self.bot.fetch_user(ctx.author.name)
+        avatar = user.profile_image if user else None
         if await self.discord.webhook(name=ctx.author.name, content=content, avatar=avatar):
             return await ctx.reply("sua sugestão foi anotada 💡")
         return await ctx.reply("houve um erro pra registrar sua sugestão, tente mais tarde")

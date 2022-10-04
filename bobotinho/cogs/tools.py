@@ -19,7 +19,6 @@ class Tools(Cog):
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
         self.bot.listeners.insert(0, self.listener_afk)
-        self.users_afk = [user.id for user in UserModel.all(UserModel.status["online"] == False)]
         self.currency_api = Currency(key=config.currency_key)
         self.math_api = Math()
         self.translator_api = Translator()
@@ -34,10 +33,7 @@ class Tools(Cog):
     async def listener_afk(self, ctx: Context) -> bool:
         if not self.bot.is_enabled(ctx, "afk"):
             return False
-        if ctx.author.id not in self.users_afk:
-            return False
-        self.users_afk.remove(ctx.author.id)
-        user = UserModel.get(ctx.author.id)
+        user = UserModel.get_or_none(ctx.author.id)
         if not user or not user.status or user.status.online:
             return False
         delta = timeago(user.status.updated_on).humanize(precision=2)
@@ -61,9 +57,8 @@ class Tools(Cog):
         alias = afk["alias"]
         action = afk["afk"]
         message = content or afk["emoji"]
-        user = UserModel.get(ctx.author.id)
+        user = UserModel.get_or_raise(ctx.author.id)
         user.update_status(online=False, alias=alias, message=message)
-        self.users_afk.append(user.id)
         return await ctx.reply(f"você {action}: {message}")
 
     @helper("saiba o valor da conversão de uma moeda em reais")
