@@ -62,7 +62,7 @@ class Stalker(Cog):
         twitch_user = await self.bot.fetch_user(name)
         if not twitch_user:
             return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_raise(twitch_user.id)
+        user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         try:
@@ -123,7 +123,7 @@ class Stalker(Cog):
         twitch_user = await self.bot.fetch_user(name)
         if not twitch_user:
             return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_raise(twitch_user.id)
+        user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.status and not user.status.online:
@@ -145,7 +145,7 @@ class Stalker(Cog):
         twitch_user = await self.bot.fetch_user(name)
         if not twitch_user:
             return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_raise(twitch_user.id)
+        user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         delta = timeago(user.updated_on).humanize(precision=2)

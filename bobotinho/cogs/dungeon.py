@@ -26,9 +26,9 @@ class Dungeon(Cog):
         return True
 
     @helper("entre na dungeon, faça sua escolha e adquira experiência")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=1, per=30)
     @command(aliases=["ed"])
-    async def enterdungeon(self, ctx: Context) -> None:
+    async def enterdungeon(self, ctx: Context, *, content: str = "") -> None:
         if not ctx.user.dungeons:
             check = lambda message: (
                 message.author
@@ -39,7 +39,7 @@ class Dungeon(Cog):
             await ctx.reply("antes de continuar, você quer ser um guerreiro(a), arqueiro(a) ou mago(a)?")
             try:
                 response = await self.bot.wait_for("message", check, timeout=60)
-            except TimeoutError:
+            except Exception:
                 return None
             else:
                 message = response[0]
@@ -63,7 +63,7 @@ class Dungeon(Cog):
             await ctx.reply(f"antes de continuar, você deve escolher sua nova classe: {options[0]} ou {options[1]}?")
             try:
                 response = await self.bot.wait_for("message", check, timeout=60)
-            except TimeoutError:
+            except Exception:
                 return None
             else:
                 message = response[0]
@@ -86,16 +86,16 @@ class Dungeon(Cog):
             message.author
             and message.author.id == ctx.author.id
             and message.channel.name == ctx.channel.name
-            and message.content.lower() in ("1", "2")
+            and message.content.lower() in ("1", "2", f"{self.bot._prefix}ed 1", f"{self.bot._prefix}ed 2")
         )
         await ctx.reply(f'{dungeon["quote"]} você quer {dungeon["1"]["option"]} ou {dungeon["2"]["option"]}? (1 ou 2)')
         try:
             response = await self.bot.wait_for("message", check, timeout=60)
-        except TimeoutError:
+        except Exception:
             return None
         else:
             message = response[0]
-            option = message.content.lower()
+            option = message.content.lower().replace(f"{self.bot._prefix}ed ", "")
 
         result = random_choice(["win", "lose"])
         if result == "win":
@@ -111,7 +111,7 @@ class Dungeon(Cog):
             return await ctx.reply(f"{dungeon[option][result]}! +0 XP")
 
     @helper("entre na dungeon e adquira experiência sem precisar tomar uma escolha")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=1, per=30)
     @command(aliases=["fed", "fd"])
     async def fastdungeon(self, ctx: Context) -> None:
         if not ctx.user.dungeons:
@@ -124,7 +124,7 @@ class Dungeon(Cog):
             await ctx.reply("antes de continuar, você quer ser um guerreiro(a), arqueiro(a) ou mago(a)?")
             try:
                 response = await self.bot.wait_for("message", check, timeout=60)
-            except TimeoutError:
+            except Exception:
                 return None
             else:
                 message = response[0]
@@ -148,7 +148,7 @@ class Dungeon(Cog):
             await ctx.reply(f"antes de continuar, você deve escolher sua nova classe: {options[0]} ou {options[1]}?")
             try:
                 response = await self.bot.wait_for("message", check, timeout=60)
-            except TimeoutError:
+            except Exception:
                 return None
             else:
                 message = response[0]
@@ -192,7 +192,7 @@ class Dungeon(Cog):
         twitch_user = await self.bot.fetch_user(name)
         if not twitch_user:
             return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_raise(twitch_user.id)
+        user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         mention = "você" if name == ctx.author.name else f"@{name}"

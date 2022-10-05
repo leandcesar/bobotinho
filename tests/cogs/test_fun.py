@@ -54,12 +54,6 @@ async def test_kiss(interact):
         assert mock_context.reply.await_args[0] == ("você deu um beijinho em @user_name 😚",)
 
 
-@pytest.mark.skip("Not implemented")
-async def test_love(interact):
-    # TODO
-    ...
-
-
 async def test_pat(interact):
     with patch("twitchio.ext.commands.core.Context", new_callable=AsyncMock) as mock_context:
         await interact.pat._callback(interact, mock_context, name="bot_name")
@@ -80,12 +74,6 @@ async def test_pat(interact):
         await interact.pat._callback(interact, mock_context, name="user_name")
         assert mock_context.reply.await_count == 1
         assert mock_context.reply.await_args[0] == ("você fez cafuné em @user_name 😊",)
-
-
-@pytest.mark.skip("Not implemented")
-async def test_penis(interact):
-    # TODO
-    ...
 
 
 async def test_slap(interact):

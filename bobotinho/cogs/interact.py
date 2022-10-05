@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from asyncio import TimeoutError
-
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
 from bobotinho.utils.convert import str2int
@@ -69,7 +67,7 @@ class Interact(Cog):
                 await ctx.send(result)
             elif message.content.lower() in ("não", "nao", "n"):
                 await ctx.send(f"@{name} recusou o desafio contra @{ctx.author.name} LUL")
-        except TimeoutError:
+        except Exception:
             await ctx.reply(f"@{name} não respondeu ao seu desafio a tempo")
         finally:
             self.fights.pop(name)

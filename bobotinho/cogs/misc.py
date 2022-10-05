@@ -39,7 +39,7 @@ class Misc(Cog):
 
     @helper("reporte um bug que está ocorrendo no Bot")
     @usage("digite o comando e o bug que você encontrou")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=1, per=10)
     @command()
     async def bug(self, ctx: Context, *, content: str) -> None:
         user = await self.bot.fetch_user(ctx.author.name)
@@ -80,7 +80,7 @@ class Misc(Cog):
 
     @helper("faça uma sugestão de recurso para o bot")
     @usage("digite o comando e uma sugestão de recurso ou modificação para o bot")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=1, per=10)
     @command(aliases=["suggestion"])
     async def suggest(self, ctx: Context, *, content: str) -> None:
         user = await self.bot.fetch_user(ctx.author.name)
