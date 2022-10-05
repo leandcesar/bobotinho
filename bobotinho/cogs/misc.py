@@ -42,7 +42,7 @@ class Misc(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def bug(self, ctx: Context, *, content: str) -> None:
-        user = self.bot.fetch_user(ctx.author.name)
+        user = await self.bot.fetch_user(ctx.author.name)
         avatar = user.profile_image if user else None
         if await self.discord.webhook(name=ctx.author.name, content=content, avatar=avatar):
             return await ctx.reply("seu bug foi reportado 🐛")
@@ -83,7 +83,7 @@ class Misc(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["suggestion"])
     async def suggest(self, ctx: Context, *, content: str) -> None:
-        user = self.bot.fetch_user(ctx.author.name)
+        user = await self.bot.fetch_user(ctx.author.name)
         avatar = user.profile_image if user else None
         if await self.discord.webhook(name=ctx.author.name, content=content, avatar=avatar):
             return await ctx.reply("sua sugestão foi anotada 💡")

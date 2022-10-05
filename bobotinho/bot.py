@@ -46,7 +46,10 @@ class Bobotinho(Bot):
             self.load_module(module)
 
     def is_online(self, message: Message) -> bool:
-        return self.channels[message.channel.name].online is True
+        return (
+            self.channels[message.channel.name].online is True
+            or message.content.startswith(f"{self._prefix}start")
+        )
 
     def is_enabled(self, ctx: Context, command: str = "") -> bool:
         command_name = command or ctx.command.name
@@ -81,8 +84,8 @@ class Bobotinho(Bot):
         ...
 
     async def global_before_invoke(self, ctx: Context) -> None:
-        if ctx.message.content:
-            ctx.message.content.replace("\U000e0000", "")  # caractere invisível
+        # if ctx.message.content:
+        #     ctx.message.content.replace("\U000e0000", "")
         # TODO: salvar mensagem recebida no Dashbot
         ...
 
