@@ -28,8 +28,6 @@ class Cookies(MapAttribute, DateTimeMixin):
 
 
 class Dungeons(MapAttribute, DateTimeMixin):
-    dungeon = UnicodeAttribute(null=True)
-    gender = UnicodeAttribute(null=False)
     main_class = UnicodeAttribute(null=False)
     sub_class = UnicodeAttribute(null=False, default=str)
     wins = NumberAttribute(default=0)
@@ -40,6 +38,14 @@ class Dungeons(MapAttribute, DateTimeMixin):
     @property
     def total(self) -> float:
         return self.wins + self.defeats
+
+    @property
+    def _class(self) -> str:
+        if self.main_class and self.sub_class:
+            return f"{self.main_class}{self.sub_class}"
+        if self.main_class:
+            return f"{self.main_class}1"
+        return None
 
 
 class Pet(MapAttribute, DateTimeMixin):
@@ -131,7 +137,7 @@ class UserModel(Model, DateTimeMixin):
 
     @classmethod
     def get_or_create(cls, id: str, **attrs) -> UserModel:
-        return cls.get_or_none(str(id)) or cls.create(pk, **attrs)
+        return cls.get_or_none(str(id)) or cls.create(id, **attrs)
 
     @classmethod
     def update_or_none(cls, id: str, **attrs) -> Optional[UserModel]:
@@ -154,6 +160,7 @@ class UserModel(Model, DateTimeMixin):
     def update_user(self, **attrs) -> bool:
         for attr, value in attrs.items():
             setattr(self, attr, value)
+        self.updated_on = datetime.utcnow()
         self.save()
         return True
 
@@ -175,25 +182,45 @@ class UserModel(Model, DateTimeMixin):
         if not self.cookies:
             self.cookies = Cookies()
         if daily:
-            if self.cookies.daily <= 0:
+            if self.cookies.daily <= 0 and datetime.utcnow().date() == self.cookies.updated_on.date():
                 return False
             self.cookies.daily -= 1
             self.cookies.streak += 1
             self.cookies.stocked += 1
-        if eat:
+            self.cookies.updated_on = datetime.utcnow()
+        if eat and not receive and not donate and not earnings:
             if self.cookies.stocked < eat:
                 return False
             self.cookies.stocked -= eat
             self.cookies.count += eat
-        elif receive:
+        elif not eat and receive and not donate and not earnings:
             self.cookies.stocked += receive
             self.cookies.received += receive
-        elif donate:
+        elif not eat and not receive and donate and not earnings:
             if self.cookies.stocked < donate:
                 return False
             self.cookies.stocked -= donate
             self.cookies.donated += donate
-        elif earnings:
+        elif not eat and not receive and not donate and earnings:
             self.cookies.stocked += earnings
+        self.save()
+        return True
+
+    def update_dungeon(self, *, main_class: str = None, win: bool = False, defeat: bool = False, experience: int = 0, level_up: bool = False) -> bool:
+        if not self.dungeons and main_class:
+            self.dungeons = Dungeons(main_class=main_class[:2])
+        elif self.dungeons and main_class and not win and defeat and not experience:
+            self.dungeons.main_class = main_class[:2]
+            self.dungeons.sub_class = main_class[2]
+        elif self.dungeons and not main_class and win and not defeat and experience:
+            self.dungeons.wins += 1
+            self.dungeons.experience += experience
+            self.dungeons.level += int(level_up)
+            self.dungeons.updated_on = datetime.utcnow()
+        elif self.dungeons and not main_class and not win and defeat and not experience:
+            self.dungeons.defeats += 1
+            self.dungeons.updated_on = datetime.utcnow()
+        else:
+            raise Exception(f"id={self.id} main_class={main_class} win={win} defeat={defeat} level_up={level_up} experience={experience}")
         self.save()
         return True

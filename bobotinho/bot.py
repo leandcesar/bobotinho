@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from typing import Optional
 
 from bobotinho import config, logger
@@ -80,31 +81,21 @@ class Bobotinho(Bot):
         ...
 
     async def global_before_invoke(self, ctx: Context) -> None:
-        if not ctx.user:
-            ctx.user = UserModel.update_or_create(
-                ctx.author.id,
-                name=ctx.author.name,
-                last_message=ctx.message.content,
-                last_channel=ctx.channel.name,
-                last_color=ctx.author.color,
-                updated_on=ctx.message.timestamp,
-            )
+        if ctx.message.content:
+            ctx.message.content.replace("\U000e0000", "")  # caractere invisível
+        # TODO: salvar mensagem recebida no Dashbot
+        ...
 
     async def global_after_invoke(self, ctx: Context) -> None:
-        # TODO: salvar mensagem recebida no Dashbot
+        # TODO: salvar mensagem enviada no Dashbot
         ...
 
     async def event_message(self, message: Message) -> None:
         if message.echo:
-            # TODO: salvar mensagem enviada no Dashbot
             return None
         if not self.is_online(message):
             return None
         ctx = await self.get_context(message, cls=Context)
-        # TODO: atualizar mensagem pro %lastseen
-        for listener in self.listeners:
-            if await listener(ctx):
-                return None
         try:
             await self.invoke(ctx)
         except InvalidArgument:
@@ -113,6 +104,19 @@ class Bobotinho(Bot):
             return await ctx.reply("ocorreu um erro inesperado")
         except Exception as error:
             logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
+        finally:
+            for listener in self.listeners:
+                if await listener(ctx):
+                    return None
+            # TODO: atualizar mensagem pro %lastseen
+            UserModel.update_or_none(
+                ctx.author.id,
+                name=ctx.author.name,
+                last_message=ctx.message.content,
+                last_channel=ctx.channel.name,
+                last_color=ctx.author.color,
+            )
+            
 
     async def event_error(self, error: Exception, data: str = None) -> None:
         logger.error(error, exc_info=error)
@@ -125,7 +129,7 @@ class Bobotinho(Bot):
         if isinstance(error, CommandOnCooldown):
             return None
         if isinstance(error, NotImplementedError):
-            return await ctx.reply("temporariamente desativado")
+            return await ctx.reply("esse comando está temporariamente desativado")
         if isinstance(error, InvalidArgument):
             if ctx.command and hasattr(ctx.command, "usage"):
                 return await ctx.reply(ctx.command.usage)

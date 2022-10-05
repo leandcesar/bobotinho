@@ -57,8 +57,15 @@ class Tools(Cog):
         alias = afk["alias"]
         action = afk["afk"]
         message = content or afk["emoji"]
-        user = UserModel.get_or_raise(ctx.author.id)
-        user.update_status(online=False, alias=alias, message=message)
+        if not ctx.user:
+            ctx.user = UserModel.get_or_create(
+                ctx.author.id,
+                name=ctx.author.name,
+                last_message=ctx.message.content,
+                last_channel=ctx.channel.name,
+                last_color=ctx.author.color,
+            )
+        ctx.user.update_status(online=False, alias=alias, message=message)
         return await ctx.reply(f"você {action}: {message}")
 
     @helper("saiba o valor da conversão de uma moeda em reais")

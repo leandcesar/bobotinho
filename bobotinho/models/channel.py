@@ -8,6 +8,7 @@ from pynamodb.attributes import (
     NumberAttribute,
     UnicodeAttribute,
 )
+from pynamodb.exceptions import DoesNotExist
 from pynamodb.models import Condition, Model
 
 from bobotinho import config
@@ -33,6 +34,51 @@ class ChannelModel(Model, DateTimeMixin):
 
     def __str__(self) -> str:
         return f"@{self.name}"
+
+    @classmethod
+    def create(cls, id: str, **attrs) -> ChannelModel:
+        instance = cls(str(id), **attrs)
+        instance.save()
+        return instance
+
+    @classmethod
+    def get_or_raise(cls, id: str, **attrs) -> ChannelModel:
+        return cls.get(str(id))
+
+    @classmethod
+    def get_or_none(cls, id: str, **attrs) -> Optional[ChannelModel]:
+        try:
+            return cls.get(str(id))
+        except DoesNotExist:
+            return None
+
+    @classmethod
+    def get_or_create(cls, id: str, **attrs) -> ChannelModel:
+        return cls.get_or_none(str(id)) or cls.create(id, **attrs)
+
+    @classmethod
+    def update_or_none(cls, id: str, **attrs) -> Optional[ChannelModel]:
+        try:
+            instance = cls.get(str(id))
+            instance.update_user(**attrs)
+            return instance
+        except DoesNotExist:
+            return None
+
+    @classmethod
+    def update_or_create(cls, id: str, **attrs) -> ChannelModel:
+        try:
+            instance = cls.get(str(id))
+            instance.update_user(**attrs)
+            return instance
+        except DoesNotExist:
+            return cls.create(str(id), **attrs)
+
+    def update_user(self, **attrs) -> bool:
+        for attr, value in attrs.items():
+            setattr(self, attr, value)
+        self.save()
+        return True
 
     def enable_command(self, command: str) -> bool:
         if command not in self.commands_disabled:

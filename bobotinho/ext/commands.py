@@ -8,9 +8,11 @@ from twitchio.ext.routines import routine
 from twitchio.message import Message
 from twitchio.user import User
 
+from bobotinho.models.user import UserModel
+
 
 class Context(TwitchioContext):
-    user: Any = None
+    user: UserModel = None
 
     def __iter__(self):
         yield "author", self.author.name if self.author and self.author.name else None

@@ -12,6 +12,14 @@ class Cookie(Cog):
     async def cog_check(self, ctx: Context) -> bool:
         if ctx.args and isinstance(ctx.args[0], str):
             ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
+        if not ctx.user:
+            ctx.user = UserModel.get_or_create(
+                ctx.author.id,
+                name=ctx.author.name,
+                last_message=ctx.message.content,
+                last_channel=ctx.channel.name,
+                last_color=ctx.author.color,
+            )
         return True
 
     @helper("coma um cookie e receba uma frase da sorte")
@@ -23,15 +31,14 @@ class Cookie(Cog):
             return await ctx.reply("você não comeu nenhum cookie, uau!")
         if amount < 0:
             return await ctx.reply(f"para comer {amount} cookies, você antes precisa reverter a entropia")
-        user = UserModel.get_or_raise(ctx.author.id)
-        if amount > 1 and user.update_cookie(eat=amount):
+        if amount > 1 and ctx.user.update_cookie(eat=amount):
             return await ctx.reply(f"você comeu {amount} cookies de uma só vez 🥠")
         if amount > 1:
             return await ctx.reply(f"você não tem {amount} cookies estocados para comer")
-        if amount == 1 and user.update_cookie(daily=True, eat=1):
+        if amount == 1 and ctx.user.update_cookie(daily=True, eat=1):
             cookie = random_line_from_txt("bobotinho//data//cookies.txt")
             return await ctx.reply(f"{cookie} 🥠")
-        return await ctx.reply("você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛")
+        return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("veja quantos cookies alguém já comeu")
     @usage("digite o comando e a quantidade de cookies que quer comer (opcional)")
@@ -71,37 +78,34 @@ class Cookie(Cog):
         user_to = UserModel.get_or_raise(twitch_user.id)
         if not user_to:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
-        user_from = UserModel.get_or_raise(ctx.author.id)
-        if user_from.update_cookie(daily=True, donate=1):
+        if ctx.user.update_cookie(daily=True, donate=1):
             user_to.update_cookie(receive=1)
             return await ctx.reply(f"você presenteou @{name} com um cookie 🎁")
-        return await ctx.reply("você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛")
+        return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("aposte seu cookie diário para ter a chance de ganhar outros")
     @cooldown(rate=3, per=10)
     @command(aliases=["sm"])
     async def slotmachine(self, ctx: Context) -> None:
-        user = UserModel.get_or_raise(ctx.author.id)
-        if user.update_cookie(daily=True):
+        if ctx.user.update_cookie(daily=True):
             x, y, z = random_choices("🍇🍊🍋🍒🍉🍐", k=3)
             if x == y == z:
-                user.update_cookie(earnings=10)
+                ctx.user.update_cookie(earnings=10)
                 return await ctx.reply(f"[{x}{y}{z}] você usou seu cookie diário e ganhou 10 cookies! PogChamp")
             elif x == y or x == z or y == z:
-                user.update_cookie(earnings=3)
+                ctx.user.update_cookie(earnings=3)
                 return await ctx.reply(f"[{x}{y}{z}] você usou seu cookie diário e ganhou 3 cookies!")
             else:
                 return await ctx.reply(f"[{x}{y}{z}] você perdeu seu cookie diário...")
-        return await ctx.reply("você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛")
+        return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("estoque o seu cookie diário, caso não queira usá-lo")
     @cooldown(rate=3, per=10)
     @command()
     async def stock(self, ctx: Context) -> None:
-        user = UserModel.get_or_raise(ctx.author.id)
-        if user.update_cookie(daily=True):
+        if ctx.user.update_cookie(daily=True):
             return await ctx.reply("você estocou seu cookie diário")
-        return await ctx.reply("você já usou seu cookie diário, a próxima fornada sai às 6 da manhã! ⌛")
+        return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("veja quais são os maiores comedores ou doadores de cookies")
     @cooldown(rate=3, per=10)

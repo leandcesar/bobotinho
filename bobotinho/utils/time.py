@@ -14,23 +14,27 @@ SS = "s"
 
 
 class timeago:
-    def __init__(self, target: datetime, *, now: datetime = None) -> None:
+    def __init__(self, target: datetime, *, now: datetime = None, reverse: bool = False) -> None:
         if now is None:
             now = datetime.utcnow()
         target = target.replace(tzinfo=None)
         now = now.replace(tzinfo=None)
+        if reverse:
+            target, now = now, target
         if target > now:
             raise ValueError()
-
-        delta = now - target
-        yy, dd = divmod(delta.days, 365)
-        mm, ss = divmod(delta.seconds, 60)
+        self.delta = now - target
+        yy, dd = divmod(self.delta.days, 365)
+        mm, ss = divmod(self.delta.seconds, 60)
         hh, mm = divmod(mm, 60)
         self.years = yy
         self.days = dd
         self.hours = hh
         self.minutes = mm
         self.seconds = ss
+
+    def total_in_seconds(self) -> float:
+        return self.delta.total_seconds()
 
     def humanize(self, *, precision: int = 1, minimum: str = SS, short: bool = False) -> str:
         quote = ""

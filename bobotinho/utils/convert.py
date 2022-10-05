@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import string
+from typing import Union
 
 letters_and_digits = string.ascii_letters + string.digits
 
@@ -13,6 +14,6 @@ def str2int(value: str) -> int:
     return int(str2hex(value), base=16)
 
 
-def json2dict(filename: str) -> dict:
+def json2dict(filename: str) -> Union[dict, list]:
     with open(filename, "r", encoding="utf-8") as f:
         return json.load(f)
