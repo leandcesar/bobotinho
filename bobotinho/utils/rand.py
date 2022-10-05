@@ -22,6 +22,6 @@ def random_choice(options: Union[str, list[str]], *, sep: str = None) -> str:
 
 
 def random_choices(options: Union[str, list[str]], *, sep: str = None, k: int = 1) -> list[str]:
-    if isinstance(options, str):
+    if isinstance(options, str) and sep:
         options = options.split(sep)
     return random.choices(options, k=k)
