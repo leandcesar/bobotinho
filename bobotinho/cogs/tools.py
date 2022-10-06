@@ -18,7 +18,8 @@ AFKs = json2dict("bobotinho//data//afk.json")
 class Tools(Cog):
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
-        self.bot.listeners.insert(0, self.listener_afk)
+        self.bot.listeners.insert(1, self.listener_afk)
+        self.bot.listeners.insert(2, self.listener_remind)
         self.currency_api = Currency(key=config.currency_key)
         self.math_api = Math()
         self.translator_api = Translator()
@@ -33,18 +34,32 @@ class Tools(Cog):
     async def listener_afk(self, ctx: Context) -> bool:
         if not self.bot.is_enabled(ctx, "afk"):
             return False
-        user = UserModel.get_or_none(ctx.author.id)
-        if not user or not user.status or user.status.online:
+        if not ctx.user or not ctx.user.status or ctx.user.status.online:
             return False
-        delta = timeago(user.status.updated_on).humanize(precision=2)
-        action = [afk for afk in AFKs if afk["alias"] == user.status.alias][0]["returned"]
-        await ctx.reply(f"você {action}: {user.status.message} (há {delta})")
-        user.update_status(online=True)
+        delta = timeago(ctx.user.status.updated_on).humanize(precision=2)
+        action = [afk for afk in AFKs if afk["alias"] == ctx.user.status.alias][0]["returned"]
+        await ctx.reply(f"você {action}: {ctx.user.status.message} (há {delta})")
+        ctx.user.update_status(online=True)
         return True
 
     async def listener_remind(self, ctx: Context) -> bool:
-        # TODO
-        ...
+        if not self.bot.is_enabled(ctx, "remind"):
+            return False
+        if ctx.message.content.startswith(self.bot._prefix):
+            return False
+        if not ctx.user or not ctx.user.reminders:
+            return False
+        remind = ctx.user.reminders[0]
+        if ctx.author.id == remind.user_id:
+            twitch_user = ctx.author
+        else:
+            twitch_user = await self.bot.fetch_user(id=remind.user_id)
+        mention = "você" if twitch_user.id == ctx.author.id else f"@{twitch_user.name}"
+        content = remind.message or ""
+        delta = timeago(remind.created_on).humanize(precision=2)
+        ctx.response = await ctx.reply(f"{mention} deixou um lembrete: {content} ({delta})")
+        ctx.user.remove_reminder()
+        return True
 
     @helper("informe que você está se ausentando do chat")
     @cooldown(rate=1, per=30)
@@ -113,15 +128,40 @@ class Tools(Cog):
 
     @helper("deixe um lembrete para algum usuário")
     @usage("digite o comando, o nome de alguém e uma mensagem para deixar um lembrete")
-    @cooldown(rate=3, per=60)
+    @cooldown(rate=3, per=10)
     @command(aliases=["remindme"])
     async def remind(self, ctx: Context, name: str = "", *, content: str = "") -> None:
-        # TODO
-        raise NotImplementedError()
+        if len(content) > 425:
+            return await ctx.reply("essa mensagem é muito comprida")
+        invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
+        if invoke_by == "remindme":
+            content = f"{name} {content}"
+            name = ctx.author.name
+            twitch_user = ctx.author
+        elif name == "me":
+            name = ctx.author.name
+            twitch_user = ctx.author
+        else:
+            name = name.lstrip("@").rstrip(",").lower()
+            twitch_user = await self.bot.fetch_user(name)
+            if not twitch_user:
+                return await ctx.reply(f"@{name} é um usuário inválido")
+        if content.startswith(("in ", "on ", "at ")):
+            return await ctx.reply(f"para lembretes agendados/cronometrados, use o comando {ctx.prefix}timer")
+        if name == self.bot.nick:
+            return await ctx.reply("estou sempre aqui... não precisa me deixar lembretes")
+        user = UserModel.get_or_none(twitch_user.id)
+        if not user:
+            return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        mention = "você" if name == ctx.author.name else f"@{name}"
+        if user.reminders and len(user.reminders) > 15:
+            return await ctx.reply(f"já existem muitos lembretes pendentes para {mention}")
+        user.add_reminder(user_id=ctx.author.id, message=content)
+        return await ctx.reply(f"{mention} será lembrado disso na próxima vez que falar no chat 📝")
 
     @helper("deixe um lembrete cronometrado para algum usuário")
     @usage("digite o comando, o nome de alguém, a data (ou daqui quanto tempo) e uma mensagem para deixar um lembrete")
-    @cooldown(rate=3, per=60)
+    @cooldown(rate=3, per=10)
     @command(aliases=["timerme"])
     async def timer(self, ctx: Context, name: str = "", *, content: str = "") -> None:
         # TODO

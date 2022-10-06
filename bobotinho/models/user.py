@@ -66,7 +66,6 @@ class Pet(MapAttribute, DateTimeMixin):
 class Reminder(MapAttribute, DateTimeMixin):
     user_id = UnicodeAttribute(null=False)
     message = UnicodeAttribute(null=False, default=str)
-    scheduled_to = UTCDateTimeAttribute(null=True)
 
 
 class Status(MapAttribute, DateTimeMixin):
@@ -222,5 +221,17 @@ class UserModel(Model, DateTimeMixin):
             self.dungeons.updated_on = datetime.utcnow()
         else:
             raise Exception(f"id={self.id} main_class={main_class} win={win} defeat={defeat} level_up={level_up} experience={experience}")
+        self.save()
+        return True
+
+    def add_reminder(self, *, user_id: str, message: str) -> bool:
+        if not self.reminders:
+            self.reminders = []
+        self.reminders.append(Reminder(user_id=user_id, message=message))
+        self.save()
+        return True
+
+    def remove_reminder(self) -> bool:
+        self.reminders = self.reminders[1:]
         self.save()
         return True

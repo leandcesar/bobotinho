@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Optional
 
 from bobotinho import config, logger
-from bobotinho.ext.cache import cache
 from bobotinho.ext.commands import (
     Any,
     Bot,
@@ -111,18 +110,19 @@ class Bobotinho(Bot):
         except Exception as error:
             logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         finally:
+            if not ctx.user:
+                ctx.user = UserModel.get_or_none(ctx.author.id)
             for listener in self.listeners:
                 if await listener(ctx):
                     return None
             # TODO: atualizar mensagem pro %lastseen
-            UserModel.update_or_none(
-                ctx.author.id,
-                name=ctx.author.name,
-                last_message=ctx.message.content,
-                last_channel=ctx.channel.name,
-                last_color=ctx.author.color,
-            )
-            
+            if ctx.user:
+                ctx.user.update_user(
+                    name=ctx.author.name,
+                    last_message=ctx.message.content,
+                    last_channel=ctx.channel.name,
+                    last_color=ctx.author.color,
+                )
 
     async def event_error(self, error: Exception, data: str = None) -> None:
         logger.error(error, exc_info=error)
@@ -133,7 +133,7 @@ class Bobotinho(Bot):
         if isinstance(error, CheckFailure):
             return None
         if isinstance(error, CommandOnCooldown):
-            return None
+            return await ctx.reply(f"aguarde {error.retry_after:.1f}s para usar o comando de novo")
         if isinstance(error, NotImplementedError):
             return await ctx.reply("esse comando está temporariamente desativado")
         if isinstance(error, InvalidArgument):
