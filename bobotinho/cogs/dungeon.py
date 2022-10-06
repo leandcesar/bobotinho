@@ -15,6 +15,8 @@ class Dungeon(Cog):
         self.bot = bot
 
     async def cog_check(self, ctx: Context) -> bool:
+        if ctx.args and isinstance(ctx.args[0], str):
+            ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
         if not ctx.user:
             ctx.user = UserModel.get_or_create(
                 ctx.author.id,
@@ -86,7 +88,7 @@ class Dungeon(Cog):
             message.author
             and message.author.id == ctx.author.id
             and message.channel.name == ctx.channel.name
-            and message.content.lower() in ("1", "2", f"{self.bot._prefix}ed 1", f"{self.bot._prefix}ed 2")
+            and message.content.lower() in ("1", "2", f"{ctx.prefix}ed 1", f"{ctx.prefix}ed 2")
         )
         await ctx.reply(f'{dungeon["quote"]} você quer {dungeon["1"]["option"]} ou {dungeon["2"]["option"]}? (1 ou 2)')
         try:
@@ -95,7 +97,7 @@ class Dungeon(Cog):
             return None
         else:
             message = response[0]
-            option = message.content.lower().replace(f"{self.bot._prefix}ed ", "")
+            option = message.content.lower().replace(f"{ctx.prefix}ed ", "")
 
         result = random_choice(["win", "lose"])
         if result == "win":

@@ -2,7 +2,6 @@
 from bobotinho import config
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Cog, Context, command, helper, usage
-from bobotinho.ext.cache import cache
 
 
 class Settings(Cog):

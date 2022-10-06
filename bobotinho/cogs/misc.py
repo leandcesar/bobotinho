@@ -10,7 +10,7 @@ from bobotinho.utils.time import datetime, timeago
 class Misc(Cog):
     def __init__(self, bot: Bobotinho, *, session=None) -> None:
         self.bot = bot
-        self.bot.listeners.insert(1, self.listener)
+        self.bot.listeners.insert(0, self.listener)
         self.start_time = datetime.utcnow()
         self.discord = Discord(url=config.webhook_url, session=session)
         self.pyramids: dict[str, Pyramid] = {}
@@ -54,10 +54,10 @@ class Misc(Cog):
     async def help(self, ctx: Context, *, content: str = None) -> None:
         command = self.bot.get_command(content)
         if command and command.aliases:
-            aliases = ", ".join([f"{self.bot._prefix}{alias}" for alias in command.aliases])
-            return await ctx.reply(f"{self.bot._prefix}{command.name} ({aliases}): {command.description}")
+            aliases = ", ".join([f"{ctx.prefix}{alias}" for alias in command.aliases])
+            return await ctx.reply(f"{ctx.prefix}{command.name} ({aliases}): {command.description}")
         if command:
-            return await ctx.reply(f"{self.bot._prefix}{command.name}: {command.description}")
+            return await ctx.reply(f"{ctx.prefix}{command.name}: {command.description}")
         return await ctx.reply(f"veja todos os comandos: {config.doc_url}")
 
     @helper("receba o link para adicionar o bot no seu chat")

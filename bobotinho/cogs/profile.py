@@ -8,9 +8,6 @@ class Profile(Cog):
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
-    async def cog_check(self, ctx: Context) -> bool:
-        return ctx.author.is_mod or ctx.author.is_broadcaster
-
     @helper("defina sua badge de apoiador")
     @usage("digite o comando e um emoji que quiser usar como badge")
     @cooldown(rate=3, per=10)
