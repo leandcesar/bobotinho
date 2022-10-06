@@ -48,7 +48,7 @@ class Dungeon(Cog):
                 option = message.content.lower()
                 main_class = [key for key, value in CLASSES.items() if value[0].lower() == option][0]
                 ctx.user.update_dungeon(main_class=main_class)
-                _class = CLASSES[ctx.user.dungeons._class][ctx.user.dungeons.level // 10]
+                _class = CLASSES[ctx.user.dungeons._class][min(ctx.user.dungeons.level, 60) // 10]
                 await ctx.reply(f"agora você é um {_class}")
 
         if ctx.user.dungeons.main_class and not ctx.user.dungeons.sub_class and ctx.user.dungeons.level >= 30:
@@ -72,7 +72,7 @@ class Dungeon(Cog):
                 option = message.content.lower()
                 main_class = [key for key, value in CLASSES.items() if value[3].lower() == option][0]
                 ctx.user.update_dungeon(main_class=main_class)
-                _class = CLASSES[ctx.user.dungeons._class][ctx.user.dungeons.level // 10]
+                _class = CLASSES[ctx.user.dungeons._class][min(ctx.user.dungeons.level, 60) // 10]
                 await ctx.reply(f"agora você é um {_class}")
 
         if (
@@ -133,7 +133,7 @@ class Dungeon(Cog):
                 option = message.content.lower()
                 main_class = [key for key, value in CLASSES.items() if value[0].lower() == option][0]
                 ctx.user.update_dungeon(main_class=main_class)
-                _class = CLASSES[ctx.user.dungeons._class][ctx.user.dungeons.level // 10]
+                _class = CLASSES[ctx.user.dungeons._class][min(ctx.user.dungeons.level, 60) // 10]
                 await ctx.reply(f"agora você é um {_class}")
 
         if ctx.user.dungeons.main_class and not ctx.user.dungeons.sub_class and ctx.user.dungeons.level >= 30:
@@ -157,7 +157,7 @@ class Dungeon(Cog):
                 option = message.content.lower()
                 main_class = [key for key, value in CLASSES.items() if value[3].lower() == option][0]
                 ctx.user.update_dungeon(main_class=main_class)
-                _class = CLASSES[ctx.user.dungeons._class][ctx.user.dungeons.level // 10]
+                _class = CLASSES[ctx.user.dungeons._class][min(ctx.user.dungeons.level, 60) // 10]
                 await ctx.reply(f"agora você é um {_class}")
 
         if (
@@ -199,7 +199,7 @@ class Dungeon(Cog):
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         mention = "você" if name == ctx.author.name else f"@{name}"
         if user.dungeons:
-            _class = CLASSES[ctx.user.dungeons._class][ctx.user.dungeons.level // 10]
+            _class = CLASSES[ctx.user.dungeons._class][min(ctx.user.dungeons.level, 60) // 10]
             winrate = user.dungeons.wins / (user.dungeons.total or 1) * 100
             return await ctx.reply(
                 f"{mention} é {_class} (LVL {user.dungeons.level}), com {user.dungeons.total} dungeons "
