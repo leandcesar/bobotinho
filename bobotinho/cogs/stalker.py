@@ -79,7 +79,7 @@ class Stalker(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["ff"])
     async def firstfollow(self, ctx: Context, name: str = "", channel: str = "") -> None:
-        # TODO
+        # TODO: %firstfollow
         raise NotImplementedError()
 
     @helper("saiba há quanto tempo alguém segue um canal")

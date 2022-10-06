@@ -111,7 +111,7 @@ class Cookie(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def top(self, ctx: Context, order_by: str = "count") -> None:
-        # TODO
+        # TODO: %top
         raise NotImplementedError()
 
 

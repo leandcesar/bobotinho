@@ -115,7 +115,6 @@ class Bobotinho(Bot):
             for listener in self.listeners:
                 if await listener(ctx):
                     return None
-            # TODO: atualizar mensagem pro %lastseen
             if ctx.user:
                 ctx.user.update_user(
                     name=ctx.author.name,

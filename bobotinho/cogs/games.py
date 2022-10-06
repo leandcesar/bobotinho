@@ -14,21 +14,21 @@ class Game(Cog):
     @cooldown(rate=1, per=15)
     @command(aliases=["hm"])
     async def hangman(self, ctx: Context, *, content: str = "") -> None:
-        # TODO
+        # TODO: %hangman
         raise NotImplementedError()
 
     @helper("jogo da palavra mais comprida com determinada sílaba, dura 30 segundas")
     @cooldown(rate=1, per=15)
     @command(aliases=["lw"])
     async def longestword(self, ctx: Context, *, content: str = "") -> None:
-        # TODO
+        # TODO: %longestword
         raise NotImplementedError()
 
     @helper("jogo de mais palavras com determinada sílaba, dura 30 segundas")
     @cooldown(rate=1, per=15)
     @command(aliases=["mw"])
     async def mostword(self, ctx: Context, *, content: str = "") -> None:
-        # TODO
+        # TODO: %mostword
         raise NotImplementedError()
 
 

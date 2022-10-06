@@ -28,7 +28,7 @@ class Dungeon(Cog):
         return True
 
     @helper("entre na dungeon, faça sua escolha e adquira experiência")
-    @cooldown(rate=1, per=30)
+    @cooldown(rate=2, per=30)
     @command(aliases=["ed"])
     async def enterdungeon(self, ctx: Context, *, content: str = "") -> None:
         if not ctx.user.dungeons:
@@ -211,7 +211,7 @@ class Dungeon(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def rank(self, ctx: Context, order_by: str = "") -> None:
-        # TODO
+        # TODO: %rank
         raise NotImplementedError()
 
 

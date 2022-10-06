@@ -18,7 +18,7 @@ class Marry(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def divorce(self, ctx: Context, name: str) -> None:
-        # TODO
+        # TODO: %divorce
         raise NotImplementedError()
 
     @helper("saiba há quanto tempo algum usuário está casado")
@@ -52,7 +52,7 @@ class Marry(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def marry(self, ctx: Context, name: str = "") -> None:
-        # TODO
+        # TODO: %marry
         raise NotImplementedError()
 
 

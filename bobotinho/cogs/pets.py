@@ -12,7 +12,7 @@ class Pet(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["pets"])
     async def pet(self, ctx: Context, name: str = "") -> None:
-        # TODO
+        # TODO: %pet
         raise NotImplementedError()
 
     @helper("adquira um dos pets disponíveis na loja")
@@ -20,7 +20,7 @@ class Pet(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def petbuy(self, ctx: Context) -> None:
-        # TODO
+        # TODO: %petbuy
         raise NotImplementedError()
 
     @helper("dê um nome para o seu pet")
@@ -28,14 +28,14 @@ class Pet(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def petname(self, ctx: Context) -> None:
-        # TODO
+        # TODO: %petname
         raise NotImplementedError()
 
     @helper("faça carinho nos seus pets")
     @cooldown(rate=3, per=10)
     @command()
     async def petpat(self, ctx: Context) -> None:
-        # TODO
+        # TODO: %petpat
         raise NotImplementedError()
 
     @helper("devolva um pet em troca de parte da quantia que gastou")
@@ -43,14 +43,14 @@ class Pet(Cog):
     @cooldown(rate=3, per=10)
     @command()
     async def petsell(self, ctx: Context) -> None:
-        # TODO
+        # TODO: %petsell
         raise NotImplementedError()
 
     @helper("veja os pets disponíveis para adquirir")
     @cooldown(rate=3, per=10)
     @command(aliases=["petlist"])
     async def petshop(self, ctx: Context) -> None:
-        # TODO
+        # TODO: %petshop
         raise NotImplementedError()
 
 

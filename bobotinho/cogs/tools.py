@@ -123,7 +123,7 @@ class Tools(Cog):
     @cooldown(rate=3, per=60)
     @command(aliases=["r" + afk["alias"] for afk in AFKs if afk["alias"] != "afk"])
     async def rafk(self, ctx: Context) -> None:
-        # TODO
+        # TODO: %rafk
         raise NotImplementedError()
 
     @helper("deixe um lembrete para algum usuário")
@@ -164,7 +164,7 @@ class Tools(Cog):
     @cooldown(rate=3, per=10)
     @command(aliases=["timerme"])
     async def timer(self, ctx: Context, name: str = "", *, content: str = "") -> None:
-        # TODO
+        # TODO: %timer
         raise NotImplementedError()
 
     @helper("saiba a tradução de alguma mensagem")
