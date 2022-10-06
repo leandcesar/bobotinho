@@ -30,9 +30,12 @@ class Bobotinho(Bot):
     channels: dict[str, ChannelModel] = {channel.name: channel for channel in ChannelModel.scan()}
     dashbot: Dashbot
 
-    async def fetch_user(self, name: str) -> Optional[User]:
+    async def fetch_user(self, name: str = None, id: int = None) -> Optional[User]:
         try:
-            data = await self.fetch_users([name])
+            if name:
+                data = await self.fetch_users(names=[name])
+            elif id:
+                data = await self.fetch_users(ids=[id])
             user = data[0]
             assert user.id is not None
         except Exception:

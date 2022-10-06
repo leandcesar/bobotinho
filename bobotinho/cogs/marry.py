@@ -38,7 +38,7 @@ class Marry(Cog):
         if not user.weddings:
             return await ctx.reply(f"{mention} não está casado com ninguém")
 
-        twitch_users = await self.bot.fetch_users(ids=[wedding.user_id for wedding in user.weddings])
+        twitch_users = [await self.bot.fetch_user(id=wedding.user_id) for wedding in user.weddings]
         weddings = [
             f'@{twitch_user.name} desde {wedding.created_on.strftime("%d/%m/%Y")} (há {timeago(wedding.created_on).humanize(precision=2)})'
             for twitch_user, wedding in zip(twitch_users, user.weddings)
