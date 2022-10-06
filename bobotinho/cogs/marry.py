@@ -26,7 +26,7 @@ class Marry(Cog):
     @command(aliases=["ma", "married"])
     async def marriage(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
-        if name == ctx.bot.nick:
+        if name == self.bot.nick:
             return await ctx.reply("nunca me casarei com ninguém")
         twitch_user = await self.bot.fetch_user(name)
         if not twitch_user:

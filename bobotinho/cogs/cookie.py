@@ -35,7 +35,7 @@ class Cookie(Cog):
             return await ctx.reply(f"você comeu {amount} cookies de uma só vez 🥠")
         if amount > 1:
             return await ctx.reply(f"você não tem {amount} cookies estocados para comer")
-        if amount == 1 and ctx.user.update_cookie(daily=True, eat=1):
+        if ctx.user.update_cookie(daily=True, eat=1) or ctx.user.update_cookie(eat=1):
             cookie = random_line_from_txt("bobotinho//data//cookies.txt")
             return await ctx.reply(f"{cookie} 🥠")
         return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
