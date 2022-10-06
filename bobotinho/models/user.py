@@ -64,7 +64,7 @@ class Pet(MapAttribute, DateTimeMixin):
 
 
 class Reminder(MapAttribute, DateTimeMixin):
-    user_id = NumberAttribute(null=False)
+    user_id = UnicodeAttribute(null=False)
     message = UnicodeAttribute(null=False, default=str)
     scheduled_to = UTCDateTimeAttribute(null=True)
 
@@ -76,7 +76,7 @@ class Status(MapAttribute, DateTimeMixin):
 
 
 class Wedding(MapAttribute, DateTimeMixin):
-    user_id = NumberAttribute(null=False)
+    user_id = UnicodeAttribute(null=False)
     divorced = BooleanAttribute(null=False, default=False)
 
 
