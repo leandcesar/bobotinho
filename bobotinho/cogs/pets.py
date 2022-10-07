@@ -2,18 +2,38 @@
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
 from bobotinho.models.user import UserModel
+from bobotinho.utils.convert import json2dict
+
+PETS = json2dict("bobotinho//data//pets.json")
 
 
 class Pet(Cog):
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
+    async def cog_check(self, ctx: Context) -> bool:
+        if ctx.args and isinstance(ctx.args[0], str):
+            ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
+        return True
+
     @helper("veja os pets de alguém")
     @cooldown(rate=3, per=10)
     @command(aliases=["pets"])
     async def pet(self, ctx: Context, name: str = "") -> None:
-        # TODO: %pet
-        raise NotImplementedError()
+        name = name or ctx.author.name
+        if name == self.bot.nick:
+            return await ctx.reply("eu tenho todos os pets, e ofereço alguns pra vocês")
+        twitch_user = await self.bot.fetch_user(name)
+        if not twitch_user:
+            return await ctx.reply(f"@{name} é um usuário inválido")
+        user = UserModel.get_or_none(twitch_user.id)
+        if not user:
+            return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        mention = "você" if name == ctx.author.name else f"@{name}"
+        if user.pets:
+            pets = " ".join([f'{pet} {PETS[pet.specie]["emoji"]}' for pet in user.pets])
+            return await ctx.reply(f"{mention} possui {pets}")
+        return await ctx.reply(f"{mention} não possui nenhum pet")
 
     @helper("adquira um dos pets disponíveis na loja")
     @usage("digite o comando e um dos pets disponíveis na loja para adquirí-lo")
