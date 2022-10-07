@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.models.user import UserModel
 from bobotinho.utils.convert import json2dict
 from bobotinho.utils.rand import random_choice, random_choices, random_number
@@ -28,7 +28,7 @@ class Dungeon(Cog):
         return True
 
     @helper("entre na dungeon, faça sua escolha e adquira experiência")
-    @cooldown(rate=2, per=30)
+    @cooldown(rate=2, per=30, bucket=Bucket.member)
     @command(aliases=["ed"])
     async def enterdungeon(self, ctx: Context, *, content: str = "") -> None:
         if not ctx.user.dungeons:
@@ -113,7 +113,7 @@ class Dungeon(Cog):
             return await ctx.reply(f"{dungeon[option][result]}! +0 XP")
 
     @helper("entre na dungeon e adquira experiência sem precisar tomar uma escolha")
-    @cooldown(rate=1, per=30)
+    @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command(aliases=["fed", "fd"])
     async def fastdungeon(self, ctx: Context) -> None:
         if not ctx.user.dungeons:
@@ -185,7 +185,7 @@ class Dungeon(Cog):
             return await ctx.reply(f"{quote} e {dungeon[option][result]}! +0 XP")
 
     @helper("veja qual o seu level (ou de alguém) e outras estatísticas da dungeon")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["lvl"])
     async def level(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
@@ -208,7 +208,7 @@ class Dungeon(Cog):
         return await ctx.reply(f"{mention} ainda não entrou em nenhuma dungeon")
 
     @helper("saiba quais são os melhores jogadores da dungeon")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def rank(self, ctx: Context, order_by: str = "") -> None:
         # TODO: %rank

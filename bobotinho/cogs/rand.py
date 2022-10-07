@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.utils.rand import random_choice, random_line_from_txt, random_number
 
 
@@ -9,7 +9,7 @@ class Rand(Cog):
         self.bot = bot
 
     @helper("receba uma probabilidade de 0 a 100")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["%"])
     async def chance(self, ctx: Context) -> None:
         percentage = random_number(max=1000, div=10)
@@ -17,7 +17,7 @@ class Rand(Cog):
 
     @helper('dê opções separadas por "ou" e uma delas será escolhida')
     @usage('digite o comando e algumas opções separadas por "ou"')
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["choose", "pick"])
     async def choice(self, ctx: Context, *, content: str) -> None:
         content = content.rstrip("?")
@@ -26,7 +26,7 @@ class Rand(Cog):
         return await ctx.reply(f"eu escolhi: {option}")
 
     @helper("jogue uma moeda e veja se deu cara ou coroa")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["coinflip", "cf"])
     async def coin(self, ctx: Context) -> None:
         percentage = random_number(max=6000)  # Murray & Teare (1993)
@@ -37,7 +37,7 @@ class Rand(Cog):
         return await ctx.reply("você jogou uma moeda e ela caiu no meio, em pé! PogChamp PogChamp")
 
     @helper("receba uma piada ou trocadilho")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["4head", "hahaa"])
     async def joke(self, ctx: Context) -> None:
         joke = random_line_from_txt("bobotinho//data//jokes.txt")
@@ -45,7 +45,7 @@ class Rand(Cog):
 
     @helper("tente vencer no pedra, papel e tesoura")
     @usage('digite o comando e "pedra", "papel" ou "tesoura"')
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["jokempo"])
     async def jokenpo(self, ctx: Context, choice: str) -> None:
         choice = (
@@ -67,7 +67,7 @@ class Rand(Cog):
 
     @helper("tenha sua pergunta respondida por uma previsão")
     @usage("digite o comando e uma pergunta para receber uma previsão")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["8ball"])
     async def magicball(self, ctx: Context) -> None:
         predictions = [
@@ -105,7 +105,7 @@ class Rand(Cog):
         return await ctx.reply(f"{prediction} 🎱")
 
     @helper("gere uma cor hexadecimal aleatória")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["rcg"])
     async def randomcolor(self, ctx: Context) -> None:
         color = random_number(max=0xFFFFFF)
@@ -113,7 +113,7 @@ class Rand(Cog):
 
     @helper("gere um número aleatório dentre o intervalo fornecido")
     @usage("digite o comando e o número inicial e final do intervalo separados por espaço")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["rng"])
     async def randomnumber(self, ctx: Context, min: int = 1, max: int = 100) -> None:
         if min > max:
@@ -122,7 +122,7 @@ class Rand(Cog):
         return await ctx.reply(f"aqui está um número entre {min} e {max}: {number}")
 
     @helper("receba uma foto aleatória de um gatinho triste")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["sadcat", "sc"])
     async def randomsadcat(self, ctx: Context) -> None:
         sadcat = random_line_from_txt("bobotinho//data//sadcats.txt")
@@ -130,7 +130,7 @@ class Rand(Cog):
 
     @helper("role um dado e veja o resultado")
     @usage("digite o comando e o(s) dado(s) no formato <quantidade>d<lados> (ex: 1d20)")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["dice"])
     async def roll(self, ctx: Context, content: str = "1d20") -> None:
         dices = content.lower().split("d")

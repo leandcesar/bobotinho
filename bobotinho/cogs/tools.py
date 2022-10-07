@@ -3,7 +3,7 @@ import re
 
 from bobotinho import config
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, Message, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, Message, cooldown, command, helper, usage
 from bobotinho.models.user import UserModel
 from bobotinho.services.currency import Currency
 from bobotinho.services.math import Math
@@ -34,6 +34,8 @@ class Tools(Cog):
     async def listener_afk(self, ctx: Context) -> bool:
         if not self.bot.is_enabled(ctx, "afk"):
             return False
+        if ctx.command:
+            return False
         if not ctx.user or not ctx.user.status or ctx.user.status.online:
             return False
         delta = timeago(ctx.user.status.updated_on).humanize(precision=2)
@@ -45,7 +47,7 @@ class Tools(Cog):
     async def listener_remind(self, ctx: Context) -> bool:
         if not self.bot.is_enabled(ctx, "remind"):
             return False
-        if ctx.message.content.startswith(self.bot._prefix):
+        if ctx.command:
             return False
         if not ctx.user or not ctx.user.reminders:
             return False
@@ -62,7 +64,7 @@ class Tools(Cog):
         return True
 
     @helper("informe que você está se ausentando do chat")
-    @cooldown(rate=1, per=30)
+    @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command(aliases=[afk["alias"] for afk in AFKs if afk["alias"] != "afk"])
     async def afk(self, ctx: Context, *, content: str = "") -> None:
         if len(content) >= 450:
@@ -85,7 +87,7 @@ class Tools(Cog):
 
     @helper("saiba o valor da conversão de uma moeda em reais")
     @usage("digite o comando, a sigla da moeda (ex: USD, BTC) e a quantidade para saber a conversão em reais")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["crypto"])
     async def currency(self, ctx: Context, base: str, amount: int = 1) -> None:
         conversion = await self.currency_api.rate(base=base, quote="BRL")
@@ -94,7 +96,7 @@ class Tools(Cog):
 
     @helper("saiba o valor da conversão de uma moeda em reais")
     @usage("digite o comando e a quantidade para saber a conversão em reais")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["euro", "libra", "bitcoin", "ethereum"])
     async def dolar(self, ctx: Context, amount: int = 1) -> None:
         invoke_by = ctx.message.content.partition(" ")[0][len(ctx.prefix):].lower()
@@ -106,7 +108,7 @@ class Tools(Cog):
 
     @helper("saiba o resultado de alguma expressão matemática")
     @usage("digite o comando e uma expressão matemática (ex: 1+1)")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["evaluate", "calc"])
     async def math(self, ctx: Context, *, content: str) -> None:
         try:
@@ -128,7 +130,7 @@ class Tools(Cog):
 
     @helper("deixe um lembrete para algum usuário")
     @usage("digite o comando, o nome de alguém e uma mensagem para deixar um lembrete")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["remindme"])
     async def remind(self, ctx: Context, name: str = "", *, content: str = "") -> None:
         if len(content) > 425:
@@ -161,7 +163,7 @@ class Tools(Cog):
 
     @helper("deixe um lembrete cronometrado para algum usuário")
     @usage("digite o comando, o nome de alguém, a data (ou daqui quanto tempo) e uma mensagem para deixar um lembrete")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["timerme"])
     async def timer(self, ctx: Context, name: str = "", *, content: str = "") -> None:
         # TODO: %timer
@@ -169,7 +171,7 @@ class Tools(Cog):
 
     @helper("saiba a tradução de alguma mensagem")
     @usage("digite o comando e um texto para ser traduzido")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["t"])
     async def translate(self, ctx: Context, options: str, *, content: str = "") -> None:
         match = re.match(r"(\w{2})?->(\w{2})?", options)  # source->target or source-> or ->target
@@ -187,7 +189,7 @@ class Tools(Cog):
 
     @helper("saiba o clima atual de alguma cidade")
     @usage("digite o comando e o nome de um local para saber o clima")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["wt"])
     async def weather(self, ctx: Context, *, content: str) -> None:
         if "," not in content:

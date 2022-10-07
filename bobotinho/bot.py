@@ -141,7 +141,7 @@ class Bobotinho(Bot):
         logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.reply("ocorreu um erro inesperado")
 
-    @routine(seconds=60, wait_first=True)
+    @routine(seconds=30, wait_first=True)
     async def check_channels(self) -> None:
         connected_channels = [channel.name for channel in self.connected_channels]
         disconnected_channels = [channel for channel in self.channels if channel not in connected_channels]

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.models.user import UserModel
 from bobotinho.utils.time import timeago
 
@@ -15,14 +15,14 @@ class Marry(Cog):
 
     @helper("divorcie-se da pessoa com quem você é casada")
     @usage("digite o comando e o nome da pessoa com quem se casou para se divorciar")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def divorce(self, ctx: Context, name: str) -> None:
         # TODO: %divorce
         raise NotImplementedError()
 
     @helper("saiba há quanto tempo algum usuário está casado")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["ma", "married"])
     async def marriage(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
@@ -49,7 +49,7 @@ class Marry(Cog):
 
     @helper("case-se e seja feliz para sempre, mas isso custará cookies")
     @usage("digite o comando e o nome de quem você quer pedir em casamento")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def marry(self, ctx: Context, name: str = "") -> None:
         # TODO: %marry

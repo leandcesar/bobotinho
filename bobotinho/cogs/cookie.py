@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.models.user import UserModel
 from bobotinho.utils.rand import random_line_from_txt, random_choices
 
@@ -24,7 +24,7 @@ class Cookie(Cog):
 
     @helper("coma um cookie e receba uma frase da sorte")
     @usage("digite o comando e a quantidade de cookies que quer comer (opcional)")
-    @cooldown(rate=1, per=30)
+    @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command()
     async def cookie(self, ctx: Context, amount: int = 1) -> None:
         if amount == 0:
@@ -42,7 +42,7 @@ class Cookie(Cog):
 
     @helper("veja quantos cookies alguém já comeu")
     @usage("digite o comando e a quantidade de cookies que quer comer (opcional)")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["cc"])
     async def cookiecount(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
@@ -64,7 +64,7 @@ class Cookie(Cog):
 
     @helper("presenteie alguém com seu cookie diário")
     @usage("digite o comando e o nome de alguém para presenteá-lo com seu cookie")
-    @cooldown(rate=1, per=30)
+    @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command(aliases=["give"])
     async def gift(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
@@ -84,7 +84,7 @@ class Cookie(Cog):
         return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("aposte seu cookie diário para ter a chance de ganhar outros")
-    @cooldown(rate=1, per=30)
+    @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command(aliases=["sm"])
     async def slotmachine(self, ctx: Context) -> None:
         if ctx.user.update_cookie(daily=True):
@@ -100,7 +100,7 @@ class Cookie(Cog):
         return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("estoque o seu cookie diário, caso não queira usá-lo")
-    @cooldown(rate=1, per=30)
+    @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command()
     async def stock(self, ctx: Context) -> None:
         if ctx.user.update_cookie(daily=True):
@@ -108,7 +108,7 @@ class Cookie(Cog):
         return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("veja quais são os maiores comedores ou doadores de cookies")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def top(self, ctx: Context, order_by: str = "count") -> None:
         # TODO: %top

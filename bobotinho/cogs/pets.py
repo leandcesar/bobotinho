@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.models.user import UserModel
 from bobotinho.utils.convert import json2dict
 
@@ -17,7 +17,7 @@ class Pet(Cog):
         return True
 
     @helper("veja os pets de alguém")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["pets"])
     async def pet(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
@@ -37,7 +37,7 @@ class Pet(Cog):
 
     @helper("adquira um dos pets disponíveis na loja")
     @usage("digite o comando e um dos pets disponíveis na loja para adquirí-lo")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def petbuy(self, ctx: Context) -> None:
         # TODO: %petbuy
@@ -45,14 +45,14 @@ class Pet(Cog):
 
     @helper("dê um nome para o seu pet")
     @usage("digite o comando e o nome que desejar para seu pet")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def petname(self, ctx: Context) -> None:
         # TODO: %petname
         raise NotImplementedError()
 
     @helper("faça carinho nos seus pets")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def petpat(self, ctx: Context) -> None:
         # TODO: %petpat
@@ -60,14 +60,14 @@ class Pet(Cog):
 
     @helper("devolva um pet em troca de parte da quantia que gastou")
     @usage("digite o comando e o nome ou espécie do pet que quer devolver")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def petsell(self, ctx: Context) -> None:
         # TODO: %petsell
         raise NotImplementedError()
 
     @helper("veja os pets disponíveis para adquirir")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["petlist"])
     async def petshop(self, ctx: Context) -> None:
         # TODO: %petshop

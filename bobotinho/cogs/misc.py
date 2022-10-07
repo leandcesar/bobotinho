@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from bobotinho import config
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, Message, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, Message, cooldown, command, helper, usage
 from bobotinho.ext.pyramid import Pyramid
 from bobotinho.services.discord import Discord
 from bobotinho.utils.time import datetime, timeago
@@ -28,7 +28,7 @@ class Misc(Cog):
         return False
 
     @helper("veja as principais informações sobre o bot")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["bot", "info"])
     async def botinfo(self, ctx: Context) -> None:
         return await ctx.reply(
@@ -39,7 +39,7 @@ class Misc(Cog):
 
     @helper("reporte um bug que está ocorrendo no Bot")
     @usage("digite o comando e o bug que você encontrou")
-    @cooldown(rate=1, per=10)
+    @cooldown(rate=1, per=10, bucket=Bucket.member)
     @command()
     async def bug(self, ctx: Context, *, content: str) -> None:
         user = await self.bot.fetch_user(ctx.author.name)
@@ -49,7 +49,7 @@ class Misc(Cog):
         return await ctx.reply("houve um erro pra registrar seu bug, tente mais tarde")
 
     @helper("receba o link da lista de comandos ou veja como utilizar um comando específico")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["commands"])
     async def help(self, ctx: Context, *, content: str = None) -> None:
         command = self.bot.get_command(content)
@@ -60,27 +60,51 @@ class Misc(Cog):
             return await ctx.reply(f"{ctx.prefix}{command.name}: {command.description}")
         return await ctx.reply(f"veja todos os comandos: {config.doc_url}")
 
+    @helper("me adicione no seu chat")
+    @command()
+    async def join(self, ctx: Context, name: str = "") -> None:
+        name = name.lstrip("@").rstrip(",")
+        if ctx.author.name == config.dev:
+            twitch_user = await self.bot.fetch_user(name)
+        else:
+            twitch_user = await ctx.author.user()
+        if not twitch_user:
+            return await ctx.reply(f"@{name} é um usuário inválido")
+        followers = await twitch_user.fetch_followers()
+        if len(followers) < 50:
+            return await ctx.reply(f"infelizmente, só posso me conectar em canais com mais de 50 seguidores")
+        connected_channels = [channel.name for channel in self.bot.connected_channels]
+        if twitch_user.name in connected_channels:
+            if ctx.author.name == config.dev:
+                return await ctx.reply(f"eu já estou conectado no chat de @{twitch_user.name}")
+            return await ctx.reply(f"eu já estou conectado no seu chat")
+        self.bot.channels[twitch_user.name] = ChannelModel.create(id=twitch_user.id, name=twitch_user.name, online=True)
+        await self.bot._connection.send(f"JOIN #{twitch_user.name}\r\n")
+        if ctx.author.name == config.dev:
+            return await ctx.reply(f"me conectei ao chat de @{twitch_user.name}")
+        return await ctx.reply(f"me conectei ao seu chat!")
+
     @helper("receba o link para adicionar o bot no seu chat")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def invite(self, ctx: Context) -> None:
         return await ctx.reply(f"me adicione no seu chat: {config.invite_url}")
 
     @helper("verifique se o bot está online")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["pong"])
     async def ping(self, ctx: Context) -> None:
         return await ctx.reply("pong 🏓")
 
     @helper("receba o link do site do Bot para mais informações")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["discord", "github", "twitter"])
     async def site(self, ctx: Context) -> None:
         return await ctx.reply(f"acesse: {config.site_url}")
 
     @helper("faça uma sugestão de recurso para o bot")
     @usage("digite o comando e uma sugestão de recurso ou modificação para o bot")
-    @cooldown(rate=1, per=10)
+    @cooldown(rate=1, per=10, bucket=Bucket.member)
     @command(aliases=["suggestion"])
     async def suggest(self, ctx: Context, *, content: str) -> None:
         user = await self.bot.fetch_user(ctx.author.name)
@@ -90,7 +114,7 @@ class Misc(Cog):
         return await ctx.reply("houve um erro pra registrar sua sugestão, tente mais tarde")
 
     @helper("verifique há quanto tempo o bot está online")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def uptime(self, ctx: Context) -> None:
         delta = timeago(self.start_time).humanize()

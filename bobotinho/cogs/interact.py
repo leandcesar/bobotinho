@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
-from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
+from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.utils.convert import str2int
 from bobotinho.utils.rand import random_choice
 
@@ -18,7 +18,7 @@ class Interact(Cog):
 
     @helper("desafie alguém para lutar")
     @usage("digite o comando e o nome de alguém para desafiá-lo para luta")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def fight(self, ctx: Context, name: str) -> None:
         if name == self.bot.nick:
@@ -74,7 +74,7 @@ class Interact(Cog):
 
     @helper("dê um abraço em alguém do chat")
     @usage("digite o comando e o nome de alguém para abracá-lo")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def hug(self, ctx: Context, name: str) -> None:
         if name == self.bot.nick:
@@ -85,7 +85,7 @@ class Interact(Cog):
 
     @helper("dê um beijinho em alguém do chat")
     @usage("digite o comando e o nome de alguém para beijá-lo")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def kiss(self, ctx: Context, name: str) -> None:
         if name == self.bot.nick:
@@ -96,7 +96,7 @@ class Interact(Cog):
 
     @helper("veja quanto de amor existe entre o ship de duas pessoas")
     @usage("digite o comando e o nome de uma ou duas pessoas")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["ship"])
     async def love(self, ctx: Context, name1: str, name2: str = "") -> None:
         if not name2:
@@ -116,7 +116,7 @@ class Interact(Cog):
 
     @helper("faça carinho em alguém do chat")
     @usage("digite o comando e o nome de alguém para fazer carinho")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def pat(self, ctx: Context, name: str) -> None:
         if name == self.bot.nick:
@@ -127,7 +127,7 @@ class Interact(Cog):
 
     @helper("é... é isso mesmo")
     @usage("digite o comando e o nome de alguém para ver o tamanho do p")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def penis(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
@@ -140,7 +140,7 @@ class Interact(Cog):
 
     @helper("dê um tapa em alguém do chat")
     @usage("digite o comando e o nome de alguém que mereça levar uns tapas")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def slap(self, ctx: Context, name: str) -> None:
         if name == self.bot.nick:
@@ -151,7 +151,7 @@ class Interact(Cog):
 
     @helper("coloque alguém do chat na cama para dormir")
     @usage("digite o comando e o nome de alguém para colocá-lo na cama")
-    @cooldown(rate=3, per=10)
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def tuck(self, ctx: Context, name: str) -> None:
         if name == self.bot.nick:
