@@ -3,7 +3,7 @@ from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Cog, Context, cooldown, command, helper, usage
 from bobotinho.models.user import UserModel
 from bobotinho.utils.convert import json2dict
-from bobotinho.utils.rand import random_choice, random_number
+from bobotinho.utils.rand import random_choice, random_choices, random_number
 from bobotinho.utils.time import timeago, timedelta
 
 CLASSES = json2dict("bobotinho//data//classes.json")
@@ -82,7 +82,7 @@ class Dungeon(Cog):
             delta = timeago(ctx.user.dungeons.updated_on + timedelta(seconds=10800), reverse=True)
             return await ctx.reply(f"aguarde {delta.humanize(precision=2, short=True)} para entrar em outra dungeon ⌛")
 
-        i = random_number(min=0, max=len(DUNGEONS))
+        i = random_number(min=0, max=len(DUNGEONS) - 1)
         dungeon = DUNGEONS[i]
         check = lambda message: (
             message.author
@@ -99,7 +99,7 @@ class Dungeon(Cog):
             message = response[0]
             option = message.content.lower().replace(f"{ctx.prefix}ed ", "")
 
-        result = random_choice(["win", "lose"])
+        result = random_choices(["win", "lose"], w=(0.66, 0.33))[0]
         if result == "win":
             experience = int(random_number(min=50, max=75) + 3 * ctx.user.dungeons.level)
             if ctx.user.dungeons.experience + experience > 100 * (ctx.user.dungeons.level) + 25 * sum(range(1, ctx.user.dungeons.level + 1)):
@@ -167,10 +167,10 @@ class Dungeon(Cog):
             delta = timeago(ctx.user.dungeons.updated_on + timedelta(seconds=10800), reverse=True)
             return await ctx.reply(f"aguarde {delta.humanize(precision=2, short=True)} para entrar em outra dungeon ⌛")
 
-        i = random_number(min=0, max=len(DUNGEONS))
+        i = random_number(min=0, max=len(DUNGEONS) - 1)
         dungeon = DUNGEONS[i]
         option = random_choice(["1", "2"])
-        result = random_choice(["win", "lose"])
+        result = random_choices(["win", "lose"], w=(0.66, 0.33))[0]
         quote = f'{dungeon["quote"]} você decide {dungeon[option]["option"]}'
         if result == "win":
             experience = int(random_number(min=50, max=75) + 3 * ctx.user.dungeons.level)
