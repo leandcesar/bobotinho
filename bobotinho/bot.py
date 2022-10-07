@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Optional
 
-from bobotinho import config, logger
+from bobotinho import logger
 from bobotinho.ext.commands import (
     Any,
     Bot,
@@ -21,13 +21,11 @@ from bobotinho.ext.exceptions import (
 )
 from bobotinho.models.channel import ChannelModel
 from bobotinho.models.user import UserModel
-from bobotinho.services.dashbot import Dashbot
 
 
 class Bobotinho(Bot):
     listeners: list[Callable[[Context,], Coroutine[Any, Any, bool]]] = []
     channels: dict[str, ChannelModel] = {channel.name: channel for channel in ChannelModel.scan()}
-    dashbot: Dashbot
 
     async def fetch_user(self, name: str = None, id: int = None) -> Optional[User]:
         try:
@@ -59,7 +57,6 @@ class Bobotinho(Bot):
 
     async def before_connect(self) -> None:
         self.check(self.is_enabled)
-        self.dashbot = Dashbot(key=config.dashbot_key)
 
     async def after_connect(self) -> None:
         self.check_channels.start()
@@ -68,7 +65,7 @@ class Bobotinho(Bot):
         self.check_channels.cancel()
 
     async def after_close(self) -> None:
-        await self.dashbot.close()
+        ...
 
     def start(self) -> None:
         self.loop.run_until_complete(self.before_connect())
@@ -86,13 +83,12 @@ class Bobotinho(Bot):
         ...
 
     async def global_before_invoke(self, ctx: Context) -> None:
-        # if ctx.message.content:
-        #     ctx.message.content.replace("\U000e0000", "")
+        if ctx.message.content:
+            ctx.message.content.replace("\U000e0000", "")
         # TODO: salvar mensagem recebida no Dashbot
-        ...
+        # TODO: salvar mensagem enviada no Dashbot
 
     async def global_after_invoke(self, ctx: Context) -> None:
-        # TODO: salvar mensagem enviada no Dashbot
         ...
 
     async def event_message(self, message: Message) -> None:
@@ -143,6 +139,7 @@ class Bobotinho(Bot):
 
     @routine(seconds=30, wait_first=True)
     async def check_channels(self) -> None:
+        return None
         connected_channels = [channel.name for channel in self.connected_channels]
         disconnected_channels = [channel for channel in self.channels if channel not in connected_channels]
         logger.warning(f"channels={len(connected_channels)}/{len(self.channels)} disconnected_channels={disconnected_channels}")
