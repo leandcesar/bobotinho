@@ -141,8 +141,10 @@ class Bobotinho(Bot):
         logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
         return await ctx.reply("ocorreu um erro inesperado")
 
-    @routine(seconds=30, wait_first=True)
+    @routine(seconds=60, wait_first=True)
     async def check_channels(self) -> None:
         connected_channels = [channel.name for channel in self.connected_channels]
         disconnected_channels = [channel for channel in self.channels if channel not in connected_channels]
-        await self.join_channels(disconnected_channels)
+        logger.warning(f"channels={len(connected_channels)/len(self.channels)} disconnected_channels={disconnected_channels}")
+        for channel in disconnected_channels:
+            await self._connection.send(f"JOIN #{channel}\r\n")
