@@ -10,16 +10,15 @@ class Cookie(Cog):
         self.bot = bot
 
     async def cog_check(self, ctx: Context) -> bool:
+        ctx.user = UserModel.get_or_create(
+            ctx.author.id,
+            name=ctx.author.name,
+            last_message=ctx.message.content,
+            last_channel=ctx.channel.name,
+            last_color=ctx.author.color,
+        )
         if ctx.args and isinstance(ctx.args[0], str):
             ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
-        if not ctx.user:
-            ctx.user = UserModel.get_or_create(
-                ctx.author.id,
-                name=ctx.author.name,
-                last_message=ctx.message.content,
-                last_channel=ctx.channel.name,
-                last_color=ctx.author.color,
-            )
         return True
 
     @helper("coma um cookie e receba uma frase da sorte")
@@ -54,6 +53,8 @@ class Cookie(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         mention = "você" if name == ctx.author.name else f"@{name}"
         if user.cookies:
             return await ctx.reply(
@@ -78,6 +79,8 @@ class Cookie(Cog):
         user_to = UserModel.get_or_none(twitch_user.id)
         if not user_to:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user_to.settings and not user_to.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         if ctx.user.update_cookie(daily=True, donate=1):
             user_to.update_cookie(receive=1)
             return await ctx.reply(f"você presenteou @{name} com um cookie 🎁")

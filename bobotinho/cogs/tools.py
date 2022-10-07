@@ -31,6 +31,16 @@ class Tools(Cog):
         self.bot.loop.create_task(self.translator_api.close())
         self.bot.loop.create_task(self.weather_api.close())
 
+    async def cog_check(self, ctx: Context) -> bool:
+        ctx.user = UserModel.get_or_create(
+            ctx.author.id,
+            name=ctx.author.name,
+            last_message=ctx.message.content,
+            last_channel=ctx.channel.name,
+            last_color=ctx.author.color,
+        )
+        return True
+
     async def listener_afk(self, ctx: Context) -> bool:
         if not self.bot.is_enabled(ctx, "afk"):
             return False
@@ -50,6 +60,8 @@ class Tools(Cog):
         if ctx.command:
             return False
         if not ctx.user or not ctx.user.reminders:
+            return False
+        if not ctx.user.settings and not ctx.user.settings.mention:
             return False
         remind = ctx.user.reminders[0]
         if ctx.author.id == remind.user_id:
@@ -74,14 +86,6 @@ class Tools(Cog):
         alias = afk["alias"]
         action = afk["afk"]
         message = content or afk["emoji"]
-        if not ctx.user:
-            ctx.user = UserModel.get_or_create(
-                ctx.author.id,
-                name=ctx.author.name,
-                last_message=ctx.message.content,
-                last_channel=ctx.channel.name,
-                last_color=ctx.author.color,
-            )
         ctx.user.update_status(online=False, alias=alias, message=message)
         return await ctx.reply(f"você {action}: {message}")
 
@@ -155,6 +159,8 @@ class Tools(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         mention = "você" if name == ctx.author.name else f"@{name}"
         if user.reminders and len(user.reminders) > 15:
             return await ctx.reply(f"já existem muitos lembretes pendentes para {mention}")

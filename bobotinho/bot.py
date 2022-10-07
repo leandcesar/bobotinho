@@ -139,7 +139,6 @@ class Bobotinho(Bot):
 
     @routine(seconds=30, wait_first=True)
     async def check_channels(self) -> None:
-        return None
         connected_channels = [channel.name for channel in self.connected_channels]
         disconnected_channels = [channel for channel in self.channels if channel not in connected_channels]
         logger.warning(f"channels={len(connected_channels)}/{len(self.channels)} disconnected_channels={disconnected_channels}")

@@ -15,16 +15,15 @@ class Dungeon(Cog):
         self.bot = bot
 
     async def cog_check(self, ctx: Context) -> bool:
+        ctx.user = UserModel.get_or_create(
+            ctx.author.id,
+            name=ctx.author.name,
+            last_message=ctx.message.content,
+            last_channel=ctx.channel.name,
+            last_color=ctx.author.color,
+        )
         if ctx.args and isinstance(ctx.args[0], str):
             ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
-        if not ctx.user:
-            ctx.user = UserModel.get_or_create(
-                ctx.author.id,
-                name=ctx.author.name,
-                last_message=ctx.message.content,
-                last_channel=ctx.channel.name,
-                last_color=ctx.author.color,
-            )
         return True
 
     @helper("entre na dungeon, faça sua escolha e adquira experiência")
@@ -197,6 +196,8 @@ class Dungeon(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         mention = "você" if name == ctx.author.name else f"@{name}"
         if user.dungeons:
             _class = CLASSES[ctx.user.dungeons._class][min(ctx.user.dungeons.level, 60) // 10]

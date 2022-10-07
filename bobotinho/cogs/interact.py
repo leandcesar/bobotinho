@@ -11,8 +11,9 @@ class Interact(Cog):
         self.fights = {}
 
     async def cog_check(self, ctx: Context) -> bool:
-        ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
-        if len(ctx.args) > 1:
+        if ctx.args and isinstance(ctx.args[0], str):
+            ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
+        if len(ctx.args) > 1 and isinstance(ctx.args[1], str):
             ctx.args[1] = ctx.args[1].lstrip("@").rstrip(",").lower()
         return True
 
@@ -42,26 +43,26 @@ class Interact(Cog):
             if message.content.lower() in ("sim", "s"):
                 result = random_choice(
                     [
-                        f"@{name} acaba com {ctx.author.name}!",
-                        f"@{name} deixa {ctx.author.name} desacordado!",
-                        f"@{name} derrota {ctx.author.name} facilmente!",
-                        f"@{name} espanca {ctx.author.name} sem piedade!",
-                        f"@{name} não dá chances para {ctx.author.name} e vence!",
-                        f"@{name} quase perde, mas derruba {ctx.author.name}!",
-                        f"@{name} vence a luta contra {ctx.author.name}!",
-                        f"@{name} vence {ctx.author.name} com dificuldades!",
-                        f"@{name} vence {ctx.author.name} em uma luta acirrada!",
-                        f"@{name} vence {ctx.author.name} facilmente!",
-                        f"@{ctx.author.name} acaba com {name}!",
-                        f"@{ctx.author.name} deixa {name} desacordado!",
-                        f"@{ctx.author.name} derrota {name} facilmente!",
-                        f"@{ctx.author.name} espanca {name} sem piedade!",
-                        f"@{ctx.author.name} não dá chances para {name} e vence!",
-                        f"@{ctx.author.name} quase perde, mas derruba {name}!",
-                        f"@{ctx.author.name} vence a luta contra {name}!",
-                        f"@{ctx.author.name} vence {name} com dificuldades!",
-                        f"@{ctx.author.name} vence {name} em uma luta acirrada!",
-                        f"@{ctx.author.name} vence {name} facilmente!",
+                        f"@{name} acaba com @{ctx.author.name}!",
+                        f"@{name} deixa @{ctx.author.name} desacordado!",
+                        f"@{name} derrota @{ctx.author.name} facilmente!",
+                        f"@{name} espanca @{ctx.author.name} sem piedade!",
+                        f"@{name} não dá chances para @{ctx.author.name} e vence!",
+                        f"@{name} quase perde, mas derruba @{ctx.author.name}!",
+                        f"@{name} vence a luta contra @{ctx.author.name}!",
+                        f"@{name} vence @{ctx.author.name} com dificuldades!",
+                        f"@{name} vence @{ctx.author.name} em uma luta acirrada!",
+                        f"@{name} vence @{ctx.author.name} facilmente!",
+                        f"@{ctx.author.name} acaba com @{name}!",
+                        f"@{ctx.author.name} deixa @{name} desacordado!",
+                        f"@{ctx.author.name} derrota @{name} facilmente!",
+                        f"@{ctx.author.name} espanca @{name} sem piedade!",
+                        f"@{ctx.author.name} não dá chances para @{name} e vence!",
+                        f"@{ctx.author.name} quase perde, mas derruba @{name}!",
+                        f"@{ctx.author.name} vence a luta contra @{name}!",
+                        f"@{ctx.author.name} vence @{name} com dificuldades!",
+                        f"@{ctx.author.name} vence @{name} em uma luta acirrada!",
+                        f"@{ctx.author.name} vence @{name} facilmente!",
                     ]
                 )
                 await ctx.send(result)

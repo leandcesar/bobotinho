@@ -63,9 +63,10 @@ class Misc(Cog):
     @helper("me adicione no seu chat")
     @command()
     async def join(self, ctx: Context, name: str = "") -> None:
-        name = name.lstrip("@").rstrip(",")
+        if ctx.channel.name != config.dev:
+            return None
         if ctx.author.name == config.dev:
-            twitch_user = await self.bot.fetch_user(name)
+            twitch_user = await self.bot.fetch_user(name.lstrip("@").rstrip(","))
         else:
             twitch_user = await ctx.author.user()
         if not twitch_user:
@@ -82,6 +83,7 @@ class Misc(Cog):
         await self.bot._connection.send(f"JOIN #{twitch_user.name}\r\n")
         if ctx.author.name == config.dev:
             return await ctx.reply(f"me conectei ao chat de @{twitch_user.name}")
+        await self.discord.webhook(name=twitch_user.name, content="Adicionou o bobotinho", avatar=twitch_user.profile_image)
         return await ctx.reply(f"me conectei ao seu chat!")
 
     @helper("receba o link para adicionar o bot no seu chat")

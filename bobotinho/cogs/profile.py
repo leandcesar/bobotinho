@@ -8,6 +8,16 @@ class Profile(Cog):
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
+    async def cog_check(self, ctx: Context) -> bool:
+        ctx.user = UserModel.get_or_create(
+            ctx.author.id,
+            name=ctx.author.name,
+            last_message=ctx.message.content,
+            last_channel=ctx.channel.name,
+            last_color=ctx.author.color,
+        )
+        return True
+
     @helper("defina sua badge de apoiador")
     @usage("digite o comando e um emoji que quiser usar como badge")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
@@ -31,6 +41,20 @@ class Profile(Cog):
     async def savecolor(self, ctx: Context, *, content: str = "") -> None:
         # TODO: %savecolor
         raise NotImplementedError()
+
+    @helper("permita que utilizem comandos direcionados a você novamente")
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
+    @command()
+    async def mention(self, ctx: Context) -> None:
+        ctx.user.update_settings(mention=True)
+        return await ctx.reply(f"agora será possível usar comandos direcionados a você novamente")
+
+    @helper("impeça que utilizem comandos direcionados a você")
+    @cooldown(rate=3, per=10, bucket=Bucket.member)
+    @command()
+    async def unmention(self, ctx: Context) -> None:
+        ctx.user.update_settings(mention=False)
+        return await ctx.reply(f"não será mais possível usar comandos direcionados a você")
 
 
 def prepare(bot: Bobotinho) -> None:

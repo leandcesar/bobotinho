@@ -10,7 +10,8 @@ class Marry(Cog):
         self.bot = bot
 
     async def cog_check(self, ctx: Context) -> bool:
-        ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
+        if ctx.args and isinstance(ctx.args[0], str):
+            ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
         return True
 
     @helper("divorcie-se da pessoa com quem você é casada")
@@ -34,6 +35,8 @@ class Marry(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         mention = "você" if name == ctx.author.name else f"@{name}"
         if not user.weddings:
             return await ctx.reply(f"{mention} não está casado com ninguém")

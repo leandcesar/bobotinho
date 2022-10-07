@@ -18,8 +18,9 @@ class Stalker(Cog):
         self.bot.loop.create_task(self.color_api.close())
 
     async def cog_check(self, ctx: Context) -> bool:
-        ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
-        if len(ctx.args) > 1:
+        if ctx.args and isinstance(ctx.args[0], str):
+            ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
+        if len(ctx.args) > 1 and isinstance(ctx.args[1], str):
             ctx.args[1] = ctx.args[1].lstrip("@").rstrip(",").lower()
         return True
 
@@ -65,6 +66,8 @@ class Stalker(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         try:
             color_name = await self.color_api.hex_to_name(code=user.last_color)
         except Exception:
@@ -126,6 +129,8 @@ class Stalker(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         if user.status and not user.status.online:
             delta = timeago(user.status.updated_on).humanize(precision=2)
             action = [afk for afk in AFKs if afk["alias"] == user.status.alias][0]["isafk"]
@@ -148,6 +153,8 @@ class Stalker(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         delta = timeago(user.updated_on).humanize(precision=2)
         return await ctx.reply(f"@{name} foi visto em @{user.last_channel} pela última vez: {user.last_message} (há {delta})")
 

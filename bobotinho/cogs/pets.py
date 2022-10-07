@@ -29,6 +29,8 @@ class Pet(Cog):
         user = UserModel.get_or_none(twitch_user.id)
         if not user:
             return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if user.settings and not user.settings.mention:
+            return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         mention = "você" if name == ctx.author.name else f"@{name}"
         if user.pets:
             pets = " ".join([f'{pet} {PETS[pet.specie]["emoji"]}' for pet in user.pets])
