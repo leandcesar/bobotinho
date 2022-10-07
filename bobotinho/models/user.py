@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pynamodb.attributes import (
     BooleanAttribute,
@@ -181,11 +181,16 @@ class UserModel(Model, DateTimeMixin):
         if not self.cookies:
             self.cookies = Cookies()
         if daily:
-            if self.cookies.daily <= 0 and datetime.utcnow().date() == self.cookies.updated_on.date():
+            today = datetime.utcnow()
+            yesterday = today - timedelta(days=1)
+            if self.cookies.daily <= 0 and today.date() == self.cookies.updated_on.date():
                 return False
             self.cookies.daily -= 1
-            self.cookies.streak += 1
             self.cookies.stocked += 1
+            if self.cookies.updated_on.date() == yesterday.date():
+                self.cookies.streak += 1
+            else:
+                self.cookies.streak = 0
             self.cookies.updated_on = datetime.utcnow()
         if eat and not receive and not donate and not earnings:
             if self.cookies.stocked < eat:
