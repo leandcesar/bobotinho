@@ -1,12 +1,11 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg?logo=python)](https://www.python.org)
-<!-- [![build](https://github.com/leandcesar/bobotinho-bot/workflows/CI/badge.svg)](https://github.com/leandcesar/bobotinho-bot/actions/workflows/ci.yml) -->
-<!-- [![UptimeRobot](https://img.shields.io/uptimerobot/status/m788541737-d1097381d469c36beb1e16b3)](https://stats.uptimerobot.com/EQQpJSWDE5/788541737) -->
 [![codecov](https://codecov.io/gh/leandcesar/bobotinho-bot/branch/master/graph/badge.svg)](https://codecov.io/gh/leandcesar/bobotinho-bot)
 [![License](https://img.shields.io/badge/license-AGPL%20v3-yellow.svg)](https://github.com/leandcesar/bobotinho-bot/blob/main/LICENSE)
 [![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+<!-- [![build](https://github.com/leandcesar/bobotinho-bot/workflows/CI/badge.svg)](https://github.com/leandcesar/bobotinho-bot/actions/workflows/ci.yml) -->
+<!-- [![UptimeRobot](https://img.shields.io/uptimerobot/status/m788541737-d1097381d469c36beb1e16b3)](https://stats.uptimerobot.com/EQQpJSWDE5/788541737) -->
 
 # Bobotinho
-Main repository for the chatbot Bobotinho.
 
 ## ‎💻 Technologies
 - [twitchio 2](https://twitchio.dev/en/latest/) is a fully asynchronous Python IRC, API, EventSub and PubSub library for Twitch.

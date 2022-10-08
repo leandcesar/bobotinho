@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
-from bobotinho.models.user import UserModel
 from bobotinho.utils.convert import json2dict
 
 PETS = json2dict("bobotinho//data//pets.json")

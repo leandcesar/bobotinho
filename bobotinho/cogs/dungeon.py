@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
-from bobotinho.models.user import UserModel
 from bobotinho.utils.convert import json2dict
 from bobotinho.utils.rand import random_choice, random_choices, random_number
 from bobotinho.utils.time import timeago, timedelta
@@ -15,14 +14,6 @@ class Dungeon(Cog):
         self.bot = bot
 
     async def cog_check(self, ctx: Context) -> bool:
-        if not ctx.user:
-            ctx.user = UserModel.get_or_create(
-                ctx.author.id,
-                name=ctx.author.name,
-                last_message=ctx.message.content,
-                last_channel=ctx.channel.name,
-                last_color=ctx.author.color,
-            )
         if ctx.args and isinstance(ctx.args[0], str):
             ctx.args[0] = ctx.args[0].lstrip("@").rstrip(",").lower()
         return True

@@ -4,7 +4,6 @@ import re
 from bobotinho import config
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, Message, cooldown, command, helper, usage
-from bobotinho.models.user import UserModel
 from bobotinho.services.currency import Currency
 from bobotinho.services.math import Math
 from bobotinho.services.translator import Translator
@@ -32,14 +31,6 @@ class Tools(Cog):
         self.bot.loop.create_task(self.weather_api.close())
 
     async def cog_check(self, ctx: Context) -> bool:
-        if not ctx.user:
-            ctx.user = UserModel.get_or_create(
-                ctx.author.id,
-                name=ctx.author.name,
-                last_message=ctx.message.content,
-                last_channel=ctx.channel.name,
-                last_color=ctx.author.color,
-            )
         return True
 
     async def listener_afk(self, ctx: Context) -> bool:
