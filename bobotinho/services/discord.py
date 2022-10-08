@@ -11,8 +11,7 @@ class Discord:
         await self.session.close()
 
     async def webhook(self, *, name: str, content: str, avatar: str = None) -> bool:
-        async with self.session.request(
-            "post",
+        async with self.session.post(
             url=self.url,
             json={"username": name, "content": content, "avatar_url": avatar},
         ) as response:

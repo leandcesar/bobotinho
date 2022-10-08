@@ -15,8 +15,7 @@ class Color:
         code = code.replace("#", "").upper()
         if not (len(code) == 6 and all([x in hexdigits for x in code])):
             raise ValueError(f"Invalid hex code '{code}'")
-        async with self.session.request(
-            "get",
+        async with self.session.get(
             url="https://www.thecolorapi.com/id",
             params={"hex": code},
         ) as response:

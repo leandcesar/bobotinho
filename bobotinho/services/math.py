@@ -10,8 +10,7 @@ class Math:
         await self.session.close()
 
     async def evaluate(self, *, expression: str, precision: int = 4) -> str:
-        async with self.session.request(
-            "post",
+        async with self.session.post(
             url="https://api.mathjs.org/v4",
             json={"expr": expression, "precision": precision},
         ) as response:

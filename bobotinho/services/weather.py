@@ -32,8 +32,7 @@ class Weather:
         await self.session.close()
 
     async def predict(self, *, location: str, language: str = "pt_br", units: str = "metric") -> dict:
-        async with self.session.request(
-            "get",
+        async with self.session.get(
             url="https://api.openweathermap.org/data/2.5/weather",
             params={"appid": self.key, "lang": language, "units": units, "q": location},
         ) as response:

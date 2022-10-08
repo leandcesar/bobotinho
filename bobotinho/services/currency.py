@@ -19,8 +19,7 @@ class Currency:
             raise ValueError(f"Invalid base '{base}'")
         if not (len(quote) == 3 and all([x in ascii_uppercase for x in quote])):
             raise ValueError(f"Invalid quote '{quote}'")
-        async with self.session.request(
-            "get",
+        async with self.session.get(
             url=f"https://rest.coinapi.io/v1/exchangerate/{base}/{quote}",
             headers={"x-coinapi-key": self.key},
         ) as response:

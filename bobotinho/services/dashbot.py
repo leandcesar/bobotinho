@@ -12,8 +12,7 @@ class Dashbot:
 
     async def track(self, *, echo: bool, id: int, message: str, **kwargs) -> bool:
         _type = "outgoing" if echo else "incoming"
-        async with self.session.request(
-            "post",
+        async with self.session.post(
             url="https://tracker.dashbot.io/track",
             params={
                 "v": "11.1.0-rest",
