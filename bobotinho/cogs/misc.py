@@ -3,6 +3,7 @@ from bobotinho import config
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, Message, cooldown, command, helper, usage
 from bobotinho.ext.pyramid import Pyramid
+from bobotinho.models.channel import ChannelModel
 from bobotinho.services.discord import Discord
 from bobotinho.utils.time import datetime, timeago
 
