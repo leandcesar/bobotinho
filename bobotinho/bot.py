@@ -40,6 +40,14 @@ class Bobotinho(Bot):
         else:
             return user
 
+    async def fetch_user_db(self, name: str = None, id: int = None) -> Optional[UserModel]:
+        if name and not id:
+            twitch_user = await self.bot.fetch_user(name)
+            if not twitch_user:
+                return None
+            id = twitch_user.id
+        return UserModel.get_or_none(id)
+
     def load_modules(self, cogs: list[str]) -> None:
         for cog in cogs:
             module = cog.replace("/", ".")
@@ -105,7 +113,7 @@ class Bobotinho(Bot):
             return await ctx.reply("ocorreu um erro inesperado")
         except Exception as error:
             logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
-        finally:
+        else:
             if not ctx.user:
                 ctx.user = UserModel.get_or_none(ctx.author.id)
             for listener in self.listeners:
