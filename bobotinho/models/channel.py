@@ -17,7 +17,7 @@ from bobotinho.models.mixins import DateTimeMixin
 
 class ChannelModel(Model, DateTimeMixin):
     class Meta:
-        table_name = "channel"
+        table_name = "channel" if config.stage == "prod" else "channel-dev"
         aws_access_key_id = config.aws_access_key_id
         aws_secret_access_key = config.aws_secret_access_key
         region = config.aws_region_name

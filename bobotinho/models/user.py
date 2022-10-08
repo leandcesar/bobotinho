@@ -83,13 +83,18 @@ class Settings(MapAttribute):
     badge = UnicodeAttribute(null=True)
     block = BooleanAttribute(null=True)
     city = UnicodeAttribute(null=True)
-    premium = NumberAttribute(null=True)
     colors = ListAttribute(null=True, of=UnicodeAttribute, default=list)
+    unmention = BooleanAttribute(null=True)
+    premium = NumberAttribute(null=True)
+
+    @property
+    def mention(self) -> bool:
+        return not getattr(self, "unmention", False)
 
 
 class UserModel(Model, DateTimeMixin):
     class Meta:
-        table_name = "user"
+        table_name = "user" if config.stage == "prod" else "user-dev"
         aws_access_key_id = config.aws_access_key_id
         aws_secret_access_key = config.aws_secret_access_key
         region = config.aws_region_name
@@ -107,9 +112,9 @@ class UserModel(Model, DateTimeMixin):
     settings = Settings(null=True)
     status = Status(null=True)
 
-    pets = ListAttribute(null=True, of=Pet)
-    reminders = ListAttribute(null=True, of=Reminder)
-    weddings = ListAttribute(null=True, of=Wedding)
+    pets = ListAttribute(null=False, of=Pet, default=list)
+    reminders = ListAttribute(null=False, of=Reminder, default=list)
+    weddings = ListAttribute(null=False, of=Wedding, default=list)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id})"
@@ -226,6 +231,25 @@ class UserModel(Model, DateTimeMixin):
             self.dungeons.updated_on = datetime.utcnow()
         else:
             raise Exception(f"id={self.id} main_class={main_class} win={win} defeat={defeat} level_up={level_up} experience={experience}")
+        self.save()
+        return True
+
+    def update_settings(self, *, badge: str = None, city: str = None, color: str = None, mention: bool = None) -> bool:
+        if not self.settings:
+            self.settings = Settings()
+        if badge:
+            self.settings.badge = badge
+        elif city:
+            self.settings.city = city
+        elif color:
+            if self.settings.colors and len(self.settings.colors) >= 10:
+                return False
+            elif self.settings.colors:
+                self.settings.colors.append(color)
+            else:
+                self.settings.colors = [color]
+        elif mention is not None:
+            self.settings.unmention = not mention
         self.save()
         return True
 

@@ -60,12 +60,12 @@ class Stalker(Cog):
     @command(aliases=["colour", "colors"])
     async def color(self, ctx: Context, name: str = "") -> None:
         name = name or ctx.author.name
-        twitch_user = await self.bot.fetch_user(name)
-        if not twitch_user:
-            return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_none(twitch_user.id)
-        if not user:
-            return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if name == ctx.author.name:
+            user = ctx.user
+        else:
+            user = await self.bot.fetch_user_db(name)
+            if not user:
+                return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.settings and not user.settings.mention:
             return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         try:
@@ -123,12 +123,10 @@ class Stalker(Cog):
             return await ctx.reply("eu sempre estou aqui... observando")
         if name == ctx.author.name:
             return await ctx.reply("você não está AFK... obviamente")
-        twitch_user = await self.bot.fetch_user(name)
-        if not twitch_user:
-            return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_none(twitch_user.id)
-        if not user:
-            return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        else:
+            user = await self.bot.fetch_user_db(name)
+            if not user:
+                return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.settings and not user.settings.mention:
             return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         if user.status and not user.status.online:
@@ -146,13 +144,11 @@ class Stalker(Cog):
         if name == self.bot.nick:
             return await ctx.reply("eu estou em todos os lugares, a todo momento...")
         if name == ctx.author.name:
-            return await ctx.reply("você foi visto pela última vez aqui ☝️")
-        twitch_user = await self.bot.fetch_user(name)
-        if not twitch_user:
-            return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_none(twitch_user.id)
-        if not user:
-            return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+            user = ctx.user
+        else:
+            user = await self.bot.fetch_user_db(name)
+            if not user:
+                return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.settings and not user.settings.mention:
             return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         delta = timeago(user.updated_on).humanize(precision=2)

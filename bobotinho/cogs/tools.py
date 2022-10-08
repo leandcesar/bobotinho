@@ -32,13 +32,14 @@ class Tools(Cog):
         self.bot.loop.create_task(self.weather_api.close())
 
     async def cog_check(self, ctx: Context) -> bool:
-        ctx.user = UserModel.get_or_create(
-            ctx.author.id,
-            name=ctx.author.name,
-            last_message=ctx.message.content,
-            last_channel=ctx.channel.name,
-            last_color=ctx.author.color,
-        )
+        if not ctx.user:
+            ctx.user = UserModel.get_or_create(
+                ctx.author.id,
+                name=ctx.author.name,
+                last_message=ctx.message.content,
+                last_channel=ctx.channel.name,
+                last_color=ctx.author.color,
+            )
         return True
 
     async def listener_afk(self, ctx: Context) -> bool:
@@ -143,22 +144,20 @@ class Tools(Cog):
         if invoke_by == "remindme":
             content = f"{name} {content}"
             name = ctx.author.name
-            twitch_user = ctx.author
         elif name == "me":
             name = ctx.author.name
-            twitch_user = ctx.author
         else:
             name = name.lstrip("@").rstrip(",").lower()
-            twitch_user = await self.bot.fetch_user(name)
-            if not twitch_user:
-                return await ctx.reply(f"@{name} é um usuário inválido")
         if content.startswith(("in ", "on ", "at ")):
             return await ctx.reply(f"para lembretes agendados/cronometrados, use o comando {ctx.prefix}timer")
         if name == self.bot.nick:
             return await ctx.reply("estou sempre aqui... não precisa me deixar lembretes")
-        user = UserModel.get_or_none(twitch_user.id)
-        if not user:
-            return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if name == ctx.author.name:
+            user = ctx.user
+        else:
+            user = await self.bot.fetch_user_db(name)
+            if not user:
+                return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.settings and not user.settings.mention:
             return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         mention = "você" if name == ctx.author.name else f"@{name}"

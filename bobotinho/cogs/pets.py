@@ -23,12 +23,12 @@ class Pet(Cog):
         name = name or ctx.author.name
         if name == self.bot.nick:
             return await ctx.reply("eu tenho todos os pets, e ofereço alguns pra vocês")
-        twitch_user = await self.bot.fetch_user(name)
-        if not twitch_user:
-            return await ctx.reply(f"@{name} é um usuário inválido")
-        user = UserModel.get_or_none(twitch_user.id)
-        if not user:
-            return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
+        if name == ctx.author.name:
+            user = ctx.user
+        else:
+            user = await self.bot.fetch_user_db(name)
+            if not user:
+                return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.settings and not user.settings.mention:
             return await ctx.reply("esse usuário optou por não permitir ser mencionado")
         mention = "você" if name == ctx.author.name else f"@{name}"
