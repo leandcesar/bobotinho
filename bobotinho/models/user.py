@@ -122,6 +122,12 @@ class UserModel(Model, DateTimeMixin):
     def __str__(self) -> str:
         return f"@{self.name}"
 
+    @property
+    def single(self) -> bool:
+        if not self.weddings:
+            return True
+        return all([wedding.divorced for wedding in self.weddings])
+
     @classmethod
     def create(cls, id: str, **attrs) -> UserModel:
         instance = cls(str(id), **attrs)
@@ -182,7 +188,7 @@ class UserModel(Model, DateTimeMixin):
         self.save()
         return True
 
-    def update_cookie(self, *, daily: bool = False, eat: int = 0, receive: int = 0, donate: int = 0, earnings: int = 0) -> bool:
+    def update_cookie(self, *, daily: bool = False, eat: int = 0, receive: int = 0, donate: int = 0, earnings: int = 0, consume: int = 0) -> bool:
         if not self.cookies:
             self.cookies = Cookies()
         if daily:
@@ -197,21 +203,23 @@ class UserModel(Model, DateTimeMixin):
             else:
                 self.cookies.streak = 0
             self.cookies.updated_on = datetime.utcnow()
-        if eat and not receive and not donate and not earnings:
+        if eat:
             if self.cookies.stocked < eat:
                 return False
             self.cookies.stocked -= eat
             self.cookies.count += eat
-        elif not eat and receive and not donate and not earnings:
+        elif receive:
             self.cookies.stocked += receive
             self.cookies.received += receive
-        elif not eat and not receive and donate and not earnings:
+        elif donate:
             if self.cookies.stocked < donate:
                 return False
             self.cookies.stocked -= donate
             self.cookies.donated += donate
-        elif not eat and not receive and not donate and earnings:
+        elif earnings:
             self.cookies.stocked += earnings
+        elif consume:
+            self.cookies.stocked -= consume
         self.save()
         return True
 
@@ -256,7 +264,7 @@ class UserModel(Model, DateTimeMixin):
     def add_reminder(self, *, user_id: str, message: str) -> bool:
         if not self.reminders:
             self.reminders = []
-        self.reminders.append(Reminder(user_id=user_id, message=message))
+        self.reminders.append(Reminder(user_id=str(user_id), message=message))
         self.save()
         return True
 
@@ -264,3 +272,21 @@ class UserModel(Model, DateTimeMixin):
         self.reminders = self.reminders[1:]
         self.save()
         return True
+
+    def marry(self, *, user_id: str) -> bool:
+        if not self.weddings:
+            self.weddings = []
+        self.weddings.append(Wedding(user_id=str(user_id)))
+        self.save()
+        return True
+
+    def divorce(self, *, user_id: str) -> bool:
+        if not self.weddings:
+            return False
+        for wedding in self.weddings:
+            if wedding.user_id == str(user_id):
+                self.weddings.remove(wedding)
+                self.save()
+                return True
+        else:
+            return False
