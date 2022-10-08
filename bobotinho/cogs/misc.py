@@ -64,17 +64,17 @@ class Misc(Cog):
     @helper("me adicione no seu chat")
     @command()
     async def join(self, ctx: Context, name: str = "") -> None:
-        if ctx.channel.name != config.dev:
-            return None
         if ctx.author.name == config.dev:
             twitch_user = await self.bot.fetch_user(name.lstrip("@").rstrip(","))
+        elif ctx.channel.name != config.dev:
+            return None
         else:
             twitch_user = await ctx.author.user()
-        if not twitch_user:
-            return await ctx.reply(f"@{name} é um usuário inválido")
-        followers = await twitch_user.fetch_followers()
-        if len(followers) < 50:
-            return await ctx.reply(f"infelizmente, só posso me conectar em canais com mais de 50 seguidores")
+            if not twitch_user:
+                return await ctx.reply(f"@{name} é um usuário inválido")
+            followers = await twitch_user.fetch_followers()
+            if len(followers) < 50:
+                return await ctx.reply(f"infelizmente, só posso me conectar em canais com mais de 50 seguidores")
         connected_channels = [channel.name for channel in self.bot.connected_channels]
         if twitch_user.name in connected_channels:
             if ctx.author.name == config.dev:
@@ -82,9 +82,9 @@ class Misc(Cog):
             return await ctx.reply(f"eu já estou conectado no seu chat")
         self.bot.channels[twitch_user.name] = ChannelModel.create(id=twitch_user.id, name=twitch_user.name, online=True)
         await self.bot._connection.send(f"JOIN #{twitch_user.name}\r\n")
+        await self.discord.webhook(name=twitch_user.name, content="Adicionou o bobotinho", avatar=twitch_user.profile_image)
         if ctx.author.name == config.dev:
             return await ctx.reply(f"me conectei ao chat de @{twitch_user.name}")
-        await self.discord.webhook(name=twitch_user.name, content="Adicionou o bobotinho", avatar=twitch_user.profile_image)
         return await ctx.reply(f"me conectei ao seu chat!")
 
     @helper("receba o link para adicionar o bot no seu chat")
