@@ -70,8 +70,8 @@ class Dungeon(Cog):
             timeago(ctx.user.dungeons.updated_on).total_in_seconds() < 10800
             and ctx.user.dungeons.created_on.isoformat()[:18] != ctx.user.dungeons.updated_on.isoformat()[:18]
         ):
-            delta = timeago(ctx.user.dungeons.updated_on + timedelta(seconds=10800), reverse=True)
-            return await ctx.reply(f"aguarde {delta.humanize(precision=2, short=True)} para entrar em outra dungeon ⌛")
+            delta = timeago(ctx.user.dungeons.updated_on + timedelta(seconds=10800), reverse=True).humanize()
+            return await ctx.reply(f"aguarde {delta} para entrar em outra dungeon ⌛")
 
         i = random_number(min=0, max=len(DUNGEONS) - 1)
         dungeon = DUNGEONS[i]
@@ -155,8 +155,8 @@ class Dungeon(Cog):
             timeago(ctx.user.dungeons.updated_on).total_in_seconds() < 10800
             and ctx.user.dungeons.created_on.isoformat()[:18] != ctx.user.dungeons.updated_on.isoformat()[:18]
         ):
-            delta = timeago(ctx.user.dungeons.updated_on + timedelta(seconds=10800), reverse=True)
-            return await ctx.reply(f"aguarde {delta.humanize(precision=2, short=True)} para entrar em outra dungeon ⌛")
+            delta = timeago(ctx.user.dungeons.updated_on + timedelta(seconds=10800), reverse=True).humanize()
+            return await ctx.reply(f"aguarde {delta} para entrar em outra dungeon ⌛")
 
         i = random_number(min=0, max=len(DUNGEONS) - 1)
         dungeon = DUNGEONS[i]

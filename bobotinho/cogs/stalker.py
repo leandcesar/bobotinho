@@ -34,7 +34,7 @@ class Stalker(Cog):
             return await ctx.reply(f"@{name} é um usuário inválido")
 
         mention = "você" if user.name == ctx.author.name else f"@{user.name}"
-        delta = timeago(user.created_at).humanize(precision=2)
+        delta = timeago(user.created_at).humanize(short=True)
         date = user.created_at.strftime("%d/%m/%Y")
         return await ctx.reply(f"{mention} criou a conta em {date} (há {delta})")
 
@@ -106,7 +106,7 @@ class Stalker(Cog):
 
         try:
             follow = await user.fetch_follow(broadcaster)
-            delta = timeago(follow.followed_at).humanize(precision=2)
+            delta = timeago(follow.followed_at).humanize(short=True)
             date = follow.followed_at.strftime("%d/%m/%Y")
             return await ctx.reply(f"{mention} seguiu {mention_channel} em {date} (há {delta})")
         except Exception:
@@ -128,8 +128,8 @@ class Stalker(Cog):
                 return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.settings and not user.settings.mention:
             return await ctx.reply("esse usuário optou por não permitir ser mencionado")
-        if user.status and not user.status.online:
-            delta = timeago(user.status.updated_on).humanize(precision=2)
+        if user.status and user.status.offline:
+            delta = timeago(user.status.updated_on).humanize(short=True)
             action = [afk for afk in AFKs if afk["alias"] == user.status.alias][0]["isafk"]
             return await ctx.reply(f"@{name} está {action}: {user.status.message} (há {delta})")
         return await ctx.reply(f"@{name} não está AFK")
@@ -150,7 +150,7 @@ class Stalker(Cog):
                 return await ctx.reply(f"@{name} ainda não foi registrado (não usou nenhum comando)")
         if user.settings and not user.settings.mention:
             return await ctx.reply("esse usuário optou por não permitir ser mencionado")
-        delta = timeago(user.updated_on).humanize(precision=2)
+        delta = timeago(user.updated_on).humanize(short=True)
         return await ctx.reply(f"@{name} foi visto em @{user.last_channel} pela última vez: {user.last_message} (há {delta})")
 
     @helper("veja as informações da live de algum canal")
@@ -172,7 +172,7 @@ class Stalker(Cog):
             return await ctx.reply(f"@{channel} está offline")
 
         mention = "você" if broadcaster.name == ctx.author.name else f"@{broadcaster.name}"
-        delta = timeago(stream.started_at).humanize(precision=1)
+        delta = timeago(stream.started_at).humanize(short=True)
         return await ctx.reply(f"{mention} está streamando {stream.game_name} para {stream.viewer_count} viewers: {stream.title} (há {delta})")
 
 

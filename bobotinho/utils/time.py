@@ -36,7 +36,7 @@ class timeago:
     def total_in_seconds(self) -> float:
         return self.delta.total_seconds()
 
-    def humanize(self, *, precision: int = 1, minimum: str = SS, short: bool = False) -> str:
+    def humanize(self, *, precision: int = 2, minimum: str = SS, short: bool = False) -> str:
         quote = ""
         for value, name, symbol in [
             (self.years, YEAR, YY),
