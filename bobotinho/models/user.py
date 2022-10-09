@@ -73,6 +73,10 @@ class Status(MapAttribute, DateTimeMixin):
     alias = UnicodeAttribute(null=False, default=str)
     message = UnicodeAttribute(null=False, default=str)
 
+    @property
+    def offline(self) -> bool:
+        return not self.online
+
 
 class Wedding(MapAttribute, DateTimeMixin):
     user_id = UnicodeAttribute(null=False)

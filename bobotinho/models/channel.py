@@ -35,6 +35,10 @@ class ChannelModel(Model, DateTimeMixin):
     def __str__(self) -> str:
         return f"@{self.name}"
 
+    @property
+    def offline(self) -> bool:
+        return not self.online
+
     @classmethod
     def create(cls, id: str, **attrs) -> ChannelModel:
         instance = cls(str(id), **attrs)
