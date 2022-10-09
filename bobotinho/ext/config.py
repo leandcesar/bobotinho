@@ -33,6 +33,8 @@ class Config:
     currency_key = os.environ.get("CURRENCY_KEY", "")
     dashbot_key = os.environ.get("DASHBOT_KEY", "")
     weather_key = os.environ.get("WEATHER_KEY", "")
+    witai_duration_key = os.environ.get("WITAI_DURATION_KEY", "")
+    witai_datetime_key = os.environ.get("WITAI_DATETIME_KEY", "")
 
 
 config = Config()
