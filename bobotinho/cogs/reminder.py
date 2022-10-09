@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from bobotinho import config
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, Message, cooldown, command, helper, routine, usage
 from bobotinho.services.wit_ai import WitAI
-from bobotinho.utils.time import timeago
+from bobotinho.utils.time import datetime, timeago, timedelta
 from bobotinho.ext.redis import redis
 
 
@@ -27,7 +25,7 @@ class Reminder(Cog):
             return False
         if not ctx.user or not ctx.user.reminders:
             return False
-        if not ctx.user.settings and not ctx.user.settings.mention:
+        if ctx.user.settings and not ctx.user.settings.mention:
             return False
         remind = ctx.user.reminders[0]
         if ctx.author.id == remind.user_id:
@@ -71,24 +69,28 @@ class Reminder(Cog):
         mention = "você" if name == ctx.author.name else f"@{name}"
 
         if content.startswith("in "):
-            text, date = await self.witai_api.get_duration(message=content)
+            text, seconds = await self.witai_api.get_duration(message=content)
+            if not text or not seconds:
+                return await ctx.reply(f"não entendi para daqui quanto tempo eu devo te lembrar (ex: {ctx.prefix}remind me in 2min teste)")
+            date = datetime.utcnow() + timedelta(seconds=seconds)
+            if date and date <= datetime.utcnow() + timedelta(seconds=60):
+                return await ctx.reply("o tempo mínimo para lembretes cronometrados é 1 minuto")
             if text and date:
                 content = content.lstrip("in ").replace(text, "").replace(":|:", "")
                 delta = timeago(date, reverse=True).humanize(precision=3)
                 redis.zadd("reminders", {f"{user.id}:|:{ctx.author.id}:|:{content}:|:{date.isoformat()}:|:{datetime.utcnow().isoformat()}": date.timestamp()})
                 return await ctx.reply(f"{mention} será lembrado disso daqui {delta} ⏲️")
-            elif text and not date:
-                return await ctx.reply("o tempo mínimo para lembretes cronometrados é 1 minuto")
 
         if content.startswith(("on ", "at ")):
-            text, date = await self.witai_api.get_datetime(message=content)
+            text, date_string = await self.witai_api.get_datetime(message=content)
+            if date and date <= datetime.utcnow() + timedelta(seconds=60):
+                return await ctx.reply("o tempo mínimo para lembretes agendados é 1 minuto")
+            date = datetime.fromisoformat(date_string).replace(tzinfo=None)
             if text and date:
                 content = content.lstrip("at ").lstrip("on ").replace(text, "").replace(":|:", "")
                 redis.zadd("reminders", {f"{user.id}:|:{ctx.author.id}:|:{content}:|:{date.isoformat()}:|:{datetime.utcnow().isoformat()}": date.timestamp()})
                 date = date.strftime("%d/%m/%Y, às %H:%M:%S")
                 return await ctx.reply(f"{mention} será lembrado disso em {date} 📅")
-            elif text and not date:
-                return await ctx.reply("o tempo mínimo para lembretes agendados é 1 minuto")
 
         if user.reminders and len(user.reminders) > 15:
             return await ctx.reply(f"já existem muitos lembretes pendentes para {mention}")

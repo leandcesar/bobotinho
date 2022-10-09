@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
 from typing import Optional, Tuple
 
 from aiohttp import ClientSession
+
+__all__ = ("WitAI",)
 
 
 class WitAI:
@@ -14,7 +15,7 @@ class WitAI:
     async def close(self) -> None:
         await self.session.close()
 
-    async def get_duration(self, *, message: str) -> Tuple[Optional[str], Optional[datetime]]:
+    async def get_duration(self, *, message: str) -> Tuple[Optional[str], Optional[int]]:
         async with self.session.get(
             "https://api.wit.ai/message",
             headers={"Authorization": f"Bearer {self.key_duration}"},
@@ -23,25 +24,21 @@ class WitAI:
             data = await response.json()
 
         try:
-            date = datetime.utcnow()
+            seconds = 0
             start = len(message)
             end = 0
             for duration in data["entities"]["wit$duration:duration"]:
-                date += timedelta(seconds=duration["normalized"]["value"])
+                seconds += duration["normalized"]["value"]
                 if duration["start"] < start:
                     start = duration["start"]
                 if duration["end"] > end:
                     end = duration["end"]
             text = message[start:end]
-            if date <= datetime.utcnow() + timedelta(seconds=60):
-                raise ValueError()
-            return text, date
+            return text, seconds
         except KeyError:
             return None, None
-        except ValueError:
-            return True, None
 
-    async def get_datetime(self, *, message: str) -> Tuple[Optional[str], Optional[datetime]]:
+    async def get_datetime(self, *, message: str) -> Tuple[Optional[str], Optional[str]]:
         async with self.session.get(
             "https://api.wit.ai/message",
             headers={"Authorization": f"Bearer {self.key_datetime}"},
@@ -50,14 +47,8 @@ class WitAI:
             data = await response.json()
 
         try:
-            print(data)
             date_string = data["entities"]["wit$datetime:datetime"][0]["value"]
             text = data["entities"]["wit$datetime:datetime"][0]["body"]
-            date = datetime.fromisoformat(date_string).replace(tzinfo=None)
-            if date <= datetime.utcnow() + timedelta(seconds=60):
-                raise ValueError()
-            return text, date
+            return text, date_string
         except KeyError:
             return None, None
-        except ValueError:
-            return text, None
