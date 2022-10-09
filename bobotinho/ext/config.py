@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
+__all__ = ("config",)
+
 
 class Config:
     stage = os.environ.get("STAGE", "dev")

@@ -9,6 +9,8 @@ __license__ = "GNU"
 __copyright__ = "Copyright 2020 bobotinho"
 __version__ = config.version
 
+__all__ = ("config", "logger")
+
 try:
     if config.bugsnag_key is None:
         raise KeyError("'BUGSNAG_KEY' env var not set, couldn't notify")

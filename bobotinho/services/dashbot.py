@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from aiohttp import ClientSession
 
+__all__ = ("Dashbot",)
+
 
 class Dashbot:
     def __init__(self, *, key: str, session: ClientSession = None) -> None:

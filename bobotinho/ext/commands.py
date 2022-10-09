@@ -10,6 +10,23 @@ from twitchio.user import User
 
 from bobotinho.models.user import UserModel
 
+__all__ = (
+    "Bot",
+    "Bucket",
+    "Channel",
+    "Cog",
+    "Context",
+    "Message",
+    "User",
+    "check",
+    "command",
+    "Command",
+    "cooldown",
+    "helper",
+    "routine",
+    "usage",
+)
+
 
 class Context(TwitchioContext):
     user: UserModel = None

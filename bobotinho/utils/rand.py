@@ -2,6 +2,8 @@
 import random
 from typing import Union
 
+__all__ = ("random_line_from_txt", "random_number", "random_choice", "random_choices")
+
 
 def random_line_from_txt(filename: str) -> str:
     with open(filename, "r", encoding="utf-8") as f:

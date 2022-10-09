@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-from typing import Optional
+from typing import Any, Callable, Coroutine, Optional
 
 from bobotinho import logger
 from bobotinho.ext.commands import (
-    Any,
     Bot,
-    Callable,
     Context,
-    Coroutine,
     Message,
     User,
     routine,
@@ -102,10 +98,10 @@ class Bobotinho(Bot):
                 last_channel=ctx.channel.name,
                 last_color=ctx.author.color,
             )
-        # TODO: salvar mensagem recebida no Dashbot
-        # TODO: salvar mensagem enviada no Dashbot
 
     async def global_after_invoke(self, ctx: Context) -> None:
+        # TODO: salvar mensagem recebida no Dashbot
+        # TODO: salvar mensagem enviada no Dashbot
         ...
 
     async def event_message(self, message: Message) -> None:
@@ -152,7 +148,7 @@ class Bobotinho(Bot):
             if ctx.command and hasattr(ctx.command, "usage"):
                 return await ctx.reply(ctx.command.usage)
         logger.error(error, extra={"ctx": dict(ctx)}, exc_info=error)
-        return await ctx.reply("ocorreu um erro inesperado")
+        return await ctx.reply(f"ocorreu um erro inesperado, por favor, reporte o erro usando o comando {ctx.prefix}bug")
 
     @routine(seconds=30, wait_first=True)
     async def check_channels(self) -> None:

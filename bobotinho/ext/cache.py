@@ -4,6 +4,8 @@ from threading import RLock
 from time import time
 from typing import Any
 
+__all__ = ("cache",)
+
 
 class TTLOrderedDict(OrderedDict):
     def __init__(self) -> None:

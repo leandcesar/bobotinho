@@ -3,6 +3,8 @@ from string import hexdigits
 
 from aiohttp import ClientSession
 
+__all__ = ("Color",)
+
 
 class Color:
     def __init__(self, *, session: ClientSession = None) -> None:
@@ -13,7 +15,7 @@ class Color:
 
     async def hex_to_name(self, *, code: str) -> str:
         code = code.replace("#", "").upper()
-        if not (len(code) == 6 and all([x in hexdigits for x in code])):
+        if len(code) != 6 or any([x not in hexdigits for x in code]):
             raise ValueError(f"Invalid hex code '{code}'")
         async with self.session.get(
             url="https://www.thecolorapi.com/id",

@@ -115,7 +115,7 @@ class Marry(Cog):
             elif message.content.lower() in ("não", "nao", "n"):
                 await ctx.send(f"@{name} recusou o pedido de casamento de @{ctx.author.name} 💔")
         except Exception:
-            await ctx.reply(f"@{name} não respondeu ao seu desafio a tempo 💔")
+            await ctx.reply(f"@{name} não respondeu ao seu pedido a tempo 💔")
         finally:
             self.proposals.pop(name)
 

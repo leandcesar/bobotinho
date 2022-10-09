@@ -3,6 +3,8 @@ import json
 import string
 from typing import Union
 
+__all__ = ("str2hex", "str2int", "json2dict")
+
 letters_and_digits = string.ascii_letters + string.digits
 
 

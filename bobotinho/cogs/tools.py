@@ -125,7 +125,7 @@ class Tools(Cog):
         if "," not in content:
             content = f"{content}, br"
         try:
-            weather = await self.weather_api.predict(location=content)
+            weather = await self.weather_api.prediction(location=content)
             city = weather["name"]
             country = weather["country"]
             status = weather["description"]

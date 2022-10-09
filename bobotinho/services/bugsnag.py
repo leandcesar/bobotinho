@@ -4,6 +4,8 @@ import logging
 import bugsnag
 from bugsnag.handlers import BugsnagHandler
 
+__all__ = ("bugsnag_handler",)
+
 EXTRA_FIELDS = {"log": ["__repr__"], "locals": ["locals"], "ctx": ["ctx"]}
 
 

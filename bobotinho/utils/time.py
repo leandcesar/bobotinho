@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 
+__all__ = ("datetime", "timedelta", "timeago",)
+
 YEAR = "ano"
 DAY = "dia"
 HOUR = "hora"

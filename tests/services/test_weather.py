@@ -32,7 +32,7 @@ async def test_weather(mock_response):
     )
 
     with patch("aiohttp.ClientSession.request", return_value=return_value) as mock_response:
-        response = await Weather(key="s3cr3t").predict(location="rio de janeiro")
+        response = await Weather(key="s3cr3t").prediction(location="rio de janeiro")
 
     assert mock_response.call_count == 1
     assert mock_response.call_args[0] == ("get",)
@@ -83,7 +83,7 @@ async def test_weather_with_invalid_icon(mock_response):
     )
 
     with patch("aiohttp.ClientSession.request", return_value=return_value) as mock_response:
-        response = await Weather(key="s3cr3t").predict(location="rio de janeiro")
+        response = await Weather(key="s3cr3t").prediction(location="rio de janeiro")
 
     assert mock_response.call_count == 1
     assert mock_response.call_args[0] == ("get",)

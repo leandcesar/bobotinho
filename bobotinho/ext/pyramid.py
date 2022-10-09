@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+__all__ = ("Pyramid",)
+
+
 class Pyramid:
     def __init__(self):
         self.user = ""

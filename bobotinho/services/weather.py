@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from aiohttp import ClientSession
 
+__all__ = ("Weather",)
+
 CODE_EMOJI = {
     "01d": "🌞",
     "02d": "🌤",
@@ -31,7 +33,7 @@ class Weather:
     async def close(self) -> None:
         await self.session.close()
 
-    async def predict(self, *, location: str, language: str = "pt_br", units: str = "metric") -> dict:
+    async def prediction(self, *, location: str, language: str = "pt_br", units: str = "metric") -> dict:
         async with self.session.get(
             url="https://api.openweathermap.org/data/2.5/weather",
             params={"appid": self.key, "lang": language, "units": units, "q": location},

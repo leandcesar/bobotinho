@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from aiohttp import ClientSession
 
+__all__ = ("Discord",)
+
 
 class Discord:
     def __init__(self, *, url: str, session: ClientSession = None) -> None:

@@ -3,6 +3,8 @@ from string import ascii_uppercase
 
 from aiohttp import ClientSession
 
+__all__ = ("Currency",)
+
 
 class Currency:
     def __init__(self, *, key: str, session: ClientSession = None) -> None:

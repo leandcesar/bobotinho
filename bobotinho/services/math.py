@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from aiohttp import ClientSession
 
+__all__ = ("Math",)
+
 
 class Math:
     def __init__(self, *, session: ClientSession = None) -> None:
