@@ -18,6 +18,8 @@ class Config:
         if not module.startswith("_") and module.endswith(".py")
     ]
 
+    redis_url = os.environ.get("REDIS_URL")
+
     aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
     aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
     aws_region_name = os.environ.get("AWS_REGION_NAME", "us-east-1")

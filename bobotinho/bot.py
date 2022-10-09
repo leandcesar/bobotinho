@@ -19,6 +19,7 @@ from bobotinho.ext.exceptions import (
     CommandOnCooldown,
     InvalidArgument,
 )
+from bobotinho.ext.redis import redis
 from bobotinho.models.channel import ChannelModel
 from bobotinho.models.user import UserModel
 
@@ -42,7 +43,7 @@ class Bobotinho(Bot):
 
     async def fetch_user_db(self, name: str = None, id: int = None) -> Optional[UserModel]:
         if name and not id:
-            twitch_user = await self.bot.fetch_user(name)
+            twitch_user = await self.fetch_user(name)
             if not twitch_user:
                 return None
             id = twitch_user.id
@@ -55,7 +56,7 @@ class Bobotinho(Bot):
 
     def is_online(self, message: Message) -> bool:
         return (
-            self.channels[message.channel.name].online is True
+            self.channels[message.channel.name].online
             or message.content.startswith(f"{self._prefix}start")
         )
 

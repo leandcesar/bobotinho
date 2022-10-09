@@ -2,4 +2,5 @@ aiohttp==3.8.3
 bugsnag==4.2.1
 deep-translator==1.9.0
 pynamodb==5.2.1
+redis==4.3.4
 twitchio==2.4.0
