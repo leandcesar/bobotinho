@@ -161,7 +161,7 @@ class Stalker(Cog):
         if channel == self.bot.nick:
             return await ctx.reply("eu sou um bot, não um streamer")
 
-        broadcaster = await self.bot.fetch_user(name)
+        broadcaster = await self.bot.fetch_user(channel)
         if not broadcaster:
             return await ctx.reply(f"@{channel} é um canal inválido")
 
