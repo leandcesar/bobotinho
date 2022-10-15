@@ -43,7 +43,7 @@ class Dungeon(Cog):
                 await ctx.reply(f"agora você é um {_class}")
 
         if ctx.user.dungeons.main_class and not ctx.user.dungeons.sub_class and ctx.user.dungeons.level >= 30:
-            i = list(CLASSES).index(ctx.user.dungeons.main_class)
+            i = list(CLASSES).index(ctx.user.dungeons._class)
             class_1 = CLASSES[list(CLASSES)[i]]
             class_2 = CLASSES[list(CLASSES)[i + 1]]
             options = (class_1[3], class_2[3])
@@ -128,7 +128,7 @@ class Dungeon(Cog):
                 await ctx.reply(f"agora você é um {_class}")
 
         if ctx.user.dungeons.main_class and not ctx.user.dungeons.sub_class and ctx.user.dungeons.level >= 30:
-            i = list(CLASSES).index(ctx.user.dungeons.main_class)
+            i = list(CLASSES).index(ctx.user.dungeons._class)
             class_1 = CLASSES[list(CLASSES)[i]]
             class_2 = CLASSES[list(CLASSES)[i + 1]]
             options = (class_1[3], class_2[3])
