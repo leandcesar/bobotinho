@@ -91,7 +91,7 @@ class Marry(Cog):
         elif not user.single:
             return await ctx.reply(f"controle seu desejo por pessoas casadas, @{user.name} já está em um compromisso")
         elif not ctx.user.cookies or ctx.user.cookies.stocked < 100:
-            return await ctx.reply(f"para pagar a aliança e todo o casório, você precisa de 100 cookies estocados (você tem {ctx.user.cookies.stocked})")
+            return await ctx.reply(f"para pagar a aliança e todo o casório, você precisa de 100 cookies estocados")
 
         try:
             self.proposals[name] = ctx.author.name
