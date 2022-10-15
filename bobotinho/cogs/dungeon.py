@@ -46,12 +46,12 @@ class Dungeon(Cog):
             i = list(CLASSES).index(ctx.user.dungeons._class)
             class_1 = CLASSES[list(CLASSES)[i]]
             class_2 = CLASSES[list(CLASSES)[i + 1]]
-            options = (class_1[3], class_2[3])
+            options = (class_1[3].title(), class_2[3].title())
             check = lambda message: (
                 message.author
                 and message.author.id == ctx.author.id
                 and message.channel.name == ctx.channel.name
-                and message.content.lower() in options
+                and message.content.title() in options
             )
             await ctx.reply(f"antes de continuar, você deve escolher sua nova classe: {options[0]} ou {options[1]}?")
             try:
@@ -131,12 +131,12 @@ class Dungeon(Cog):
             i = list(CLASSES).index(ctx.user.dungeons._class)
             class_1 = CLASSES[list(CLASSES)[i]]
             class_2 = CLASSES[list(CLASSES)[i + 1]]
-            options = (class_1[3], class_2[3])
+            options = (class_1[3].title(), class_2[3].title())
             check = lambda message: (
                 message.author
                 and message.author.id == ctx.author.id
                 and message.channel.name == ctx.channel.name
-                and message.content.lower() in options
+                and message.content.title() in options
             )
             await ctx.reply(f"antes de continuar, você deve escolher sua nova classe: {options[0]} ou {options[1]}?")
             try:
