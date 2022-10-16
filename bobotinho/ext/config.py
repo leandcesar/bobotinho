@@ -34,9 +34,11 @@ class Config:
     bugsnag_key = os.environ.get("BUGSNAG_KEY", "")
     currency_key = os.environ.get("CURRENCY_KEY", "")
     dashbot_key = os.environ.get("DASHBOT_KEY", "")
+    genius_key = os.environ.get("GENIUS_KEY", "")
+    spotify_client = os.environ.get("SPOTIFY_CLIENT_ID", "")
+    spotify_secret = os.environ.get("SPOTIFY_CLIENT_SECRET", "")
     weather_key = os.environ.get("WEATHER_KEY", "")
     witai_duration_key = os.environ.get("WITAI_DURATION_KEY", "")
     witai_datetime_key = os.environ.get("WITAI_DATETIME_KEY", "")
-
 
 config = Config()
