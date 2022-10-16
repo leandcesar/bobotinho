@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
-from typing import Union
+from typing import Any, Union
 
 __all__ = ("random_line_from_txt", "random_number", "random_choice", "random_choices")
 
@@ -27,3 +27,8 @@ def random_choices(options: Union[str, list[str]], *, sep: str = None, k: int = 
     if isinstance(options, str) and sep:
         options = options.split(sep)
     return random.choices(options, weights=w, k=k)
+
+
+def random_sort(options: list[Any]) -> list[Any]:
+    random.shuffle(options)
+    return options

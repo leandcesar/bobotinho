@@ -15,4 +15,11 @@ class Spotify:
     def get_songs_from_playlist(self, *, url: str) -> list[dict]:
         playlist = self.api.playlist(url)
         if playlist:
-            return playlist["tracks"]["items"]
+            return [
+                {
+                    "track_name": track["track"]["name"],
+                    "artist_name": track["track"]["artists"][0]["name"],
+                    "track_url": track["track"]["external_urls"]["spotify"],
+                }
+                for track in playlist["tracks"]["items"]
+            ]
