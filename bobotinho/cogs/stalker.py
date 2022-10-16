@@ -2,10 +2,10 @@
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.services.color import Color
-from bobotinho.utils.convert import json2dict
+from bobotinho.utils.convert import json_to_dict
 from bobotinho.utils.time import timeago
 
-AFKs = json2dict("bobotinho//data//afk.json")
+AFKs = json_to_dict("bobotinho//data//afk.json")
 
 
 class Stalker(Cog):

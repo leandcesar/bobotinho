@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
-from bobotinho.utils.convert import str2int
+from bobotinho.utils.convert import str_to_int
 from bobotinho.utils.rand import random_choice
 
 
@@ -106,7 +106,7 @@ class Interact(Cog):
             return await ctx.reply("uma pessoa não pode ser shipada com ela mesma...")
 
         ship = name1[:len(name1)//2 + 1] + name2[len(name2)//2 + 1:]
-        percentage = str2int(ship) % 101
+        percentage = str_to_int(ship) % 101
 
         if ship in ("pchantinho", "discretre"):  # it's love, not manipulation
             percentage = 100
@@ -134,7 +134,7 @@ class Interact(Cog):
         name = name or ctx.author.name
         if name == self.bot.nick:
             return await ctx.reply("eu só tenho pen drive")
-        length = str2int(name) % 28 + 5
+        length = str_to_int(name) % 28 + 5
         emoji = "🤏" if length <= 13 else "🍌" if length <= 19 else "🍆"
         mention = "você" if name == ctx.author.name else f"@{name}"
         return await ctx.reply(f"{mention} tem {length}cm {emoji}")

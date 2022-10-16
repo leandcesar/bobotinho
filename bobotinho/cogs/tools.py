@@ -8,10 +8,10 @@ from bobotinho.services.currency import Currency
 from bobotinho.services.math import Math
 from bobotinho.services.translator import Translator
 from bobotinho.services.weather import Weather
-from bobotinho.utils.convert import json2dict
+from bobotinho.utils.convert import json_to_dict
 from bobotinho.utils.time import timeago
 
-AFKs = json2dict("bobotinho//data//afk.json")
+AFKs = json_to_dict("bobotinho//data//afk.json")
 
 
 class Tools(Cog):

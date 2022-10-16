@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
-from bobotinho.utils.convert import json2dict
+from bobotinho.utils.convert import json_to_dict
 
-PETS = json2dict("bobotinho//data//pets.json")
+PETS = json_to_dict("bobotinho//data//pets.json")
 
 
 class Pet(Cog):

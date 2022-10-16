@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
-from bobotinho.utils.convert import json2dict
+from bobotinho.utils.convert import json_to_dict
 from bobotinho.utils.rand import random_choice, random_choices, random_number
 from bobotinho.utils.time import timeago, timedelta
 
-CLASSES = json2dict("bobotinho//data//classes.json")
-DUNGEONS = json2dict("bobotinho//data//dungeons.json")
+CLASSES = json_to_dict("bobotinho//data//classes.json")
+DUNGEONS = json_to_dict("bobotinho//data//dungeons.json")
 
 
 class Dungeon(Cog):
