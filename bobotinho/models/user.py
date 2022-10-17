@@ -230,7 +230,7 @@ class UserModel(Model, DateTimeMixin):
     def update_dungeon(self, *, main_class: str = None, win: bool = False, defeat: bool = False, experience: int = 0, level_up: bool = False) -> bool:
         if not self.dungeons and main_class:
             self.dungeons = Dungeons(main_class=main_class[:2])
-        elif self.dungeons and main_class and not win and defeat and not experience:
+        elif self.dungeons and main_class and not win and not defeat and not experience:
             self.dungeons.main_class = main_class[:2]
             self.dungeons.sub_class = main_class[2]
         elif self.dungeons and not main_class and win and not defeat and experience:
