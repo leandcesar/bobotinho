@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import Counter
 
-from bobotinho import config
+from bobotinho import config, logger
 from bobotinho.bot import Bobotinho
 from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, helper, usage
 from bobotinho.services.dicio import Dicio
@@ -164,16 +164,20 @@ class Game(Cog):
 
         try:
             self.channels_on_game.append(ctx.channel.name)
+            await ctx.send(f"@{ctx.author.name} iniciou o jogo, quem acertar a letra de 3 músicas primeiro vence, valendo!")
             songs = self.spotify_api.get_songs_from_playlist(url=playlist_id)
             songs = random_sort(songs)
-            await ctx.send(f"@{ctx.author.name} iniciou o jogo, quem acertar a letra de 3 músicas primeiro vence, valendo!")
 
             for song in songs:
                 name = song["track_name"]
                 artist = song["artist_name"]
                 url = song["track_url"]
 
-                lyrics = self.genius_api.get_lyrics(title=name, artist=artist)
+                try:
+                    lyrics = await self.genius_api.get_lyrics(title=name, artist=artist)
+                except Exception as e:
+                    logger.warning(e)
+                    continue
                 if not lyrics:
                     continue
 
@@ -185,9 +189,9 @@ class Game(Cog):
                     lines = lyrics[i + len("refrão"):].split("\n")[1:]
                 else:
                     lines = lyrics.split("\n")
-                    i = random_number(max=len(lines))
+                    i = random_number(max=len(lines) // 2)
                     lines = lines[i:]
-                
+
                 quote = ""
                 for line in lines:
                     quote += f"{line} "
@@ -221,9 +225,9 @@ class Game(Cog):
                     no_response = 0
                 except Exception:
                     no_response += 1
-                    await ctx.send("ninguém descobriu a letra, vamos tentar outra...")
                     if no_response >= 3:
                         break
+                    await ctx.send("ninguém descobriu a letra, vamos tentar outra...")
             else:
                 await ctx.send("acabaram as músicas da playlist...")
 

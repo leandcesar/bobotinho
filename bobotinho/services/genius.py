@@ -1,18 +1,52 @@
 # -*- coding: utf-8 -*-
-import lyricsgenius
+import html
+from aiohttp import ClientSession
 
 __all__ = ("Genius",)
 
 
+class Utils:
+
+    @staticmethod
+    def remove_tags(page: str) -> str:
+        page = page.replace("<br/>", "\n")
+        new_text = ""
+        tag = False
+        for char in page:
+            if not tag and char == "<":
+                tag = True
+            elif not tag:
+                new_text += char
+            elif tag and char == ">":
+                tag = False
+        return new_text
+
+
 class Genius:
-    def __init__(self, *, key: str) -> None:
-        self.api = lyricsgenius.Genius(key)
+    def __init__(self, *, key: str, session: ClientSession = None) -> None:
+        self.key = key
+        self.session = session or ClientSession(raise_for_status=False)
 
     async def close(self) -> None:
         pass
 
-    def get_lyrics(self, *, title: str = None, artist: str = None) -> str:
-        title = title.lower().replace("ao vivo", "")
-        song = self.api.search_song(title=title, artist=artist, get_full_info=False)
-        if song and song.id and song.artist != "Genius Brasil":
-            return song.lyrics
+    async def get_lyrics(self, *, title: str, artist: str) -> dict:
+        async with self.session.get(
+            url="https://api.genius.com/search",
+            headers={"Authorization": f"Bearer {self.key}"},
+            params={"q": f"{title} {artist}".lower().replace("ao vivo", "")}
+        ) as response:
+            data = await response.json()
+            lyrics_url = data["response"]["hits"][0]["result"]["url"]
+            print(data["response"]["hits"][0])
+            if not lyrics_url.endswith("lyrics"):
+                return None
+
+        async with self.session.get(url=lyrics_url) as response:
+            data = await response.text()
+
+        page = html.unescape(data)
+        page = page[page.find('<div class="LyricsControls__Flex'):]
+        page = page[:page.find('<div class="Lyrics__Footer')]
+        lyrics = Utils.remove_tags(page)
+        return lyrics
