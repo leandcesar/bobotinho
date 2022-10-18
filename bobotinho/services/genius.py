@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import html
-from aiohttp import ClientSession
+from aiohttp import ClientSession, TCPConnector
 
 __all__ = ("Genius",)
 
@@ -25,7 +25,13 @@ class Utils:
 class Genius:
     def __init__(self, *, key: str, session: ClientSession = None) -> None:
         self.key = key
-        self.session = session or ClientSession(raise_for_status=False)
+        self.session = session or ClientSession(
+            connector=TCPConnector(limit=50),
+            headers={"Authorization": f"Bearer {self.key}"},
+            conn_timeout=None,
+            read_timeout=None,
+            raise_for_status=False,
+        )
 
     async def close(self) -> None:
         pass
@@ -33,12 +39,10 @@ class Genius:
     async def get_lyrics(self, *, title: str, artist: str) -> dict:
         async with self.session.get(
             url="https://api.genius.com/search",
-            headers={"Authorization": f"Bearer {self.key}"},
             params={"q": f"{title} {artist}".lower().replace("ao vivo", "")}
         ) as response:
             data = await response.json()
             lyrics_url = data["response"]["hits"][0]["result"]["url"]
-            print(data["response"]["hits"][0])
             if not lyrics_url.endswith("lyrics"):
                 return None
 

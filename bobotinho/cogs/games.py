@@ -143,104 +143,104 @@ class Game(Cog):
         finally:
             self.channels_on_game.remove(ctx.channel.name)
 
-    @helper("jogo de completar a letra da música, ganha quem fizer 5 acertos")
-    @cooldown(rate=1, per=15, bucket=Bucket.member)
-    @command(aliases=["gtl"])
-    async def guessthelyrics(self, ctx: Context, playlist: str = "") -> None:
-        if ctx.channel.name in self.channels_on_game:
-            return await ctx.reply("um jogo já está em andamento nesse canal, aguarde ele finalizar")
+    # @helper("jogo de completar a letra da música, ganha quem fizer 5 acertos")
+    # @cooldown(rate=1, per=15, bucket=Bucket.member)
+    # @command(aliases=["gtl"])
+    # async def guessthelyrics(self, ctx: Context, playlist: str = "") -> None:
+    #     if ctx.channel.name in self.channels_on_game:
+    #         return await ctx.reply("um jogo já está em andamento nesse canal, aguarde ele finalizar")
 
-        if "playlist/" in playlist:
-            init = content.find("playlist/") + len("playlist/")
-            playlist_id = content[init:]
-            end = playlist_id.find("?")
-            if end != -1:
-                playlist_id = playlist_id[:end]
-        else:
-            playlist_id = "37i9dQZEVXbMXbN3EUUhlg"  # Top 50 - Brazil (by Spotify)
+    #     if "playlist/" in playlist:
+    #         init = content.find("playlist/") + len("playlist/")
+    #         playlist_id = content[init:]
+    #         end = playlist_id.find("?")
+    #         if end != -1:
+    #             playlist_id = playlist_id[:end]
+    #     else:
+    #         playlist_id = "37i9dQZEVXbMXbN3EUUhlg"  # Top 50 - Brazil (by Spotify)
 
-        no_response = 0
-        corrects = {}  # {user: points, ...}
+    #     no_response = 0
+    #     corrects = {}  # {user: points, ...}
 
-        try:
-            self.channels_on_game.append(ctx.channel.name)
-            await ctx.send(f"@{ctx.author.name} iniciou o jogo, quem acertar a letra de 3 músicas primeiro vence, valendo!")
-            songs = self.spotify_api.get_songs_from_playlist(url=playlist_id)
-            songs = random_sort(songs)
+    #     try:
+    #         self.channels_on_game.append(ctx.channel.name)
+    #         await ctx.send(f"@{ctx.author.name} iniciou o jogo, quem acertar a letra de 3 músicas primeiro vence, valendo!")
+    #         songs = self.spotify_api.get_songs_from_playlist(url=playlist_id)
+    #         songs = random_sort(songs)
 
-            for song in songs:
-                name = song["track_name"]
-                artist = song["artist_name"]
-                url = song["track_url"]
+    #         for song in songs:
+    #             name = song["track_name"]
+    #             artist = song["artist_name"]
+    #             url = song["track_url"]
 
-                try:
-                    lyrics = await self.genius_api.get_lyrics(title=name, artist=artist)
-                except Exception as e:
-                    logger.warning(e)
-                    continue
-                if not lyrics:
-                    continue
+    #             try:
+    #                 lyrics = await self.genius_api.get_lyrics(title=name, artist=artist)
+    #             except Exception as e:
+    #                 logger.warning(e)
+    #                 continue
+    #             if not lyrics:
+    #                 continue
 
-                if "chorus" in lyrics.lower():
-                    i = lyrics.lower().index("chorus")
-                    lines = lyrics[i + len("chorus"):].split("\n")[1:]
-                elif "refrão" in lyrics.lower():
-                    i = lyrics.lower().index("refrão")
-                    lines = lyrics[i + len("refrão"):].split("\n")[1:]
-                else:
-                    lines = lyrics.split("\n")
-                    i = random_number(max=len(lines) // 2)
-                    lines = lines[i:]
+    #             if "chorus" in lyrics.lower():
+    #                 i = lyrics.lower().index("chorus")
+    #                 lines = lyrics[i + len("chorus"):].split("\n")[1:]
+    #             elif "refrão" in lyrics.lower():
+    #                 i = lyrics.lower().index("refrão")
+    #                 lines = lyrics[i + len("refrão"):].split("\n")[1:]
+    #             else:
+    #                 lines = lyrics.split("\n")
+    #                 i = random_number(max=len(lines) // 2)
+    #                 lines = lines[i:]
 
-                quote = ""
-                for line in lines:
-                    quote += f"{line} "
-                    if len(quote) >= 60:
-                        break
-                if "[" in quote and "]" in quote:
-                    quote = quote[:quote.find("[")] + quote[quote.find("]"):]
-                    quote = quote.replace("  ", " ")
-                quote = quote.strip()
-                if not quote:
-                    continue
+    #             quote = ""
+    #             for line in lines:
+    #                 quote += f"{line} "
+    #                 if len(quote) >= 60:
+    #                     break
+    #             if "[" in quote and "]" in quote:
+    #                 quote = quote[:quote.find("[")] + quote[quote.find("]"):]
+    #                 quote = quote.replace("  ", " ")
+    #             quote = quote.strip()
+    #             if not quote:
+    #                 continue
 
-                word = random_choice([word for word in quote.split(" ") if len(word) > 4 and word.isalpha()])
-                hidden_quote = quote.replace(word, "_" * len(word), 1)
+    #             word = random_choice([word for word in quote.split(" ") if len(word) > 4 and word.isalpha()])
+    #             hidden_quote = quote.replace(word, "_" * len(word), 1)
 
-                try:
-                    await ctx.send(f'Complete a letra: "{hidden_quote}"')
-                    check = lambda message: (
-                        message.channel.name == ctx.channel.name
-                        and message.content.lower() == word.lower()
-                    )
-                    response = await self.bot.wait_for("message", check, timeout=20)
-                    message = response[0]
-                    await ctx.send(f"@{message.author.name} acertou, é a música {name} de {artist}, escute em: {url}")
-                    if message.author.name in corrects:
-                        corrects[message.author.name] += 1
-                    else:
-                        corrects[message.author.name] = 1
-                    if max(corrects.values()) >= 3:
-                        break
-                    no_response = 0
-                except Exception:
-                    no_response += 1
-                    if no_response >= 3:
-                        break
-                    await ctx.send("ninguém descobriu a letra, vamos tentar outra...")
-            else:
-                await ctx.send("acabaram as músicas da playlist...")
+    #             try:
+    #                 await ctx.send(f'Complete a letra: "{hidden_quote}"')
+    #                 check = lambda message: (
+    #                     message.channel.name == ctx.channel.name
+    #                     and message.content.lower() == word.lower()
+    #                 )
+    #                 response = await self.bot.wait_for("message", check, timeout=20)
+    #                 message = response[0]
+    #                 await ctx.send(f"@{message.author.name} acertou, é a música {name} de {artist}, escute em: {url}")
+    #                 if message.author.name in corrects:
+    #                     corrects[message.author.name] += 1
+    #                 else:
+    #                     corrects[message.author.name] = 1
+    #                 if max(corrects.values()) >= 3:
+    #                     break
+    #                 no_response = 0
+    #             except Exception:
+    #                 no_response += 1
+    #                 if no_response >= 3:
+    #                     break
+    #                 await ctx.send("ninguém descobriu a letra, vamos tentar outra...")
+    #         else:
+    #             await ctx.send("acabaram as músicas da playlist...")
 
-            if corrects:
-                corrects = {user: points for user, points in sorted(corrects.items(), key=lambda x: x[1])}
-                user = list(corrects.keys())[0]
-                await ctx.send(f"fim de jogo, @{user} venceu 🏆")
-            else:
-                await ctx.send("fim de jogo, sem vencedores, ninguém acertou nada...")
-        except Exception as e:
-            raise Exception(e)
-        finally:
-            self.channels_on_game.remove(ctx.channel.name)
+    #         if corrects:
+    #             corrects = {user: points for user, points in sorted(corrects.items(), key=lambda x: x[1])}
+    #             user = list(corrects.keys())[0]
+    #             await ctx.send(f"fim de jogo, @{user} venceu 🏆")
+    #         else:
+    #             await ctx.send("fim de jogo, sem vencedores, ninguém acertou nada...")
+    #     except Exception as e:
+    #         raise Exception(e)
+    #     finally:
+    #         self.channels_on_game.remove(ctx.channel.name)
 
 
 def prepare(bot: Bobotinho) -> None:
