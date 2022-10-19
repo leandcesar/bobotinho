@@ -29,6 +29,10 @@ def random_choices(options: Union[str, list[str]], *, sep: str = None, k: int = 
     return random.choices(options, weights=w, k=k)
 
 
-def random_sort(options: list[Any]) -> list[Any]:
+def random_sort(options: list[Any], *, seed: Any = None) -> list[Any]:
+    if seed:
+        random.seed(seed)
     random.shuffle(options)
+    if seed:
+        random.seed(None)
     return options

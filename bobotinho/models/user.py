@@ -277,6 +277,27 @@ class UserModel(Model, DateTimeMixin):
         self.save()
         return True
 
+    def add_pet(self, *, specie: str) -> bool:
+        if not self.pets:
+            self.pets = []
+        self.pets.append(Pet(specie=specie))
+        self.save()
+        return True
+
+    def remove_pet(self, pet: Pet) -> bool:
+        self.pets.remove(pet)
+        self.save()
+        return True
+
+    def update_pet(self, pet: Pet, *, name: str) -> bool:
+        if pet not in self.pets:
+            raise Exception(f"id={self.id} pet={pet} name={name}")
+        index = self.pets.index(pet)
+        pet.name = name
+        self.pets[index] = pet
+        self.save()
+        return True
+
     def marry(self, *, user_id: str) -> bool:
         if not self.weddings:
             self.weddings = []
