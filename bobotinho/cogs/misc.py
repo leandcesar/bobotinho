@@ -62,16 +62,12 @@ class Misc(Cog):
         return await ctx.reply(f"veja todos os comandos: {config.doc_url}")
 
     @helper("me adicione no seu chat")
-    @command()
+    @command(aliases=["connect"])
     async def join(self, ctx: Context, name: str = "") -> None:
         if ctx.author.name == config.dev:
             twitch_user = await self.bot.fetch_user(name.lstrip("@").rstrip(","))
-        elif ctx.channel.name != config.dev:
-            return None
         else:
             twitch_user = await ctx.author.user()
-            if not twitch_user:
-                return await ctx.reply(f"@{name} é um usuário inválido")
             followers = await twitch_user.fetch_followers()
             if len(followers) < 50:
                 return await ctx.reply(f"infelizmente, só posso me conectar em canais com mais de 50 seguidores")
@@ -98,6 +94,27 @@ class Misc(Cog):
     @command(aliases=["pong"])
     async def ping(self, ctx: Context) -> None:
         return await ctx.reply("pong 🏓")
+
+    @helper("me reconecte ao seu chat, caso eu tenha sido banido ou algo do tipo")
+    @command(aliases=["reconnect"])
+    async def rejoin(self, ctx: Context, name: str = "") -> None:
+        if ctx.author.name == config.dev:
+            name = name.lstrip("@").rstrip(",")
+        else:
+            name = ctx.author.name
+        if name in self.bot.channels:
+            self.bot.channels[name].start()
+        elif ctx.author.name == config.dev:
+            return await ctx.reply(f"eu não estou conectado ao chat de @{name}, {ctx.prefix}join")
+        else:
+            return await ctx.reply(f"eu não estou conectado ao seu chat, use {ctx.prefix}join")
+        connected_channels = [channel.name for channel in self.bot.connected_channels]
+        if name in connected_channels:
+            await self.bot._connection.send(f"PART #{name}\r\n")
+        await self.bot._connection.send(f"JOIN #{name}\r\n")
+        if ctx.author.name == config.dev:
+            return await ctx.reply(f"me reconectei ao chat de @{name}")
+        return await ctx.reply(f"me reconectei ao seu chat!")
 
     @helper("receba o link do site do Bot para mais informações")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
