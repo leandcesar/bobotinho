@@ -9,6 +9,11 @@ AFKs = json_to_dict("bobotinho//data//afk.json")
 
 
 class Stalker(Cog):
+    """Stalker
+
+    Obtenha informações de outros usuários da Twitch
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
         self.color_api = Color()
@@ -24,6 +29,7 @@ class Stalker(Cog):
         return True
 
     @helper("saiba há quanto tempo alguém criou sua conta")
+    @usage("para usar: %age <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["aa", "age", "creation", "create"])
     async def accountage(self, ctx: Context, name: str = "") -> None:
@@ -39,6 +45,7 @@ class Stalker(Cog):
         return await ctx.reply(f"{mention} criou a conta em {date} (há {delta})")
 
     @helper("receba o link da foto de perfil de alguém")
+    @usage("para usar: %avatar <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["icon", "picture", "photo"])
     async def avatar(self, ctx: Context, name: str = "") -> None:
@@ -55,6 +62,7 @@ class Stalker(Cog):
         return await ctx.reply(f"foto de perfil de @{user.name}: {user.profile_image}")
 
     @helper("saiba a cor de alguém")
+    @usage("para usar: %color <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["colour", "colors"])
     async def color(self, ctx: Context, name: str = "") -> None:
@@ -78,6 +86,7 @@ class Stalker(Cog):
         return await ctx.reply(f"{mention} usa a cor {user.last_color} ({color_name})")
 
     @helper("saiba qual canal alguém seguiu primeiro e por quem ele foi seguido primeiro")
+    @usage("para usar: %ff <nome_do_usuario|autor> <nome_do_streamer|canal>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["ff"])
     async def firstfollow(self, ctx: Context, name: str = "", channel: str = "") -> None:
@@ -85,6 +94,7 @@ class Stalker(Cog):
         raise NotImplementedError()
 
     @helper("saiba há quanto tempo alguém segue um canal")
+    @usage("para usar: %fa <nome_do_usuario|autor> <nome_do_streamer|canal>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["fa", "followed", "follow"])
     async def followage(self, ctx: Context, name: str = "", channel: str = "") -> None:
@@ -113,7 +123,7 @@ class Stalker(Cog):
             return await ctx.reply(f"{mention} não segue {mention_channel}")
 
     @helper("verifique se alguém está AFK")
-    @usage("digite o comando e o nome do usuário para saber se ele está AFK")
+    @usage("para usar: %isafk <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def isafk(self, ctx: Context, name: str) -> None:
@@ -135,7 +145,7 @@ class Stalker(Cog):
         return await ctx.reply(f"@{name} não está AFK")
 
     @helper("saiba a última vez que alguém foi visto por mim")
-    @usage("digite o comando e o nome de alguém para saber quando foi visto pela última vez")
+    @usage("para usar: %ls <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["ls"])
     async def lastseen(self, ctx: Context, name: str) -> None:
@@ -154,6 +164,7 @@ class Stalker(Cog):
         return await ctx.reply(f"@{name} foi visto em @{user.last_channel} pela última vez: {user.last_message} (há {delta})")
 
     @helper("veja as informações da live de algum canal")
+    @usage("para usar: %live <nome_do_streamer|canal>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["stream"])
     async def live(self, ctx: Context, channel: str = "") -> None:

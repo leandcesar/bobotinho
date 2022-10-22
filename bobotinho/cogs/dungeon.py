@@ -10,6 +10,11 @@ DUNGEONS = json_to_dict("bobotinho//data//dungeons.json")
 
 
 class Dungeon(Cog):
+    """Dungeon
+
+    Participe de um mini RPG com os outros usuários, escolha sua classe e aumente seu nível
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
@@ -176,6 +181,7 @@ class Dungeon(Cog):
             return await ctx.reply(f"{quote} e {dungeon[option][result]}! +0 XP")
 
     @helper("veja qual o seu level (ou de alguém) e outras estatísticas da dungeon")
+    @usage("para usar: %level <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["lvl"])
     async def level(self, ctx: Context, name: str = "") -> None:

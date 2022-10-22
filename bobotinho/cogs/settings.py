@@ -5,6 +5,11 @@ from bobotinho.ext.commands import Cog, Context, command, helper, usage
 
 
 class Settings(Cog):
+    """Administração
+
+    Comandos para os moderadores do canal controlarem o bot
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
@@ -12,7 +17,7 @@ class Settings(Cog):
         return ctx.author.is_mod or ctx.author.is_broadcaster or ctx.author.name == config.dev
 
     @helper("ative um comando")
-    @usage("digite o comando e o nome de um comando")
+    @usage("para usar: %enable <nome_do_comando>")
     @command()
     async def enable(self, ctx: Context, name: str) -> None:
         command = self.bot.get_command(name.lower().strip())
@@ -23,7 +28,7 @@ class Settings(Cog):
         return await ctx.reply(f'"{command.name}" já está ativado')
 
     @helper("desative um comando")
-    @usage("digite o comando e o nome de um comando")
+    @usage("para usar: %disable <nome_do_comando>")
     @command()
     async def disable(self, ctx: Context, name: str) -> None:
         command = self.bot.get_command(name.lower().strip())

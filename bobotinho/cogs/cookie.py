@@ -5,6 +5,10 @@ from bobotinho.utils.rand import random_line_from_txt, random_choices
 
 
 class Cookie(Cog):
+    """Cookie
+
+    Todos os usuários ganham 1 cookie por dia, e existem diversas formas de gastá-lo"""
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
@@ -14,7 +18,7 @@ class Cookie(Cog):
         return True
 
     @helper("coma um cookie e receba uma frase da sorte")
-    @usage("digite o comando e a quantidade de cookies que quer comer (opcional)")
+    @usage("para usar: %cookie <quantidade|1>")
     @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command()
     async def cookie(self, ctx: Context, amount: int = 1) -> None:
@@ -32,7 +36,7 @@ class Cookie(Cog):
         return await ctx.reply("você já usou seu cookie diário, pegue outro na próxima fornada amanhã! ⌛")
 
     @helper("veja quantos cookies alguém já comeu")
-    @usage("digite o comando e a quantidade de cookies que quer comer (opcional)")
+    @usage("para usar: %cc <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["cc"])
     async def cookiecount(self, ctx: Context, name: str = "") -> None:
@@ -56,11 +60,10 @@ class Cookie(Cog):
         return await ctx.reply(f"{mention} ainda não comeu nenhum cookie")
 
     @helper("presenteie alguém com seu cookie diário")
-    @usage("digite o comando e o nome de alguém para presenteá-lo com seu cookie")
+    @usage("para usar: %gift <nome_do_usuario>")
     @cooldown(rate=1, per=30, bucket=Bucket.member)
     @command(aliases=["give"])
-    async def gift(self, ctx: Context, name: str = "") -> None:
-        name = name or ctx.author.name
+    async def gift(self, ctx: Context, name: str) -> None:
         if name == self.bot.nick:
             return await ctx.reply("eu não quero seu cookie")
         if name == ctx.author.name:

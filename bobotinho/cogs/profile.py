@@ -4,6 +4,11 @@ from bobotinho.ext.commands import Bucket, Cog, Context, cooldown, command, help
 
 
 class Profile(Cog):
+    """Perfil
+
+    Comandos para salvar seus dados ou customizar seu perfil no bot
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 

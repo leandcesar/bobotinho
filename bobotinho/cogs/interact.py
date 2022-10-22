@@ -6,6 +6,11 @@ from bobotinho.utils.rand import random_choice
 
 
 class Interact(Cog):
+    """Interação
+
+    Comandos divertidos para interagir com outros usuários
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
         self.fights = {}
@@ -18,7 +23,7 @@ class Interact(Cog):
         return True
 
     @helper("desafie alguém para lutar")
-    @usage("digite o comando e o nome de alguém para desafiá-lo para luta")
+    @usage("para usar: %fight <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def fight(self, ctx: Context, name: str) -> None:
@@ -74,7 +79,7 @@ class Interact(Cog):
             self.fights.pop(name)
 
     @helper("dê um abraço em alguém do chat")
-    @usage("digite o comando e o nome de alguém para abracá-lo")
+    @usage("para usar: %hug <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def hug(self, ctx: Context, name: str) -> None:
@@ -85,7 +90,7 @@ class Interact(Cog):
         return await ctx.reply(f"você abraçou @{name} 🤗")
 
     @helper("dê um beijinho em alguém do chat")
-    @usage("digite o comando e o nome de alguém para beijá-lo")
+    @usage("para usar: %kiss <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def kiss(self, ctx: Context, name: str) -> None:
@@ -96,7 +101,7 @@ class Interact(Cog):
         return await ctx.reply(f"você deu um beijinho em @{name} 😚")
 
     @helper("veja quanto de amor existe entre o ship de duas pessoas")
-    @usage("digite o comando e o nome de uma ou duas pessoas")
+    @usage("para usar: %love <nome_do_usuario_1> <nome_do_usuario_2|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["ship"])
     async def love(self, ctx: Context, name1: str, name2: str = "") -> None:
@@ -116,7 +121,7 @@ class Interact(Cog):
         return await ctx.reply(f"@{name1} & @{name2}: {ship} com {percentage}% de amor {emoji}")
 
     @helper("faça carinho em alguém do chat")
-    @usage("digite o comando e o nome de alguém para fazer carinho")
+    @usage("para usar: %pat <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def pat(self, ctx: Context, name: str) -> None:
@@ -127,7 +132,7 @@ class Interact(Cog):
         return await ctx.reply(f"você fez cafuné em @{name} 😊")
 
     @helper("é... é isso mesmo")
-    @usage("digite o comando e o nome de alguém para ver o tamanho do p")
+    @usage("para usar: %penis <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def penis(self, ctx: Context, name: str = "") -> None:
@@ -140,7 +145,7 @@ class Interact(Cog):
         return await ctx.reply(f"{mention} tem {length}cm {emoji}")
 
     @helper("dê um tapa em alguém do chat")
-    @usage("digite o comando e o nome de alguém que mereça levar uns tapas")
+    @usage("para usar: %slap <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def slap(self, ctx: Context, name: str) -> None:
@@ -151,7 +156,7 @@ class Interact(Cog):
         return await ctx.reply(f"você deu um tapa em @{name} 👋")
 
     @helper("coloque alguém do chat na cama para dormir")
-    @usage("digite o comando e o nome de alguém para colocá-lo na cama")
+    @usage("para usar: %tuck <nome_do_usuario>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def tuck(self, ctx: Context, name: str) -> None:

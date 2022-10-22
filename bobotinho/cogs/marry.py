@@ -5,6 +5,11 @@ from bobotinho.utils.time import timeago
 
 
 class Marry(Cog):
+    """Casamento
+
+    Use cookies para se casar com alguém (não, não há poligamia... por enquanto)
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
         self.proposals = {}
@@ -15,7 +20,7 @@ class Marry(Cog):
         return True
 
     @helper("divorcie-se da pessoa com quem você é casada")
-    @usage("digite o comando e o nome da pessoa com quem se casou para se divorciar")
+    @usage("para usar: %divorce <nome_do_usuario>")
     @cooldown(rate=1, per=10, bucket=Bucket.member)
     @command()
     async def divorce(self, ctx: Context, name: str) -> None:
@@ -39,6 +44,7 @@ class Marry(Cog):
             return await ctx.reply("você não sabe nem o nome da pessoa com quem está casado?")
 
     @helper("saiba há quanto tempo algum usuário está casado")
+    @usage("para usar: %ma <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["ma", "married"])
     async def marriage(self, ctx: Context, name: str = "") -> None:
@@ -67,7 +73,7 @@ class Marry(Cog):
         return await ctx.reply(f"{mention} está casado com {wedding}")
 
     @helper("case-se e seja feliz para sempre, mas isso custará cookies")
-    @usage("digite o comando e o nome de quem você quer pedir em casamento")
+    @usage("para usar: %marry <nome_do_usuario>")
     @cooldown(rate=1, per=10, bucket=Bucket.member)
     @command()
     async def marry(self, ctx: Context, name: str) -> None:

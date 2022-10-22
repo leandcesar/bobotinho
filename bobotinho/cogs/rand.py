@@ -5,6 +5,11 @@ from bobotinho.utils.rand import random_choice, random_line_from_txt, random_num
 
 
 class Rand(Cog):
+    """Randômicos
+
+    Comandos resultantes da aleatoriedade que podem ser usados para decidir algo
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
@@ -15,8 +20,8 @@ class Rand(Cog):
         percentage = random_number(max=1000, div=10)
         return await ctx.reply(f"{percentage}%")
 
-    @helper('dê opções separadas por "ou" e uma delas será escolhida')
-    @usage('digite o comando e algumas opções separadas por "ou"')
+    @helper('dê opções separadas por "ou" (ou vírgulas, ou espaço) e uma delas será escolhida')
+    @usage("para usar: %choice <list_de_opcoes>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["choose", "pick"])
     async def choice(self, ctx: Context, *, content: str) -> None:
@@ -38,13 +43,13 @@ class Rand(Cog):
 
     @helper("receba uma piada ou trocadilho")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
-    @command(aliases=["4head", "hahaa"])
-    async def joke(self, ctx: Context) -> None:
+    @command(aliases=["joke", "4head", "hahaa"])
+    async def randomjoke(self, ctx: Context) -> None:
         joke = random_line_from_txt("bobotinho//data//jokes.txt")
         return await ctx.reply(f"{joke} 4Head")
 
     @helper("tente vencer no pedra, papel e tesoura")
-    @usage('digite o comando e "pedra", "papel" ou "tesoura"')
+    @usage("para usar: %jokenpo <pedra|papel|tesoura>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["jokempo"])
     async def jokenpo(self, ctx: Context, choice: str) -> None:
@@ -66,7 +71,7 @@ class Rand(Cog):
             return await ctx.reply(f"eu escolhi {option} e consegui te vencer facilmente")
 
     @helper("tenha sua pergunta respondida por uma previsão")
-    @usage("digite o comando e uma pergunta para receber uma previsão")
+    @usage("para usar: %8ball <pergunta>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["8ball"])
     async def magicball(self, ctx: Context) -> None:
@@ -112,7 +117,7 @@ class Rand(Cog):
         return await ctx.reply(f"aqui está uma cor aleatória: #{color:06X}")
 
     @helper("gere um número aleatório dentre o intervalo fornecido")
-    @usage("digite o comando e o número inicial e final do intervalo separados por espaço")
+    @usage("para usar: %rng <valor_minimo> <valor_maximo>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["rng"])
     async def randomnumber(self, ctx: Context, min: int = 1, max: int = 100) -> None:
@@ -129,7 +134,7 @@ class Rand(Cog):
         return await ctx.reply(f"https://i.imgur.com/{sadcat} 😿")
 
     @helper("role um dado e veja o resultado")
-    @usage("digite o comando e o(s) dado(s) no formato <quantidade>d<lados> (ex: 1d20)")
+    @usage("para usar: %roll <quantidade_de_dados>d<quantidade_de_lados>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["dice"])
     async def roll(self, ctx: Context, content: str = "1d20") -> None:

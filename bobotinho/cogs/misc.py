@@ -9,6 +9,11 @@ from bobotinho.utils.time import datetime, timeago
 
 
 class Misc(Cog):
+    """Miscelânea
+
+    Comandos gerais que contém informações básicas sobre o bot
+    """
+
     def __init__(self, bot: Bobotinho, *, session=None) -> None:
         self.bot = bot
         self.bot.listeners.insert(0, self.listener)
@@ -39,7 +44,7 @@ class Misc(Cog):
         )
 
     @helper("reporte um bug que está ocorrendo no Bot")
-    @usage("digite o comando e o bug que você encontrou")
+    @usage("para usar: %bug <mensagem>")
     @cooldown(rate=1, per=10, bucket=Bucket.member)
     @command()
     async def bug(self, ctx: Context, *, content: str) -> None:
@@ -50,9 +55,10 @@ class Misc(Cog):
         return await ctx.reply("houve um erro pra registrar seu bug, tente mais tarde")
 
     @helper("receba o link da lista de comandos ou veja como utilizar um comando específico")
+    @usage("para usar: %help <nome_do_comando>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["commands"])
-    async def help(self, ctx: Context, *, content: str = None) -> None:
+    async def help(self, ctx: Context, *, content: str = "") -> None:
         command = self.bot.get_command(content)
         if command and command.aliases:
             aliases = ", ".join([f"{ctx.prefix}{alias}" for alias in command.aliases])
@@ -87,7 +93,7 @@ class Misc(Cog):
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def invite(self, ctx: Context) -> None:
-        return await ctx.reply(f"me adicione no seu chat: {config.invite_url}")
+        return await ctx.reply(f"basta enviar: {ctx.prefix}join")
 
     @helper("verifique se o bot está online")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
@@ -123,7 +129,7 @@ class Misc(Cog):
         return await ctx.reply(f"acesse: {config.site_url}")
 
     @helper("faça uma sugestão de recurso para o bot")
-    @usage("digite o comando e uma sugestão de recurso ou modificação para o bot")
+    @usage("para usar: %suggest <mensagem>")
     @cooldown(rate=1, per=10, bucket=Bucket.member)
     @command(aliases=["suggestion"])
     async def suggest(self, ctx: Context, *, content: str) -> None:

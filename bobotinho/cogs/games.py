@@ -12,6 +12,11 @@ from bobotinho.utils.rand import random_choice, random_number, random_line_from_
 
 
 class Game(Cog):
+    """Jogos
+
+    Comandos para jogar no chat com outros usuários
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
         self.channels_on_game = []

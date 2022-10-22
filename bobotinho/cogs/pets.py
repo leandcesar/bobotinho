@@ -9,6 +9,11 @@ PETS = json_to_dict("bobotinho//data//pets.json")
 
 
 class Pet(Cog):
+    """Pets
+
+    Use cookies para adquirir pets das mais diferentes espécies
+    """
+
     def __init__(self, bot: Bobotinho) -> None:
         self.bot = bot
 
@@ -25,6 +30,7 @@ class Pet(Cog):
         return pets
 
     @helper("veja os pets de alguém")
+    @usage("para usar: %pet <nome_do_usuario|autor>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command(aliases=["pets"])
     async def pet(self, ctx: Context, name: str = "") -> None:
@@ -47,8 +53,8 @@ class Pet(Cog):
             return await ctx.reply(f"adquira um dos pets disponíveis ({ctx.prefix}petlist) em troca de cookies")
         return await ctx.reply(f"{mention} não possui nenhum pet")
 
-    @helper("adquira um dos pets disponíveis na loja")
-    @usage("digite o comando e um dos pets disponíveis (%petlist) para adquirí-lo")
+    @helper("adquira um dos pets disponíveis na loja (%petlist)")
+    @usage("para usar: %petbuy <especie_do_pet>")
     @cooldown(rate=3, per=10, bucket=Bucket.member)
     @command()
     async def petbuy(self, ctx: Context, specie: str) -> None:

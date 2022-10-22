@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from typing import Any
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from typing import Any
 
 from bobotinho.models.channel import ChannelModel
 from bobotinho.models.user import UserModel
