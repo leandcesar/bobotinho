@@ -12,6 +12,15 @@
 - [**pynamodb**](https://pynamodb.readthedocs.io/en/latest/) is a Pythonic interface to Amazon’s DynamoDB
 - [**aiohttp**](https://docs.aiohttp.org/en/stable/) us an asynchronous HTTP Client/Server for asyncio and Python
 
+## 🧰 Services
+- [**Bugsnag**](https://www.bugsnag.com/) is an error monitoring and reporting software
+- [**The Color API**](https://www.thecolorapi.com/) is a swiss army knife for color available as a API
+- [**CoinAPI**](https://www.coinapi.io/) is a platform which provides data APIs to cryptocurrency markets
+- [**Dashbot**](https://www.dashbot.io/) is a data platform that ingests, cleans, stores, and processes any type of Conversation Data
+- [**math.js**](https://api.mathjs.org/) is an extensive math library available as a API
+- [**OpenWeather**](https://openweathermap.org/) provides global weather data available as a API
+- [**Wit.ai**](https://wit.ai/) is an open source framework with advanced natural language processing available as a API
+
 ## 🏁 Getting Started
 It is assumed that you have:
 - [**Twitch**](https://twitch.tv/) account for your bot
