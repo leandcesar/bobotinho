@@ -1,93 +1,35 @@
 # -*- coding: utf-8 -*-
 import json
-import random
-import re
-from datetime import datetime
-from emoji import demojize
-from typing import List, Optional, Union
-from unidecode import unidecode
+from string import ascii_letters
+from string import digits
+from typing import Union
 
-from bobotinho.exceptions import InvalidName
+__all__ = ("str_to_ascii", "str_to_hex", "str_to_int", "json_to_dict")
 
-
-def datetime2str(target: datetime) -> str:
-    return target.isoformat()
+letters_and_digits = ascii_letters + digits
 
 
-def dict2str(target: Optional[dict]) -> str:
-    try:
-        return json.dumps(target)
-    except Exception:
-        return ""
+def str_to_ascii(value: str) -> str:
+    reference = [('a', 'áàâãä'), ('e', 'éèêë'), ('i', 'íìîï'), ('o', 'óòôõö'), ('u', 'úùûü'), ('c', 'ç')]
+    text = ""
+    for char in value:
+        for clear_vowal, possible_accents in reference:
+            if char in possible_accents:
+                text += clear_vowal
+                break
+        else:
+            text += char
+    return text
 
 
-def emoji2str(target: str) -> Optional[str]:
-    emoji = demojize(target)
-    if emoji != target and emoji.count(":") == 2:
-        return emoji
+def str_to_hex(value: str) -> str:
+    return "".join(x for x in value if x in letters_and_digits).encode().hex()
 
 
-def txt2randomline(target: str) -> str:
-    with open(target, "r", encoding="utf-8") as f:
-        lines = f.read().splitlines()
-    return random.choice(lines)
+def str_to_int(value: str) -> int:
+    return int(str_to_hex(value), base=16)
 
 
-def number2str(target: Union[int, float]) -> Optional[str]:
-    if isinstance(target, int):
-        return f"{target:,d}".replace(",", ".")
-    if isinstance(target, float):
-        return f"{target:,.2f}"[::-1].replace(",", ".").replace(".", ",", 1)[::-1]
-
-
-def str2ascii(target: str) -> str:
-    return unidecode(target).lower().strip()
-
-
-def str2datetime(target: str) -> datetime:
-    return datetime.fromisoformat(target)
-
-
-def str2dict(target: Optional[str]) -> dict:
-    try:
-        return json.loads(target)
-    except Exception:
-        return {}
-
-
-def str2float(target: Optional[str]) -> Optional[float]:
-    try:
-        return float(target.replace(",", "."))
-    except Exception:
-        return None
-
-
-def str2int(target: Optional[str]) -> Optional[int]:
-    try:
-        return int(target)
-    except Exception:
-        return None
-
-
-def str2hexcode(target: Optional[str]) -> Optional[str]:
-    if not target:
-        return None
-    if match := re.match(r"#(?:[0-9A-Fa-f]{6})$", target):
-        return match.group(0)
-
-
-def str2name(target: str, default: Optional[str] = None) -> Optional[str]:
-    if not target and default:
-        return default
-    if target:
-        if target[0] == "@":
-            target = target[1:]
-        if target[-1] == ",":
-            target = target[:-1]
-        if target.replace("_", "").isalnum() and unidecode(target) == target:
-            return target.lower()
-    raise InvalidName()
-
-
-def str2url(target: str) -> Optional[str]:
-    return re.search(r"([0-9a-zA-Z]*\.[a-zA-Z]{2,3})", target)
+def json_to_dict(filename: str) -> Union[dict, list]:
+    with open(filename, "r", encoding="utf-8") as f:
+        return json.load(f)

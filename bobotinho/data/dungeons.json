@@ -1,0 +1,561 @@
+[
+    {
+        "quote": "a dungeon está cheia de teias de aranha! 🕸",
+        "1": {
+            "option": "tentar atravessá-las",
+            "win": "você passa facilmente pelas teias e encontra a saída",
+            "lose": "você fica preso nas teias e fica horas sem conseguir sair dali"
+        },
+        "2": {
+            "option": "pensar em outra alternativa",
+            "win": "você joga uma bola de fogo nas teias, limpando a passagem e achando a saída",
+            "lose": "você acaba não pensando em nada e decide ir embora"
+        }
+    },
+    {
+        "quote": "a dungeon está cheia de zumbis! 🧟",
+        "1": {
+            "option": "tentar eliminá-los",
+            "win": "você consegue lidar com todos os zumbis e continuar até a saída",
+            "lose": "você é incapaz de lidar com tantos zumbis e recua, ferido"
+        },
+        "2": {
+            "option": "se disfarçar de morto-vivo",
+            "win": "você se disfarça muito bem, enganando os zumbis e encontrando a saída",
+            "lose": "os zumbis percebem seu péssimo disfarce e te perseguem, te obrigando a fugir"
+        }
+    },
+    {
+        "quote": "a dungeon está infestada de aranhas! 🕷️",
+        "1": {
+            "option": "tentar atravessar",
+            "win": "você passa facilmente pelas aranhas e encontra a saída",
+            "lose": "as aranhas te encurralam e você acaba sendo picado por elas"
+        },
+        "2": {
+            "option": "conjurar uma magia",
+            "win": "você joga diversos projéteis nas aranhas, limpando o caminho",
+            "lose": "você falha em conjurar sua magia e foge para casa com medo"
+        }
+    },
+    {
+        "quote": "a dungeon está infestada de ratos! 🐀",
+        "1": {
+            "option": "enfrentá-los",
+            "win": "você consegue derrotar todos os ratos, encontrando a saída",
+            "lose": "surge mais ratos que você consegue lidar e você foge com medo da leptospirose"
+        },
+        "2": {
+            "option": "pensar em outro plano",
+            "win": "você arremessa pedaços de mortadela de sua bolsa, persuadindo os ratos, até encontrar a saída",
+            "lose": "você não pensa em nada e desiste da dungeon"
+        }
+    },
+    {
+        "quote": "ao entrar na dungeon, você encontra uma banana. 🍌",
+        "1": {
+            "option": "come-lá",
+            "win": "você come a banana e isso te enche de determinação",
+            "lose": "você come a banana e, tempo depois, sente uma dor de barriga insuportável"
+        },
+        "2": {
+            "option": "pisar nela",
+            "win": "você pisa na banana e desliza sobre ela, o que te dá um impulso de velocidade até a saída",
+            "lose": "você escorrega ao pisar na banana, batendo a cabeça no chão e ficando desacordado"
+        }
+    },
+    {
+        "quote": "ao entrar na dungeon, você encontra um pergaminho. 📜",
+        "1": {
+            "option": "ler",
+            "win": "você lê o pergaminho que continha dicas para achar a saída",
+            "lose": "o pergaminho dizia \"morte iminente\" e, por medo, você desiste da dungeon"
+        },
+        "2": {
+            "option": "ignorá-lo",
+            "win": "você ignora o pergaminho e finaliza a dungeon naturalmente",
+            "lose": "você ignora o pergaminho e é amaldiçoado por uma criatura incrédula com sua ignorância"
+        }
+    },
+    {
+        "quote": "um ovo com pernas está tentando subir uma plataforma. 🥚",
+        "1": {
+            "option": "ajudá-lo",
+            "win": "você consegue ajudar o ovo e, em troca, recebe uma benção",
+            "lose": "você acaba derrubando-o e o quebra. Imediatamente você é amaldiçoado"
+        },
+        "2": {
+            "option": "empurrá-lo",
+            "win": "você empurra o ovo e ele caí da plataforma. Você acha engraçado e continua a dungeon, feliz",
+            "lose": "você falha ao tentar empurrá-lo e caí da plataforma. O ovo ri de você"
+        }
+    },
+    {
+        "quote": "você encontra um cachorro! 🐕",
+        "1": {
+            "option": "fazer carinho",
+            "win": "você consegue fazer carinho no cachorro e isso eleva seu espírito",
+            "lose": "o cachorro morde sua mão muito forte, te obrigando a retornar para se medicar"
+        },
+        "2": {
+            "option": "latir para ele",
+            "win": "você late para o cachorro e ele late de volta. Isso enche você de coragem",
+            "lose": "o cachorro se assusta e começa a te perseguir incessantemente, até você ir embora"
+        }
+    },
+    {
+        "quote": "você encontra um druida bebendo refrigerante. 🥤",
+        "1": {
+            "option": "pedir um refrigerante",
+            "win": "você se senta para tomar um refrigerante com ele e isso cura todos seus ferimentos",
+            "lose": "o druida recusa seu pedido e cospe refrigerante em você"
+        },
+        "2": {
+            "option": "pedir benção",
+            "win": "o druida te concede um abençoamento e isso ajuda a completar a dungeon",
+            "lose": "o druida ri e não lhe concede nenhuma benção. Triste, você volta para casa"
+        }
+    },
+    {
+        "quote": "você encontra um gênio da lâmpada! 🧞",
+        "1": {
+            "option": "fazer um pedido",
+            "win": "você pede para o gênio levá-lo até o final da dungeon e o desejo é concedido",
+            "lose": "você pede muito dinheiro para o gênio. Assim, um milhão de moedas caí sobre você, te esmagando"
+        },
+        "2": {
+            "option": "libertá-lo da lâmpada",
+            "win": "você liberta o gênio da lâmpada e, em troca de sua gentileza, ele te da muito ouro",
+            "lose": "você liberta o gênio da lâmpada e ele se rebela, te aprisionando na lâmpada"
+        }
+    },
+    {
+        "quote": "você encontra um guerreiro que insiste em te ajudar. 🛡️",
+        "1": {
+            "option": "confiar no guerreiro",
+            "win": "o guerreiro propõe uma grande ajuda e, unidos, finalizam a dungeon",
+            "lose": "o guerreiro te leva para caminhos desconhecidos e te abandona. Você fica perdido e sozinho"
+        },
+        "2": {
+            "option": "atacá-lo",
+            "win": "com medo de ser traído, você ataca o guerreiro e o derrota, podendo atravessar a dungeon",
+            "lose": "você tenta um golpe surpresa, mas o guerreiro é mais forte que você pensava e te nocauteia"
+        }
+    },
+    {
+        "quote": "você encontra um homem tocando música clássica. 🍷",
+        "1": {
+            "option": "dialogar",
+            "win": "o homem acaba gostando de você e te passa boas estratégias para a dungeon",
+            "lose": "o homem te acha insuportável e te fala coisas que abaixam seu ânimo"
+        },
+        "2": {
+            "option": "negociar",
+            "win": "você consegue itens raros em troca de poucas moedas",
+            "lose": "o homem recusa todas as suas ofertas e você volta para casa, derrotado"
+        }
+    },
+    {
+        "quote": "você encontra um lobo segurando uma espada na boca! 🐺",
+        "1": {
+            "option": "domá-lo",
+            "win": "você consegue domar o lobo! Ele te acompanha e protege até o fim da dungeon",
+            "lose": "você tenta domá-lo, mas falha! Triste, você tenta continuar sozinho"
+        },
+        "2": {
+            "option": "pegar a espada dele",
+            "win": "você consegue pegar a tão rara espada do lobo e se torna fácil completar a dungeon",
+            "lose": "você segue o lobo aguardando a brecha para pegar sua espada, mas se perde no processo"
+        }
+    },
+    {
+        "quote": "você encontra uma bola de cristal mágica! 🔮",
+        "1": {
+            "option": "tocá-la",
+            "win": "você toca a bola de cristal e é transportado para a saída da dungeon",
+            "lose": "você toca nela e é transportado de volta para o início da dungeon"
+        },
+        "2": {
+            "option": "coletá-la",
+            "win": "você pega a bola de cristal e isso aumenta sua coleção de artefatos",
+            "lose": "a bola de cristal sente sua energia maléfica e te transporta para uma sala cheia de monstros"
+        }
+    },
+    {
+        "quote": "você encontra uma caixa! 📦",
+        "1": {
+            "option": "abrí-la",
+            "win": "você encontra diversas riquezas dentro dela que te ajudam a completar a dungeon",
+            "lose": "existe outra caixa dentro da caixa. Você abre. Dentro de mais uma caixa, um papel escrito: \"nada\""
+        },
+        "2": {
+            "option": "ignorá-la",
+            "win": "você ignora a caixa e continua sua jornada normalmente, até finalizá-la",
+            "lose": "a caixa era um monstro disfarçado e ele te ataca desprevenido"
+        }
+    },
+    {
+        "quote": "você encontra uma casa com muitas portas. 🏠",
+        "1": {
+            "option": "entrar na casa",
+            "win": "ao abrir uma das portas, você vê que era um atalho para a saída",
+            "lose": "você abre uma das portas e cai em um buraco que estava disfarçado no piso"
+        },
+        "2": {
+            "option": "investigar atrás dela",
+            "win": "no terreno atrás da casa, você encontra um baú cheio de ouro",
+            "lose": "você se depara com um jacaré atrás da casa e precisa fugir da dungeon rapidamente"
+        }
+    },
+    {
+        "quote": "você encontra uma estrela brilhante. ⭐",
+        "1": {
+            "option": "tocá-la",
+            "win": "você toca a estrela, absorvendo ela e tornando-se invencível por um curto tempo",
+            "lose": "você toca a estrela, tomando um choque atordoador e adormecendo"
+        },
+        "2": {
+            "option": "socá-la",
+            "win": "a estrela se pulveriza com seu soco e o pó encanta seus punhos, tornando-o mais forte",
+            "lose": "você percebe que a estrela é dura como pedra e acaba machucando as mãos ao socá-la"
+        }
+    },
+    {
+        "quote": "você encontra uma máquina de cookies! 🍪",
+        "1": {
+            "option": "chutá-la",
+            "win": "você decide chutá-la e isso libera um delicioso cookie",
+            "lose": "você soca a máquina e ela, ofendida, devolve o soco dado por você"
+        },
+        "2": {
+            "option": "investiga-lá",
+            "win": "você investiga a máquina e encontra moedas perdidas dentro dela",
+            "lose": "você investiga a máquina por horas e apenas tem seu tempo desperdiçado"
+        }
+    },
+    {
+        "quote": "você encontra uma mesa cheia de sanduíches. 🥪",
+        "1": {
+            "option": "comer um",
+            "win": "você come um sanduíche e isso eleva sua motivação",
+            "lose": "você come um sanduíche e, tempo depois, sente uma dor de barriga insuportável"
+        },
+        "2": {
+            "option": "pegar todos",
+            "win": "você guarda todos os sanduíches, aumentando seus suprimentos reservas",
+            "lose": "ao esvaziar a mesa de sanduíches, uma armadilha é acionada e a saída fica bloqueada"
+        }
+    },
+    {
+        "quote": "você encontra uma televisão ligada. 📺",
+        "1": {
+            "option": "assistir",
+            "win": "você decide assistir a televisão e encontra programas que aumentam sua autoestima",
+            "lose": "uma menina sai da televisão e você foge da dungeon desesperado"
+        },
+        "2": {
+            "option": "desligá-la",
+            "win": "você desliga a televisão e segue sua jornada normalmente até completá-la",
+            "lose": "ao apertar o botão para desligá-la, você leva um choque que te deixa desacordado"
+        }
+    },
+    {
+        "quote": "você enxerga uma colônia enorme de abelhas! 🐝",
+        "1": {
+            "option": "roubar o mel",
+            "win": "você come o mel e ele te dá energia para finalizar a dungeon rapidamente",
+            "lose": "ao se aproximar da colmeia, as abelhas te atacam e te deixam inconsciente"
+        },
+        "2": {
+            "option": "fugir imediatamente",
+            "win": "o medo das abelhas te faz correr tão rápido que você chega do outro lado da dungeon",
+            "lose": "ao tentar fugir, as abelhas vão atrás de você. As abelhas te atacam e te deixam inconsciente"
+        }
+    },
+    {
+        "quote": "você esbarra em um homem com olhos vacilantes 👀",
+        "1": {
+            "option": "encará-lo sem piscar",
+            "win": "ele pisca para você e te dá um par de botas novo que te deixa mais rápido",
+            "lose": "ao olhar no fundo dos olhos dele, você se torna extremamente azarado"
+        },
+        "2": {
+            "option": "desviar o olhar",
+            "win": "o homem percebe seu medo e, com pena, te dá um par de botas que te deixa mais rápido",
+            "lose": "enquanto você não olha, ele se aproxima e rouba seus artefatos"
+        }
+    },
+    {
+        "quote": "você ouve dois magos conversando. 🧙🧙",
+        "1": {
+            "option": "esgueirar-se e ouví-los",
+            "win": "eles falam algo sobre poções e de repente você se torna invisível",
+            "lose": "eles dizem algumas palavras de encantamento e você fica perdidamente apaixonado"
+        },
+        "2": {
+            "option": "mostrar a eles sua força",
+            "win": "eles ficam com medo dos seus músculos incríveis e te dão uma poção",
+            "lose": "eles riem da sua prepotência e te amaldiçoam"
+        }
+    },
+    {
+        "quote": "você encontra uma chave e vê duas portas. 🚪",
+        "1": {
+            "option": "abrir a da esquerda",
+            "win": "você liberta um drúida bêbado e o ajuda a lembrar como se trancou ali",
+            "lose": "você solta uma criatura emplumada que tira suas roupas e desaparece"
+        },
+        "2": {
+            "option": "abrir a da direita",
+            "win": "você encontra a saída da dungeon",
+            "lose": "você se depara com uma armadilha mágica que te deixa tonto por horas"
+        }
+    },
+    {
+        "quote": "você encontra uma chave e um baú. 🔑",
+        "1": {
+            "option": "abrí-lo",
+            "win": "dentro havia um mapa com o caminho para o final da dungeon",
+            "lose": "o baú era um monstro mímico! Você foge da dungeon para sobreviver"
+        },
+        "2": {
+            "option": "levar o baú sem abri-lo",
+            "win": "você encontra um mago morto-vivo que só te deixa viver em troca do baú",
+            "lose": "o baú te deixa com dor nas costas por ser pesado demais e você precisa descansar"
+        }
+    },
+    {
+        "quote": "sua tocha apaga e você cai em um buraco. 🕳",
+        "1": {
+            "option": "escalar",
+            "win": "você consegue escalar com facilidade usando a velocidade angular",
+            "lose": "após várias tentativas, você desiste e chora em posição fetal esperando alguém"
+        },
+        "2": {
+            "option": "voar",
+            "win": "você se lembra dos treinamentos nos montes e realiza um voo incrível",
+            "lose": "você se concentra por horas até finalmente perceber que não sabe voar"
+        }
+    },
+    {
+        "quote": "você encontra um mapa com um \"X\" marcado. 🗺",
+        "1": {
+            "option": "seguir o mapa",
+            "win": "o \"X\" te leva para a saída da dungeon",
+            "lose": "você anda por horas até perceber que está caminhando em círculos"
+        },
+        "2": {
+            "option": "descartá-lo",
+            "win": "você amassa o mapa e o joga longe, percebendo que ele atinge um baú perdido com ouro",
+            "lose": "você segue seu caminho e para em um lugar sem saída. Talvez o mapa fosse útil.."
+        }
+    },
+    {
+        "quote": "você encontra um cavaleiro que te desafia! ⚔",
+        "1": {
+            "option": "aceitar",
+            "win": "você derrota o cavaleiro, se esquivando de todos os ataques",
+            "lose": "ele te dá uma surra terrível e te deixa desacordado"
+        },
+        "2": {
+            "option": "recusar",
+            "win": "ele, por pena da sua covardia, te dá uma nova espada para combates futuros",
+            "lose": "você recusa o desafio e vai embora. Nada acontece"
+        }
+    },
+    {
+        "quote": "você encontra uma coruja falante. 🦉",
+        "1": {
+            "option": "ouví-la",
+            "win": "a coruja velha e sábia lhe dá o incentivo que precisava para lutar pela dungeon",
+            "lose": "você cai em uma magia de ilusão da coruja e acorda horas depois"
+        },
+        "2": {
+            "option": "guardá-la na gaiola",
+            "win": "agora você tem uma coruja para conversar durante o percurso e pedir conselhos",
+            "lose": "quando você se aproxima, a coruja se transforma em um mago que lhe dá uma surra"
+        }
+    },
+    {
+        "quote": "você entra em uma caverna cheia de morcegos. 🦇",
+        "1": {
+            "option": "avançar silenciosamente",
+            "win": "você esgueira-se para evitar alertá-los e consegue avançar",
+            "lose": "seu silêncio não dura muito, você logo tropeça e trazendo todos os morcegos pra cima de você"
+        },
+        "2": {
+            "option": "atacá-los",
+            "win": "você acaba com todos os morcegos sem dificuldade",
+            "lose": "você derrota todos e resolve fazer uma sopa com eles, mas ela não te faz muito bem.."
+        }
+    },
+    {
+        "quote": "você vê um rato gigante! 🐀",
+        "1": {
+            "option": "atacá-lo",
+            "win": "em uma batalha épica você acaba com o rato e encontra luvas lendárias",
+            "lose": "após diversos ataques, você fica exausto e ele te acerta um golpe em cheio"
+        },
+        "2": {
+            "option": "recuar e preparar uma armadilha",
+            "win": "você elabora a armadilha perfeita com um saboroso queijo e ele é pego",
+            "lose": "após montar a armadilha, você percebe que era apenas a sombra de um rato normal.."
+        }
+    },
+    {
+        "quote": "você vê uma donzela sendo escoltada por vários cavaleiros. 😍",
+        "1": {
+            "option": "seduzí-la",
+            "win": "ela te corresponde com um sorriso tímido que aumenta sua motivação",
+            "lose": "imediatamente todos guerreiros vão em sua direção e você se vê obrigado a fugir"
+        },
+        "2": {
+            "option": "acenar",
+            "win": "ela acha que você está pedindo esmola e te dá algumas moedas de ouro",
+            "lose": "um dos cavaleiros desce de seu cavalo e te dá uma surra"
+        }
+    },
+    {
+        "quote": "você vê um homem bonito e musculoso à frente. 💪",
+        "1": {
+            "option": "flertar",
+            "win": "ele corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado",
+            "lose": "ele ri alto debochadamente e passa a te ignorar completamente"
+        },
+        "2": {
+            "option": "pedir ajuda",
+            "win": "ele aponta para a saída da dungeon fazendo uma pose que realça todos os músculos",
+            "lose": "você pede ajuda, mas ele não te escuta. Quando você insiste, desperta do sonho"
+        }
+    },
+    {
+        "quote": "você vê uma linda mulher ruiva à frente. 😍",
+        "1": {
+            "option": "flertar",
+            "win": "ela corresponde e o clima esquenta. Acontecem coisas que te deixam extremamente revigorado",
+            "lose": "ela ri alto debochadamente e passa a te ignorar completamente"
+        },
+        "2": {
+            "option": "pedir ajuda",
+            "win": "ela compartilha uma das várias perólas de seu colar que te deixa incrivelmente hábil",
+            "lose": "você pede ajuda, mas ela não te escuta. Quando você insiste, desperta do sonho"
+        }
+    },
+    {
+        "quote": "há muitos sapos na dungeon! 🐸",
+        "1": {
+            "option": "beijá-los",
+            "win": "você pega um dos sapos e o beija, ganhando força extra",
+            "lose": "você beija alguns sapos e começa a ficar confuso. Depois, se perde por horas em alucinações"
+        },
+        "2": {
+            "option": "queimá-los",
+            "win": "você incinera todos os sapos e vê que das cinzas deles consegue fazer alguns explosivos",
+            "lose": "você tenta queimá-los, mas eles são imunes. Eles se revoltam e pulam em você, te atordoando"
+        }
+    },
+    {
+        "quote": "no meio da dungeon, você encontra um alienígena dançarino 👽",
+        "1": {
+            "option": "dançar junto",
+            "win": "vocês se divertem dançando e ele te dá uma poção de vigor em forma de agradecimento",
+            "lose": "você desiste de completar a dungeon para dançar com ele"
+        },
+        "2": {
+            "option": "desligar o som",
+            "win": "o alienígena te agradece e conta que estava há anos preso na maldição de não conseguir parar de dançar",
+            "lose": "enfurecido, o alienígena atira lasers dos dedos e você foge desesperamente"
+        }
+    },
+    {
+        "quote": "você vê um botão na entrada da dungeon. 🔘",
+        "1": {
+            "option": "acioná-lo",
+            "win": "uma cabine sobe do chão contendo uma espada brilhante",
+            "lose": "diversas bombas explodem na entrada da dungeon, bloqueando a passagem"
+        },
+        "2": {
+            "option": "acioná-lo com a ponta do nariz",
+            "win": "a parede ao lado do botão rotaciona, revelando uma armadura brilhante e poderosa",
+            "lose": "diversas bombas explodem na entrada da dungeon, bloqueando a passagem. E seu nariz ficou sujo"
+        }
+    },
+    {
+        "quote": "um homem com um trompete aparece. 🎺",
+        "1": {
+            "option": "pedir para ele tocar",
+            "win": "a música dele te inspira e você se sente mais determinado",
+            "lose": "ele toca mal e seus ouvidos começam a zunir. Isso te dá uma forte dor de cabeça"
+        },
+        "2": {
+            "option": "ignorar",
+            "win": "você percebe como deu sorte quando escuta ao longe sons terríveis de trompete",
+            "lose": "ele te persegue e começa a tocar músicas extremamente mal"
+        }
+    },
+    {
+        "quote": "um anão montado em um besouro se aproxima. 🐞",
+        "1": {
+            "option": "conversar",
+            "win": "vocês se tornam amigos e ele te entrega uma espécie de bússola para a dungeon",
+            "lose": "ele insiste que você veja a coleção de besouros dele, te atrasando. "
+        },
+        "2": {
+            "option": "empurrá-lo e roubar o besouro",
+            "win": "você derruba o anão do grande besouro e adquire uma montaria para percorrer a dungeon",
+            "lose": "o besouro contra ataca para proteger seu dono e te deixa atordoado"
+        }
+    },
+    {
+        "quote": "há uma guilda lutando contra um dragão enorme! 🐉",
+        "1": {
+            "option": "ajudar",
+            "win": "o dragão é derrotado quando você dá o golpe final, levando a glória",
+            "lose": "o bater de asas do dragão é forte suficiente para arremesá-los longe. Você bate a cabeça e desmaia"
+        },
+        "2": {
+            "option": "se esconder",
+            "win": "você se esconde e, após ver o dragão matando todos, você volta para roubá-los",
+            "lose": "os membros da guilda derrotam o dragão e depois vão atrás de você, por não ter ajudado-os"
+        }
+    },
+    {
+        "quote": "um homem alegre está servindo tortas. 🥧",
+        "1": {
+            "option": "comer na hora",
+            "win": "com a energia extra da torta, você corre mais rápido pela dungeon",
+            "lose": "quando você se aproxima para pegar a torta, ele a joga na sua cara"
+        },
+        "2": {
+            "option": "guardar",
+            "win": "você a guarda e, tempo depois, comê-la fez suas energias retornarem completamente",
+            "lose": "tempo depois, você vê que a torta que guardou sujou tudo em sua bolsa. Você perde tempo limpando as coisas"
+        }
+    },
+    {
+        "quote": "um animal está vindo em sua direção",
+        "1": {
+            "option": "aguardar ele",
+            "win": "um lindo unicórnio se aproxima e a magia de seu chifre lhe traz força extra. 🦄",
+            "lose": "um pássaro te traz uma mensagem: \"você nunca terá sucesso\". Você senta e chora. 🐦"
+        },
+        "2": {
+            "option": "correr dele",
+            "win": "você corre, mas um macaco com pernas minúsculas te alcança e joga um pó branco. Isso te deixa mais alerta. 🦍",
+            "lose": "você corre, mas um pato sinistro te alcança e rouba suas roupas. Você é forçado retornar. 🦆"
+        }
+    },
+    {
+        "quote": "a dungeon é assombrada por um fantasma! 👻",
+        "1": {
+            "option": "tentar confrontá-lo",
+            "win": "você expurga o fantasma, liberando a passagem para a saída",
+            "lose": "você é derrotado pelo fantasma e acaba sendo amaldiçoado"
+        },
+        "2": {
+            "option": "tentar evitá-lo",
+            "win": "você passa de mansinho pelo fantasma até chegar na saída",
+            "lose": "o fantasma nota sua presença e acaba te possuindo"
+        }
+    }
+]

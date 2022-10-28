@@ -1,0 +1,110 @@
+{
+    "GY1": [
+        "Guerreiro",
+        "Mercenário",
+        "Cavaleiro",
+        "Lord",
+        "Grão Mestre",
+        "Imperador da Espada",
+        "Guardião Divino"
+    ],
+    "GY2": [
+        "Guerreiro",
+        "Mercenário",
+        "Cavaleiro",
+        "Cavaleiro das Trevas",
+        "Guerreiro Arcano",
+        "Demônio da Espada",
+        "Ascendente Imortal"
+    ],
+    "GX1": [
+        "Guerreira",
+        "Mercenária",
+        "Cavaleira",
+        "Lord",
+        "Grã Mestra",
+        "Imperatriz da Espada",
+        "Guardiã Divina"
+    ],
+    "GX2": [
+        "Guerreira",
+        "Mercenária",
+        "Cavaleira",
+        "Cavaleira das Trevas",
+        "Guerreira Arcana",
+        "Demônia da Espada",
+        "Ascendente Imortal"
+    ],
+    "AY1": [
+        "Arqueiro",
+        "Atirador de Elite",
+        "Sentinela",
+        "Domador Bestial",
+        "Caçador de Demônios",
+        "Maestro dos Ventos",
+        "Aurora dos Deuses"
+    ],
+    "AY2": [
+        "Arqueiro",
+        "Atirador de Elite",
+        "Sentinela",
+        "Caçador",
+        "Assassino Arcano",
+        "Sombra Viva",
+        "Crepúsculo dos Deuses"
+    ],
+    "AX1": [
+        "Arqueira",
+        "Atiradora de Elite",
+        "Sentinela",
+        "Domadora Bestial",
+        "Caçadora de Demônios",
+        "Maestrina dos Ventos",
+        "Aurora dos Deuses"
+    ],
+    "AX2": [
+        "Arqueira",
+        "Atiradora de Elite",
+        "Sentinela",
+        "Caçadora",
+        "Assassina Arcana",
+        "Sombra Viva",
+        "Crepúsculo dos Deuses"
+    ],
+    "MY1": [
+        "Mago",
+        "Feiticeiro",
+        "Mestre Elemental",
+        "Alquimista",
+        "Ladrão de Mentes",
+        "Necromante",
+        "Lich"
+    ],
+    "MY2": [
+        "Mago",
+        "Feiticeiro",
+        "Mestre Elemental",
+        "Clerigo",
+        "Arcebispo",
+        "Conjurador dos Divinos",
+        "Anjo"
+    ],
+    "MX1": [
+        "Maga",
+        "Feiticeira",
+        "Mestra Elemental",
+        "Alquimista",
+        "Ladra de Mentes",
+        "Necromante",
+        "Lich"
+    ],
+    "MX2": [
+        "Maga",
+        "Feiticeira",
+        "Mestra Elemental",
+        "Cleriga",
+        "Arcebispa",
+        "Conjuradora dos Divinos",
+        "Anjo"
+    ]
+}

@@ -1,0 +1,98 @@
+[
+    {
+        "alias": "afk",
+        "emoji": "🏃⌨",
+        "afk": "ficou AFK",
+        "isafk": "AFK",
+        "returned": "voltou",
+        "rafk": "AFK"
+    },
+    {
+        "alias": "art",
+        "emoji": "🎨",
+        "afk": "foi desenhar",
+        "isafk": "desenhando",
+        "returned": "desenhou",
+        "rafk": "desenhando"
+    },
+    {
+        "alias": "brb",
+        "emoji": "🏃⌨",
+        "afk": "volta já",
+        "isafk": "fora",
+        "returned": "voltou",
+        "rafk": "fora"
+    },
+    {
+        "alias": "code",
+        "emoji": "💻",
+        "afk": "foi programar",
+        "isafk": "programando",
+        "returned": "programou",
+        "rafk": "programando"
+    },
+    {
+        "alias": "food",
+        "emoji": "🍽",
+        "afk": "foi comer",
+        "isafk": "comendo",
+        "returned": "comeu",
+        "rafk": "comendo"
+    },
+    {
+        "alias": "game",
+        "emoji": "🎮",
+        "afk": "foi jogar",
+        "isafk": "jogando",
+        "returned": "jogou",
+        "rafk": "jogando"
+    },
+    {
+        "alias": "gn",
+        "emoji": "💤",
+        "afk": "foi dormir",
+        "isafk": "dormindo",
+        "returned": "acordou",
+        "rafk": "dormindo"
+    },
+    {
+        "alias": "work",
+        "emoji": "💼",
+        "afk": "foi trabalhar",
+        "isafk": "trabalhando",
+        "returned": "trabalhou",
+        "rafk": "trabalhando"
+    },
+    {
+        "alias": "read",
+        "emoji": "📖",
+        "afk": "foi ler",
+        "isafk": "lendo",
+        "returned": "leu",
+        "rafk": "lendo"
+    },
+    {
+        "alias": "shower",
+        "emoji": "🚿",
+        "afk": "foi pro banho",
+        "isafk": "no banho",
+        "returned": "tomou banho",
+        "rafk": "o banho"
+    },
+    {
+        "alias": "study",
+        "emoji": "📚",
+        "afk": "foi estudar",
+        "isafk": "estudando",
+        "returned": "estudou",
+        "rafk": "estudando"
+    },
+    {
+        "alias": "watch",
+        "emoji": "📺",
+        "afk": "foi assistir",
+        "isafk": "assistindo",
+        "returned": "assistiu",
+        "rafk": "assistindo"
+    }
+]

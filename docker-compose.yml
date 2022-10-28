@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   bot:
@@ -9,49 +9,14 @@ services:
       context:
         .
     image: bobotinho
-    environment:
-      - DATABASE_URL=postgres://root:password@db:5432/bobotinho
-      - REDIS_URL=redis://redis
     env_file:
       - .env
+    ports:
+      - 5003:5003
     volumes:
       - ./:/app
-    links:
-      - db
-      - redis
-    depends_on:
-      - db
-      - redis
     networks:
       - bobotinho-net
-
-  db:
-    container_name: db
-    image: postgres
-    hostname: postgres
-    restart: always
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=bobotinho
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=password
-    networks:
-      - bobotinho-net
-
-  redis:
-    container_name: redis
-    image: redis
-    command: redis-server --appendonly yes
-    ports:
-      - 6379:6379
-    networks:
-      - bobotinho-net
-
-volumes:
-  postgres-data:
 
 networks:
   bobotinho-net:
